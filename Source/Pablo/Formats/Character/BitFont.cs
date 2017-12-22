@@ -32,6 +32,8 @@ namespace Pablo.Formats.Character
 
 		public float LegacyRatio { get; set; }
 
+		public bool Is9xFont { get; private set; }
+
 		public Encoding Encoding
 		{
 			get
@@ -79,19 +81,20 @@ namespace Pablo.Formats.Character
 			return font;
 		}
 
-		public static BitFont FromResource(string resourceName, int numChars, int codePage, int width, int height, string id, string name, BitFontSet set, bool isSystemFont, string sauceID = null, float ratio = 1f)
+		public static BitFont FromResource(string resourceName, int numChars, int codePage, int width, int height, string id, string name, BitFontSet set, bool isSystemFont, string sauceID = null, float? ratio = null, Assembly assembly = null)
 		{
-			var font = new BitFont(resourceName, numChars, width, height, codePage, Assembly.GetCallingAssembly());
+			var font = new BitFont(resourceName, numChars, width, height, codePage, assembly ?? Assembly.GetCallingAssembly());
 			font.ID = id;
 			font.Name = name;
 			font.FontSet = set;
 			font.IsSystemFont = isSystemFont;
 			font.SauceID = sauceID;
-			font.LegacyRatio = ratio;
+			if (ratio != null)
+				font.LegacyRatio = ratio.Value;
 			return font;
 		}
 
-		public BitFont(string resourceName, int numChars, int width, int height, int codePage, Assembly assembly = null)
+		BitFont(string resourceName, int numChars, int width, int height, int codePage, Assembly assembly = null)
 		{
 			this.resourceNumChars = numChars;
 			this.resourceName = resourceName;
@@ -99,7 +102,7 @@ namespace Pablo.Formats.Character
 			CodePage = codePage;
 			Width = width;
 			Height = height;
-			LegacyRatio = 1f;
+			LegacyRatio = GetLegacyRatio(height);
 		}
 
 		public BitFont(Stream stream, int numChars, int width, int height, int codePage)
@@ -107,6 +110,7 @@ namespace Pablo.Formats.Character
 		{
 			var br = new BinaryReader(stream);
 			Load(br);
+			LegacyRatio = GetLegacyRatio(height);
 		}
 
 		public BitFont(Stream stream, int codePage)
@@ -115,12 +119,12 @@ namespace Pablo.Formats.Character
 			var br = new BinaryReader(stream);
 			Width = br.ReadInt16();
 			Height = br.ReadInt16();
-			LegacyRatio = 1f;
+			LegacyRatio = GetLegacyRatio(Height);
 			int nc = br.ReadInt16();
 			chars = new FontCharacter[nc];
 			for (int i = 0; i < nc; i++)
 			{
-				chars[i] = new FontCharacter(Width, Height);
+				chars[i] = new FontCharacter(this);
 			}
 			Load(br);
 		}
@@ -137,13 +141,14 @@ namespace Pablo.Formats.Character
 			Width = source.Width;
 			Height = source.Height;
 			LegacyRatio = source.LegacyRatio;
+			Is9xFont = source.Is9xFont;
 			SauceID = source.SauceID;
 			IsStandardFont = source.IsStandardFont;
 			IsSystemFont = source.IsSystemFont;
 
 			for (int i = 0; i < chars.Length; i++)
 			{
-				chars[i] = new FontCharacter(source.chars[i]);
+				chars[i] = new FontCharacter(source.chars[i], this);
 			}
 		}
 
@@ -153,11 +158,11 @@ namespace Pablo.Formats.Character
 			chars = new FontCharacter[numChars];
 			Width = width;
 			Height = height;
-			LegacyRatio = 1f;
+			LegacyRatio = GetLegacyRatio(height);
 
 			for (int i = 0; i < numChars; i++)
 			{
-				chars[i] = new FontCharacter(width, height);
+				chars[i] = new FontCharacter(this);
 			}
 		}
 
@@ -174,23 +179,38 @@ namespace Pablo.Formats.Character
 			get { return new Size(Width, Height); }
 		}
 
-		public void Resize(int width, int height, bool scale)
+		public void Resize(int width, int height, bool scale, bool copy9 = false)
 		{
+			if (chars == null)
+				EnsureLoaded();
+			Is9xFont = Width == 8 && width == 9 && copy9;
+			for (int ch = 0; ch < chars.Length; ch++)
+			{
+				chars[ch].Resize(width, height, scale, IsCopy9(ch));
+			}
 			LegacyRatio = LegacyRatio * width / Width; // adjust ratio
 			Width = width;
 			Height = height;
-			if (chars == null)
-				EnsureLoaded();
+		}
 
-			for (int ch = 0; ch < chars.Length; ch++)
+		public static float GetLegacyRatio(int height)
+		{
+			switch (height)
 			{
-				chars[ch].Resize(Width, Height, scale, IsCopy9(ch));
+				case 8:
+					return 480f / 400f;
+				case 14:
+					return  480f / 350f;
+				case 16:
+					return 480f / 400f;
+				default:
+					return 1f;
 			}
 		}
 
-		public bool IsCopy9(int character)
+		bool IsCopy9(int character)
 		{
-			return Width == 9 && character >= BitFont.StartCopy9 && character <= BitFont.EndCopy9;
+			return Is9xFont && character >= BitFont.StartCopy9 && character <= BitFont.EndCopy9;
 		}
 
 		public event EventHandler<EventArgs> Changed;
@@ -260,7 +280,7 @@ namespace Pablo.Formats.Character
 			chars = new FontCharacter[resourceNumChars];
 			for (int i = 0; i < chars.Length; i++)
 			{
-				chars[i] = new FontCharacter(Width, Height);
+				chars[i] = new FontCharacter(this);
 			}
 			using (var stream = resourceAssembly.GetManifestResourceStream(resourceName))
 			{
@@ -311,7 +331,7 @@ namespace Pablo.Formats.Character
 				throw new InvalidOperationException("Cannot load into a font that has not already been loaded");
 			for (int i = 0; i < chars.Length; i++)
 			{
-				chars[i].Read(br, IsCopy9(i));
+				chars[i].Read(br);
 			}
 			if (Changed != null)
 				Changed(this, EventArgs.Empty);
@@ -423,19 +443,18 @@ namespace Pablo.Formats.Character
 
 	public class FontCharacter
 	{
-		int[] _data;
-		int _width;
-		int _height;
+		int[] data;
+		BitFont font;
 
 		void Set(int index, bool value)
 		{
 			if (value)
 			{
-				_data[index >> 5] |= 1 << index;
+				data[index >> 5] |= 1 << index;
 			}
 			else
 			{
-				_data[index >> 5] &= ~(1 << index);
+				data[index >> 5] &= ~(1 << index);
 			}
 		}
 
@@ -453,113 +472,77 @@ namespace Pablo.Formats.Character
 
 		public int GetData(int index)
 		{
-			return _data[index];
+			return data[index];
 		}
 
-		internal void Resize(int width, int height, bool scale, bool copy9)
+		internal void Resize(int newWidth, int newHeight, bool scale, bool copy9)
 		{
-			var newdata = new int[(width * height + 31) / 32];
-			for (int y = 0; y < height; y++)
+			int oldWidth = font.Width;
+			int oldHeight = font.Height;
+			var newdata = new int[(newWidth * newHeight + 31) / 32];
+			for (int y = 0; y < newHeight; y++)
 			{
-				var oldrow = (y * _height / height) * _width;
-				var newrow = y * width;
-				for (int x = 0; x < width; x++)
+				var oldrow = (y * oldHeight / newHeight) * font.Width;
+				var newrow = y * newWidth;
+				for (int x = 0; x < newWidth; x++)
 				{
 					if (scale)
-						Set(newdata, newrow + x, this[oldrow + x * _width / width]);
+					{
+						Set(newdata, newrow + x, this[oldrow + x * oldWidth / newWidth]);
+					}
 					else
 					{
-						if (x < _width)
+						if (x < oldWidth)
 							Set(newdata, newrow + x, this[oldrow + x]);
-						else if (copy9 && x == width - 1)
+						else if (copy9 && x == newWidth - 1)
 							Set(newdata, newrow + x, this[oldrow + x - 1]);
 					}
 				}
 			}
-			_width = width;
-			_height = height;
-			_data = newdata;
+			data = newdata;
 		}
 
-		internal FontCharacter(FontCharacter fc)
+		internal FontCharacter(FontCharacter fc, BitFont font)
 		{
-			_data = (int[])fc._data.Clone();
-			_width = fc._width;
-			_height = fc._height;
+			data = (int[])fc.data.Clone();
+			this.font = font;
 		}
 
-		internal FontCharacter(Size size, FontCharacter fc, Size oldSize)
+		public FontCharacter(BitFont font)
 		{
-			_data = new int[(size.Width * size.Height + 31) / 32];
-			_width = size.Width;
-			_height = size.Height;
-			for (int y = 0; y < size.Height; y++)
-			{
-				var row = y * size.Width;
-				for (int x = 0; x < size.Width; x++)
-				{
-					int xold = x * oldSize.Width / size.Width;
-					int yold = y * oldSize.Height / size.Height;
-					Set(row + x, fc[yold, xold]);
-				}
-			}
-		}
-
-		public FontCharacter(int width, int height)
-		{
-			_data = new int[(width * height + 31) / 32];
-			_width = width;
-			_height = height;
+			this.font = font;
+			data = new int[(font.Width * font.Height + 31) / 32];
 		}
 
 		public bool this [int x, int y]
 		{
-			get { return this[y * _width + x]; }
-			set { Set(y * _width + x, value); }
+			get { return this[y * font.Width + x]; }
+			set { Set(y * font.Width + x, value); }
 		}
 
 		public bool this [int index]
 		{
-			get { return (_data[index / 32] & 1 << index) != 0; }
+			get { return (data[index / 32] & 1 << index) != 0; }
 			set { Set(index, value); }
 		}
 
 		byte[] GetByteRow(int index)
 		{
-			var ba = new BitArray(_width);
-			var row = index * _width;
-			for (int x = 0; x < _width; x++)
+			var width = font.Is9xFont ? 8 : font.Width;
+			var ba = new BitArray(width);
+			var row = index * font.Width;
+			for (int x = 0; x < width; x++)
 			{
-				ba[x] = this[row + x];
+				ba[width - x - 1] = this[row + x];
 			}
-			Reverse(ba);
 			var bytes = new byte[(ba.Length + 7) / 8];
 			ba.CopyTo(bytes, 0);
 			return bytes;
 		}
 
-		void Reverse(BitArray array)
-		{
-			int length = array.Length;
-			int mid = (length / 2);
-
-			for (int i = 0; i < mid; i++)
-			{
-				bool bit = array[i];
-				array[i] = array[length - i - 1];
-				array[length - i - 1] = bit;
-			}
-		}
-
 		public bool Equals(FontCharacter character)
 		{
-			if (_height != character._height)
-				return false;
-			if (_width != character._width)
-				return false;
-			if (!_data.Equals(character._data))
-				return false;
-			return true;
+			return data.Equals(character.data);
 		}
 
 		public static byte ReverseBitsWith7Operations(byte b)
@@ -567,14 +550,14 @@ namespace Pablo.Formats.Character
 			return (byte)(((b * 0x0802u & 0x22110u) | (b * 0x8020u & 0x88440u)) * 0x10101u >> 16);
 		}
 
-		public unsafe void Read(BinaryReader br, bool copy9)
+		public unsafe void Read(BinaryReader br)
 		{
-			if (_width == 8)
+			if (font.Width == 8)
 			{
-				fixed (int* ptr = _data)
+				fixed (int* ptr = data)
 				{
 					byte* bptr = (byte*)ptr;
-					for (int y = 0; y < _height; y++)
+					for (int y = 0; y < font.Height; y++)
 					{
 						*bptr = ReverseBitsWith7Operations(br.ReadByte());
 						bptr++;
@@ -583,12 +566,12 @@ namespace Pablo.Formats.Character
 			}
 			else
 			{
-				for (int y = 0; y < _height; y++)
+				for (int y = 0; y < font.Height; y++)
 				{
-					var row = y * _width;
+					var row = y * font.Width;
 					byte currentRow = br.ReadByte();
 					int currentBit = 128;
-					for (int x = 0; x < _width; x++)
+					for (int x = 0; x < font.Width; x++)
 					{
 						if (currentBit == 0)
 							currentRow = br.ReadByte();
@@ -601,7 +584,7 @@ namespace Pablo.Formats.Character
 
 		public void Write(BinaryWriter bw)
 		{
-			for (int i = 0; i < _height; i++)
+			for (int i = 0; i < font.Height; i++)
 			{
 				bw.Write(GetByteRow(i));
 			}

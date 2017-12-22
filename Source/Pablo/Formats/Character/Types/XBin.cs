@@ -34,6 +34,7 @@ namespace Pablo.Formats.Character.Types
 		{
 			base.FillSauce(sauce, document);
 			sauce.ByteFileType = 0;
+			FillFlags(sauce, document);
 		}
 
 		public override SauceDataType GetSauceDataType(CharacterDocument document)
@@ -55,11 +56,6 @@ namespace Pablo.Formats.Character.Types
 		{
 			get { return Convert.ToBoolean(fpEnableCompression.Value); }
 			set { fpEnableCompression.Value = value; }
-		}
-
-		public override bool? Use9pxFont
-		{
-			get { return false; }
 		}
 
 		class XBinHeader
@@ -356,7 +352,7 @@ namespace Pablo.Formats.Character.Types
 			bw.Flush();
 		}
 
-		protected override int GetWidth(Stream stream, CharacterDocument document, object state = null)
+		protected override int? GetWidth(Stream stream, CharacterDocument document, object state = null)
 		{
 			var header = state as XBinHeader;
 			return header.Width;
@@ -377,8 +373,8 @@ namespace Pablo.Formats.Character.Types
 				document.ICEColours = header.NonBlink;
 				ResizeCanvasWidth(fs, document, canvas, header);
 
-				loadSize.Width = (header.Width > canvas.Size.Width) ? canvas.Size.Width : header.Width;
-				loadSize.Height = (header.Height > canvas.Size.Height) ? canvas.Size.Height : header.Height;
+				loadSize.Width = (document.EditMode && header.Width > canvas.Size.Width) ? canvas.Size.Width : header.Width;
+				loadSize.Height = (document.EditMode && header.Height > canvas.Size.Height) ? canvas.Size.Height : header.Height;
 
 				if (header.Palette)
 				{

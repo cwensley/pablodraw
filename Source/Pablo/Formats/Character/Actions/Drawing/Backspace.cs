@@ -6,14 +6,15 @@ using Pablo.Network;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class Backspace : Command
+	public class Backspace : PabloCommand
 	{
 		public Backspace (CharacterHandler handler)
 			: base(handler)
 		{
 			ID = "character_backspace";
-			Text = "Backspace|Backspace|Backspace|Deletes the previous character";
-			Accelerator = Key.Backspace;
+			MenuText = "Backspace";
+			ToolTip = "Deletes the previous character";
+			Shortcut = Keys.Backspace;
 		}
 		
 		public new CharacterHandler Handler {

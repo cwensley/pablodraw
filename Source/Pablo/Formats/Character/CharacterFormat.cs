@@ -15,18 +15,17 @@ namespace Pablo.Formats.Character
 			get { return 80; }
 		}
 		
-		protected virtual int GetWidth(Stream stream, CharacterDocument document, object state = null)
+		protected virtual int? GetWidth(Stream stream, CharacterDocument document, object state = null)
 		{
-			int width = DefaultWidth;
 			var sauce = document.Sauce;
-			if (sauce != null) {
+			if (sauce != null && sauce.IsValid) {
 				var charType = sauce.TypeInfo as Sauce.Types.Character.DataTypeInfo;
-				if (charType != null && charType.Width > 0)
+				if (charType != null && charType.IsValidSize)
 				{
-					width = charType.Width;
+					return charType.Width;
 				}
 			}
-			return width;
+			return null;
 		}
 		
 		public abstract void Load(Stream fs, CharacterDocument document, CharacterHandler handler);
@@ -34,7 +33,7 @@ namespace Pablo.Formats.Character
 		public virtual void ResizeCanvasWidth(Stream stream, CharacterDocument document, Canvas canvas, object state = null)
 		{
 			if (document.ResizeCanvas) {
-				var width = GetWidth(stream, document, state);
+				var width = GetWidth(stream, document, state) ?? DefaultWidth;
 				canvas.ResizeCanvas(new Size(width, canvas.Height), false);
 			}
 		}
@@ -106,7 +105,7 @@ namespace Pablo.Formats.Character
 
 		public virtual bool RequiresSauce(CharacterDocument document)
 		{
-			return false;
+			return document.DosAspect || document.Use9x;
 		}
 
 		public virtual bool? Use9pxFont

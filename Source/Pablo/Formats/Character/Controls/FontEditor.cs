@@ -3,14 +3,10 @@ using Eto.Forms;
 
 namespace Pablo.Formats.Character.Controls
 {
-	public class FontEditor : Dialog
+	public class FontEditor : Dialog<DialogResult>
 	{
-		readonly CharacterHandler handler;
-
 		public FontEditor(CharacterHandler handler)
 		{
-			this.handler = handler;
-
 			var layout = new DynamicLayout();
 
 			layout.Add(null, yscale: true);
@@ -24,7 +20,7 @@ namespace Pablo.Formats.Character.Controls
 
 			control.Click += delegate
 			{
-				DialogResult = DialogResult.Cancel;
+				Result = DialogResult.Cancel;
 				Close();
 			};
 			AbortButton = control;
@@ -38,7 +34,7 @@ namespace Pablo.Formats.Character.Controls
 
 			control.Click += delegate
 			{
-				DialogResult = DialogResult.Ok;
+				Result = DialogResult.Ok;
 				Close();
 			};
 

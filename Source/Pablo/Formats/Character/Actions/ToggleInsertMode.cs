@@ -5,7 +5,7 @@ using Pablo;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class ToggleInsertMode : CheckAction
+	public class ToggleInsertMode : CheckCommand
 	{
 		public const string ActionID = "character_toggleInsert";
 
@@ -13,8 +13,10 @@ namespace Pablo.Formats.Character.Actions
 		{
 			this.Handler = handler;
 			ID = ActionID;
-			Text = "Toggle &Insert Mode|Insert|Toggle Insert Mode|Toggles insert mode on/off";
-			Accelerator = Key.Insert;
+			MenuText = "Toggle &Insert Mode";
+			ToolBarText = "Insert";
+			ToolTip = "Toggles insert mode on/off";
+			Shortcut = Keys.Insert;
 		}
 
 		public CharacterHandler Handler {
@@ -28,9 +30,9 @@ namespace Pablo.Formats.Character.Actions
 			set { base.Enabled = value; }
 		}
 
-		protected override void OnActivated(EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated(e);
+			base.OnExecuted(e);
 
 			Handler.InsertMode = !Handler.InsertMode;
 			this.Checked = Handler.InsertMode;

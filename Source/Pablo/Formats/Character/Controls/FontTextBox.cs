@@ -137,7 +137,7 @@ namespace Pablo.Formats.Character.Controls
 			Invalidate();
 		}
 
-		public override void OnMouseDown(MouseEventArgs e)
+		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			var location = (Point)e.Location;
 			location.Offset(-3, -3);
@@ -152,19 +152,19 @@ namespace Pablo.Formats.Character.Controls
 				Focus();
 		}
 
-		public override void OnGotFocus(EventArgs e)
+		protected override void OnGotFocus(EventArgs e)
 		{
 			base.OnGotFocus(e);
 			Invalidate();
 		}
 
-		public override void OnLostFocus(EventArgs e)
+		protected override void OnLostFocus(EventArgs e)
 		{
 			base.OnLostFocus(e);
 			Invalidate();
 		}
 
-		public override void OnPaint(PaintEventArgs e)
+		protected override void OnPaint(PaintEventArgs e)
 		{
 			e.Graphics.ImageInterpolation = ImageInterpolation.None;
 			var drawPoint = e.ClipRectangle.Location;
@@ -199,25 +199,25 @@ namespace Pablo.Formats.Character.Controls
 				var maxSize = canvas.Size * currentFont.Size;
 				rect.Width = Math.Min(rect.Width, maxSize.Width);
 				rect.Height = Math.Min(rect.Height, maxSize.Height);
-				var bitmap = new Bitmap(rect.Width, rect.Height, PixelFormat.Format32bppRgb, Generator);
+				var bitmap = new Bitmap((int)rect.Width, (int)rect.Height, PixelFormat.Format32bppRgb);
 				Point? p;
 				if (HasFocus && (CanFocus || !ReadOnly))
 					p = cursor;
 				else
 					p = null;
-				Page.GenerateRegion(canvas, bitmap, rect, currentFont.Size, currentFont, currentPal, handler.CharacterDocument.ICEColours, true, p, null);
+				Page.GenerateRegion(canvas, bitmap, (Rectangle)rect, currentFont.Size, currentFont, currentPal, handler.CharacterDocument.ICEColours, true, p, null);
 				
 				e.Graphics.DrawImage(bitmap, drawPoint);
 			}
 		}
 
-		public override void OnKeyDown(KeyEventArgs e)
+		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			if (!ReadOnly || CanFocus)
 			{
 				switch (e.KeyData)
 				{
-					case Key.Left:
+					case Keys.Left:
 						if (cursor.X > 0)
 						{
 							cursor.X--;
@@ -225,7 +225,7 @@ namespace Pablo.Formats.Character.Controls
 							OnCursorElementChanged(EventArgs.Empty);
 						}
 						break;
-					case Key.Right:
+					case Keys.Right:
 						if (cursor.X < canvas.Width - 1)
 						{
 							cursor.X++;
@@ -233,7 +233,7 @@ namespace Pablo.Formats.Character.Controls
 							OnCursorElementChanged(EventArgs.Empty);
 						}
 						break;
-					case Key.Up:
+					case Keys.Up:
 						if (cursor.Y > 0)
 						{
 							cursor.Y--;
@@ -241,7 +241,7 @@ namespace Pablo.Formats.Character.Controls
 							OnCursorElementChanged(EventArgs.Empty);
 						}
 						break;
-					case Key.Down:
+					case Keys.Down:
 						if (cursor.Y < canvas.Height - 1)
 						{
 							cursor.Y++;
@@ -254,21 +254,21 @@ namespace Pablo.Formats.Character.Controls
 			
 			if (!e.Handled && !ReadOnly)
 			{
-				if (e.KeyData >= Key.F1 && e.KeyData <= Key.F12)
+				if (e.KeyData >= Keys.F1 && e.KeyData <= Keys.F12)
 				{
-					int character = e.KeyData - Key.F1;
+					int character = e.KeyData - Keys.F1;
 					InsertChar(handler.Info.GetCharacter(handler.CharacterSet, character));
 					e.Handled = true;
 				}
 				else
 					switch (e.KeyData)
 					{
-						case Key.Escape:
-						case Key.Enter:
-						case Key.Tab:
-						case Key.Tab | Key.Shift:
+						case Keys.Escape:
+						case Keys.Enter:
+						case Keys.Tab:
+					case Keys.Tab | Keys.Shift:
 							break;
-						case Key.Backspace:
+						case Keys.Backspace:
 							if (cursor.X > 0)
 							{
 								cursor.X--;
@@ -277,7 +277,7 @@ namespace Pablo.Formats.Character.Controls
 								e.Handled = true;
 							}
 							break;
-						case Key.Delete:
+						case Keys.Delete:
 							canvas.DeleteColumn(cursor.X);
 							e.Handled = true;
 							break;

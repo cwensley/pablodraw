@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Pablo.Formats.Rip.Controls
 {
-	public class FillStyleEditor : Dialog
+	public class FillStyleEditor : Dialog<DialogResult>
 	{
 		RipHandler handler;
 		ToggleGrid grid;
@@ -60,7 +60,7 @@ namespace Pablo.Formats.Rip.Controls
 		{
 			var layout = new DynamicLayout();
 			
-			layout.AddCentered (Grid (), true, false);
+			layout.AddCentered (Grid (), xscale: true, yscale: false);
 			
 			layout.BeginVertical (Padding.Empty);
 			layout.BeginHorizontal ();
@@ -113,7 +113,7 @@ namespace Pablo.Formats.Rip.Controls
 
 		Control MoveUpButton()
 		{
-			var button = new Button{ Text = "^", Size = new Size(40, Button.DefaultSize.Height) };
+			var button = new Button{ Text = "^", Size = new Size(40, -1) };
 			button.Click += delegate {
 				var oldpattern = this.FillPattern;
 				var pattern = this.FillPattern;
@@ -127,7 +127,7 @@ namespace Pablo.Formats.Rip.Controls
 		}
 		Control MoveDownButton()
 		{
-			var button = new Button{ Text = "v", Size = new Size(40, Button.DefaultSize.Height) };
+			var button = new Button{ Text = "v", Size = new Size(40, -1) };
 			button.Click += delegate {
 				var oldpattern = this.FillPattern;
 				var pattern = this.FillPattern;
@@ -142,7 +142,7 @@ namespace Pablo.Formats.Rip.Controls
 		
 		Control MoveLeftButton()
 		{
-			var button = new Button{ Text = "<", Size = new Size(40, Button.DefaultSize.Height) };
+			var button = new Button{ Text = "<", Size = new Size(40, -1) };
 			button.Click += delegate {
 				var pattern = this.FillPattern;
 				for (int i = 0; i<pattern.Length; i++) {
@@ -154,7 +154,7 @@ namespace Pablo.Formats.Rip.Controls
 		}
 		Control MoveRightButton()
 		{
-			var button = new Button{ Text = ">", Size = new Size(40, Button.DefaultSize.Height) };
+			var button = new Button{ Text = ">", Size = new Size(40, -1) };
 			button.Click += delegate {
 				var pattern = this.FillPattern;
 				for (int i = 0; i<pattern.Length; i++) {
@@ -197,7 +197,7 @@ namespace Pablo.Formats.Rip.Controls
 					canvas.DrawRegion(pe.Graphics, new Rectangle(size));
 			};
 			drawable.LoadComplete += delegate {
-				canvas = new BGICanvas(Generator, drawable, size);
+				canvas = new BGICanvas(drawable, size);
 				DrawCanvas ();
 			};
 			
@@ -213,7 +213,7 @@ namespace Pablo.Formats.Rip.Controls
 			};
 			
 			control.Click += delegate {
-				DialogResult = DialogResult.Cancel;
+				Result = DialogResult.Cancel;
 				Close ();
 			};
 			AbortButton = control;
@@ -228,7 +228,7 @@ namespace Pablo.Formats.Rip.Controls
 			};
 			
 			control.Click += delegate {
-				DialogResult = DialogResult.Ok;
+				Result = DialogResult.Ok;
 				
 				
 				Close ();

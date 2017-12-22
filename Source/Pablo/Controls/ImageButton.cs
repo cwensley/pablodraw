@@ -24,7 +24,7 @@ namespace Pablo.Controls
 		{
 		}
 		
-		public override void OnLoad (EventArgs e)
+		protected override void OnLoad (EventArgs e)
 		{
 			base.OnLoad (e);
 			if (Image != null) {
@@ -33,7 +33,7 @@ namespace Pablo.Controls
 			}
 		}
 		
-		public override void OnLoadComplete (EventArgs e)
+		protected override void OnLoadComplete (EventArgs e)
 		{
 			base.OnLoadComplete (e);
 			
@@ -48,7 +48,7 @@ namespace Pablo.Controls
 					{
 						unsafe
 						{
-							var data = (UInt32*)bd.Data;
+							var data = (int*)bd.Data;
 							for (int i = 0; i < bd.ScanWidth * disabledImage.Size.Height; i++)
 							{
 								var col = Color.FromArgb(bd.TranslateDataToArgb(*data));
@@ -61,7 +61,7 @@ namespace Pablo.Controls
 			}
 		}
 		
-		public override void OnPaint (Eto.Forms.PaintEventArgs pe)
+		protected override void OnPaint (Eto.Forms.PaintEventArgs pe)
 		{
 			base.OnPaint (pe);
 			

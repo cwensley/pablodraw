@@ -17,15 +17,15 @@ namespace Pablo.Formats.Rip.Tools
 			get { return "Draws a curved line with four control points (Z)"; }
 		}
 		
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.Z;
+				return Keys.Z;
 			}
 		}
 		
 		public override Eto.Drawing.Image Image {
 			get {
-				return Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Bezier.png");
+				return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Bezier.png");
 			}
 		}
 		
@@ -38,7 +38,7 @@ namespace Pablo.Formats.Rip.Tools
 			}
 		}
 
-		protected override void SetStartLocation (Point start, Key modifiers, Point location)
+		protected override void SetStartLocation (Point start, Keys modifiers, Point location)
 		{
 			start = Point.Max (Point.Empty, start);
 			this.Command.Points = new Point[4];
@@ -46,7 +46,7 @@ namespace Pablo.Formats.Rip.Tools
 			this.Command.Segments = segments;
 		}
 		
-		protected override void SetEndLocation (Point end, Key modifiers, Point location)
+		protected override void SetEndLocation (Point end, Keys modifiers, Point location)
 		{
 			end = Point.Max (Point.Empty, end);
 			var start = this.Command.Points [0];
@@ -161,7 +161,7 @@ namespace Pablo.Formats.Rip.Tools
 				base.OnMouseUp (e);
 		}
 		
-		void Finish (Key modifiers, Point location)
+		void Finish (Keys modifiers, Point location)
 		{
 			Start = this.Command.Points [3];
 			connectingPoint = Start + (Start - this.Command.Points[2]);
@@ -171,15 +171,15 @@ namespace Pablo.Formats.Rip.Tools
 			RemoveDrawing (updates);
 			base.FinishCommand (modifiers, updates);
 			CreateCommand ();
-			SetStartLocation (Start, Key.None, Start);
-			SetEndLocation (location, Key.None, location);
+			SetStartLocation (Start, Keys.None, Start);
+			SetEndLocation (location, Keys.None, location);
 			ApplyDrawing (updates);
 			
 			Handler.FlushCommands (updates);
 			
 		}
 		
-		protected override void FinishCommand (Key modifiers, IList<Rectangle> updates = null)
+		protected override void FinishCommand (Keys modifiers, IList<Rectangle> updates = null)
 		{
 			moving = true;
 			connectingPoint = null;
@@ -188,7 +188,7 @@ namespace Pablo.Formats.Rip.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout (Padding.Empty, Size.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty, Spacing = Size.Empty };
 			//layout.Container.MinimumSize = new Size (100, 20);
 
 			layout.Add(TopSeparator());

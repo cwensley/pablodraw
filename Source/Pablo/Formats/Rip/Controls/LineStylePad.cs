@@ -17,7 +17,7 @@ namespace Pablo.Formats.Rip.Controls
 		public LineStylePad(RipHandler handler, bool allowStyles)
 		{
 			this.handler = handler;
-			var layout = new DynamicLayout(Padding.Empty, Size.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty, Spacing = Size.Empty };
 
 			layout.BeginVertical(Padding.Empty, Size.Empty);
 			layout.BeginHorizontal();
@@ -64,7 +64,7 @@ namespace Pablo.Formats.Rip.Controls
 			button.Click += delegate
 			{
 				var dialog = new LineStyleEditor(handler);
-				if (dialog.ShowDialog(this) == DialogResult.Ok)
+				if (dialog.ShowModal(this) == DialogResult.Ok)
 				{
 					handler.LinePattern = dialog.LinePattern;
 					handler.LineStyle = BGICanvas.LineStyle.User;

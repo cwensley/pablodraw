@@ -6,27 +6,30 @@ using Eto;
 
 namespace Pablo.Interface.Actions
 {
-	public class DeleteFile : ButtonAction
+	public class DeleteFile : Command, IDisposable
 	{
 		Main main;
-		
+
+		static int count = 0;
+		int current;
 		public const string ActionID = "deleteFile";
 
 		public DeleteFile (Main main)
 		{
+			current = count++;
 			this.main = main;
 			base.ID = ActionID;
-			this.Text = "&Delete|Delete|Delete the selected file";
+			this.MenuText = "&Delete";
+			this.ToolTip = "Delete the selected file";
 			this.Enabled = main.FileList.SelectedFile != null;
-			if (main.Generator.IsMac) this.Accelerator = Command.CommonModifier | Key.Backspace;
-			else this.Accelerator = Command.CommonModifier | Key.Delete;
+			if (Platform.Instance.IsMac) this.Shortcut = PabloCommand.CommonModifier | Keys.Backspace;
+			else this.Shortcut = PabloCommand.CommonModifier | Keys.Delete;
 			
 			main.FileList.SelectedIndexChanged += fileList_Changed;
 		}
-		
-		protected override void OnRemoved (EventArgs e)
+
+		public void Dispose()
 		{
-			base.OnRemoved (e);
 			main.FileList.SelectedIndexChanged -= fileList_Changed;
 		}
 
@@ -34,10 +37,10 @@ namespace Pablo.Interface.Actions
 		{
 			this.Enabled = main.FileList.SelectedFile != null;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated (e);
+			base.OnExecuted(e);
 			if (main.Document == null) return;
 			var file = main.Document.FileName;
 			if (File.Exists(file)) {

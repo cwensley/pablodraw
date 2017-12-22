@@ -21,7 +21,7 @@ namespace Pablo.Formats.Character.Types
 
 		public override bool RequiresSauce(CharacterDocument document)
 		{
-			return document.Pages[0].Canvas.Size.Width != DefaultWidth || !document.IsUsingStandard8x16Font;
+			return base.RequiresSauce(document) || document.Pages[0].Canvas.Size.Width != DefaultWidth || !document.IsUsingStandard8x16Font;
 		}
 
 		public override bool CanSave
@@ -35,8 +35,14 @@ namespace Pablo.Formats.Character.Types
 			Save(stream, page.Canvas, page.Palette);
 		}
 
-		protected override int GetWidth(Stream stream, CharacterDocument document, object state)
+		protected override int? GetWidth(Stream stream, CharacterDocument document, object state)
 		{
+			if (document.Sauce != null)
+			{
+				var charType = document.Sauce.TypeInfo as Sauce.Types.Character.DataTypeInfo;
+				if (charType != null && charType.IsValidSize)
+					return charType.Width;
+			}
 			if (stream != null && stream.CanSeek)
 			{
 				var last = stream.Position;
@@ -45,6 +51,11 @@ namespace Pablo.Formats.Character.Types
 				string line;
 				while ((line = reader.ReadLine()) != null)
 				{
+					if (line.Contains("\x1b["))
+					{
+						stream.Position = last;
+						return base.GetWidth(stream, document, state);
+					}
 					max = Math.Max(max, line.Length);
 				}
 				stream.Position = last;
@@ -58,7 +69,7 @@ namespace Pablo.Formats.Character.Types
 			CanvasElement element;
 			
 			Rectangle rect = new Rectangle(0, 0, canvas.Width, canvas.FindEndY(CanvasElement.Default) + 1);
-			for (int y = rect.Top; y <= rect.InnerBottom; y++)
+			for (int y = rect.Top; y < rect.Bottom; y++)
 			{
 				int iXEnd = canvas.FindEndX(y, rect.Left, rect.InnerRight, CanvasElement.Default);
 				

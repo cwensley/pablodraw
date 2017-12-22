@@ -60,7 +60,7 @@ namespace Pablo.Formats.Character.Tools
 
 		public override Eto.Drawing.Image Image
 		{
-			get { return Bitmap.FromResource("Pablo.Formats.Rip.Icons.Brush.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Brush.png"); }
 		}
 
 		public override string Description
@@ -68,11 +68,11 @@ namespace Pablo.Formats.Character.Tools
 			get { return "Brush - Paint with character gradients"; }
 		}
 
-		public override Key Accelerator
+		public override Keys Accelerator
 		{
 			get
 			{
-				return (Handler.Generator.IsMac ? Key.Control : Key.Alt) | Key.B;
+				return (Handler.Generator.IsMac ? Keys.Control : Keys.Alt) | Keys.B;
 			}
 		}
 
@@ -88,9 +88,9 @@ namespace Pablo.Formats.Character.Tools
 				action.Location = location;
 				action.DrawBrush = CurrentBrush;
 				action.Size = Size;
-				action.Inverse = e.Modifiers.HasFlag(Key.Shift) ^ Inverted;
-				action.ApplyColour = e.Modifiers.HasFlag(Key.Alt) ^ ApplyColour;
-				action.Activate();
+				action.Inverse = e.Modifiers.HasFlag(Keys.Shift) ^ Inverted;
+				action.ApplyColour = e.Modifiers.HasFlag(Keys.Alt) ^ ApplyColour;
+				action.Execute();
 				
 				var middle = (Size - 1) / 2;
 				UpdateCursorPosition(new Point(location.X + middle, location.Y + middle), new Rectangle(location, new Size(Size, Size)));
@@ -101,7 +101,7 @@ namespace Pablo.Formats.Character.Tools
 		{
 			var control = new ImageButton
 			{
-				Image = Bitmap.FromResource("Pablo.Formats.Character.Icons.Erase.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.Erase.png"),
 				Toggle = true,
 				Pressed = Inverted,
 #if DESKTOP
@@ -120,7 +120,7 @@ namespace Pablo.Formats.Character.Tools
 		{
 			var control = new ImageButton
 			{
-				Image = Bitmap.FromResource("Pablo.Formats.Character.Icons.ApplyColour.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.ApplyColour.png"),
 				Toggle = true,
 				Pressed = ApplyColour,
 #if DESKTOP
@@ -137,7 +137,7 @@ namespace Pablo.Formats.Character.Tools
 
 		public override Control GeneratePad()
 		{
-			var layout = new DynamicLayout(Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			
 			layout.Add(Separator());
 			layout.BeginVertical(Padding.Empty, Eto.Drawing.Size.Empty);

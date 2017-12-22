@@ -5,18 +5,26 @@ using Pablo.Formats.Character.Tools;
 
 namespace Pablo.Formats.Character.Actions.Block
 {
-	public class Deselect : ButtonAction
+	public class Deselect : Command
 	{
 		Tools.Selection tool;
 		public Deselect(Tools.Selection tool)
 		{
 			this.tool = tool;
 			ID = "character_deselect";
-			Text = "&Deselect|Deselect|Clears the selection|Clears the current selection";
-			Accelerator = Key.Escape;
+			MenuText = "&Deselect";
+			ToolBarText = "Deselect";
+			ToolTip = "Clears the current selection";
+			Shortcut = Keys.Escape;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		public override bool Enabled
+		{
+			get { return base.Enabled && tool.DrawMode != DrawMode.Normal; }
+			set { base.Enabled = value; }
+		}
+
+		protected override void OnExecuted(EventArgs e)
 		{
 			tool.PasteCanvas = null;
 			tool.ClearSelected = false;

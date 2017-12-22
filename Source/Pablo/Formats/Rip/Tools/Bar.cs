@@ -13,14 +13,14 @@ namespace Pablo.Formats.Rip.Tools
 			get { return "Draws filled rectangle with no border (R)"; }
 		}
 
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.R;
+				return Keys.R;
 			}
 		}
 		
 		public override Eto.Drawing.Image Image {
-			get { return Bitmap.FromResource ("Pablo.Formats.Rip.Icons.FilledRectangle.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.FilledRectangle.png"); }
 		}
 		
 		public override IEnumerable<RipOptionalCommand> Styles {
@@ -47,7 +47,7 @@ namespace Pablo.Formats.Rip.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout(Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			layout.Add (Separator ());
 			layout.Add (new Controls.FillStylePad(Handler));
 			return layout;

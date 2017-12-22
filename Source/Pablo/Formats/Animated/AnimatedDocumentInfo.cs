@@ -17,7 +17,7 @@ namespace Pablo.Formats.Animated
 		
 		public event EventHandler<EventArgs> BaudRateChanged;
 
-		public AnimatedDocumentInfo(string id, string description) : base(id, description)
+		protected AnimatedDocumentInfo(string id, string description) : base(id, description)
 		{
 		}
 
@@ -65,19 +65,20 @@ namespace Pablo.Formats.Animated
 			return base.SetOption (option, value);
 		}
 
-		public override void GenerateActions(GenerateActionArgs args)
+		public override void GenerateCommands(GenerateCommandArgs args)
 		{
-			base.GenerateActions (args);
-			bool editMode = (bool)args.GetArgument("editMode", false);
-			string area = (string)args.GetArgument("area", string.Empty);
+			base.GenerateCommands(args);
+
+			bool editMode = args.EditMode;
+			string area = args.Area;
 			if (area == "main")
 			{
 				if (!editMode)
 				{
-					baudRateMap = new BaudRateMapCollection(args.Actions);
+					baudRateMap = new BaudRateMapCollection();
 #if DEBUG
-					baudRateMap.Add("Fastest", 0);
 #endif
+					baudRateMap.Add("Fastest", 0);
 					baudRateMap.Add(115200);
 					baudRateMap.Add(57600);
 					baudRateMap.Add(38400);
@@ -91,26 +92,25 @@ namespace Pablo.Formats.Animated
 					baudRateMap.Add(300);
 		
 					
-					CheckAction action = args.Actions.AddCheck("animAuto", "&Auto Detect", AutoDetect_CheckedChanged);
-					action.Checked = autoDetectAnimation;
+					var animAuto = new CheckCommand { ID = "animAuto", MenuText = "&Auto Detect", Checked = autoDetectAnimation };
+					animAuto.CheckedChanged += AutoDetect_CheckedChanged;
 		
-					action = args.Actions.AddCheck("animEnabled", "&Enabled", AnimEnabled_CheckedChanged);
-					action.Checked = animationEnabled;
+					var animEnabled = new CheckCommand { ID = "animEnabled", MenuText = "&Enabled", Checked = animationEnabled };
+					animEnabled.CheckedChanged += AnimEnabled_CheckedChanged;
 
 
-					var aiView = args.Menu.GetSubmenu("&View");
+					var aiView = args.Menu.Items.GetSubmenu("&View");
 
-					var aiAnim = aiView.Actions.GetSubmenu("&Animate", 600);
+					var aiAnim = aiView.Items.GetSubmenu("&Animate", 600);
 		
-					aiAnim.Actions.Add("animEnabled");
-					aiAnim.Actions.Add("animAuto");
-					aiAnim.Actions.AddSeparator();
+					aiAnim.Items.Add(animEnabled, 500);
+					aiAnim.Items.Add(animAuto, 500);
+					aiAnim.Items.AddSeparator(500);
 		
 					foreach (BaudRateMap brm in baudRateMap)
 					{
-						brm.action.Checked = (baudRate == brm.baud);
-						aiAnim.Actions.Add(brm.action.ID);
-		
+						brm.Command.Checked = (baudRate == brm.Baud);
+						aiAnim.Items.Add(brm.Command, 500);
 					}
 					baudRateMap.BaudChanged += baudRateMap_BaudChanged;
 				}
@@ -120,16 +120,15 @@ namespace Pablo.Formats.Animated
 
 		private void AutoDetect_CheckedChanged(object sender, EventArgs e)
 		{
-			CheckAction action = (CheckAction)sender;
-			action.Checked = !action.Checked;
+			var action = (CheckCommand)sender;
 			this.autoDetectAnimation = action.Checked;
 		}
 
 		private void baudRateMap_BaudChanged(object sender, EventArgs e)
 		{
-			var action = (BaseAction)sender;
+			var action = (Command)sender;
 			BaudRateMap brm = (BaudRateMap)action.Tag;
-			this.baudRate = brm.baud;
+			this.baudRate = brm.Baud;
 			//Console.WriteLine("baud set: {0}", this.baudRate);
 			if (BaudRateChanged != null) BaudRateChanged(this, e);
 			// changed baud rate, get value!
@@ -137,8 +136,7 @@ namespace Pablo.Formats.Animated
 
 		private void AnimEnabled_CheckedChanged(object sender, EventArgs e)
 		{
-			CheckAction action = (CheckAction)sender;
-			action.Checked = !action.Checked;
+			var action = (CheckCommand)sender;
 			this.animationEnabled = action.Checked;
 		}
 

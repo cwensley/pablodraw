@@ -1,9 +1,6 @@
-using System;
 using Eto.Forms;
 using System.Collections.Generic;
 using Eto.Drawing;
-using Pablo.Formats.Rip.Tools;
-using Pablo.BGI;
 using System.Linq;
 
 namespace Pablo.Formats.Rip
@@ -14,7 +11,7 @@ namespace Pablo.Formats.Rip
 
 		public RipHandler Handler { get; set; }
 
-		public virtual Key Accelerator { get { return Key.None; } }
+		public virtual Keys Accelerator { get { return Keys.None; } }
 
 		public virtual bool AllowToolShortcuts { get { return true; } }
 
@@ -61,7 +58,7 @@ namespace Pablo.Formats.Rip
 			savedStyles = Styles.ToList();
 
 			foreach (var style in savedStyles)
-				style.Set(this.BGI);
+				style.Set(BGI);
 
 			foreach (var style in Styles)
 			{
@@ -85,10 +82,6 @@ namespace Pablo.Formats.Rip
 			}
 		}
 
-		public RipTool()
-		{
-		}
-
 		public virtual void OnMouseDown(MouseEventArgs e)
 		{
 		}
@@ -103,7 +96,7 @@ namespace Pablo.Formats.Rip
 
 		public virtual void OnKeyDown(KeyEventArgs e)
 		{
-			if (e.KeyData == Key.Escape)
+			if (e.KeyData == Keys.Escape)
 			{
 				Unselected();
 				e.Handled = true;
@@ -119,7 +112,7 @@ namespace Pablo.Formats.Rip
 			var updates = new List<Rectangle>();
 			RemoveDrawing(updates);
 			ApplyDrawing(updates);
-			this.BGI.UpdateRegion(updates);
+			BGI.UpdateRegion(updates);
 		}
 
 		public virtual void Unselected()
@@ -147,10 +140,11 @@ namespace Pablo.Formats.Rip
 				pe.Graphics.FillRectangle(Colors.White, 0, 0, control.Size.Width, 0);
 				pe.Graphics.DrawInsetRectangle(Colors.Gray, Colors.White, new Rectangle(0, 0, control.Size.Width, 2));
 			};
-			if (padding != null)
-				return new Panel { Content = control, Padding = padding.Value };
-			else
-				return control;
+			return padding == null ? (Control)control : new Panel
+			{
+				Content = control,
+				Padding = padding.Value
+			};
 		}
 
 		public virtual Control GeneratePad()

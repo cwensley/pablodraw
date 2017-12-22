@@ -66,14 +66,14 @@ namespace Pablo.Controls
 			Enabled = true;
 		}
 
-		public override void OnSizeChanged(EventArgs e)
+		protected override void OnSizeChanged(EventArgs e)
 		{
 			base.OnSizeChanged(e);
 			if (Loaded)
 				Invalidate();
 		}
 
-		public override void OnMouseDown(MouseEventArgs e)
+		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
 			if (Enabled)
@@ -83,21 +83,21 @@ namespace Pablo.Controls
 			}
 		}
 
-		public override void OnMouseEnter(MouseEventArgs e)
+		protected override void OnMouseEnter(MouseEventArgs e)
 		{
 			base.OnMouseEnter(e);
 			hover = true;
 			Invalidate();
 		}
 
-		public override void OnMouseLeave(MouseEventArgs e)
+		protected override void OnMouseLeave(MouseEventArgs e)
 		{
 			base.OnMouseLeave(e);
 			hover = false;
 			Invalidate();
 		}
 
-		public override void OnMouseUp(MouseEventArgs e)
+		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
 			var rect = new Rectangle(this.Size);
@@ -122,7 +122,7 @@ namespace Pablo.Controls
 			}
 		}
 
-		public override void OnPaint(PaintEventArgs pe)
+		protected override void OnPaint(PaintEventArgs pe)
 		{
 			var rect = new Rectangle(this.Size);
 			var col = Color.FromGrayscale(hover && Enabled ? 0.95f : 0.8f);

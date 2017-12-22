@@ -148,13 +148,13 @@ namespace Pablo.Formats.Rip
 
 		void SetBGI(RipHandler handler)
 		{
-			var pane = handler != null ? handler.ViewerControl as ViewerPane : null;
+			var pane = handler != null && handler.HasViewerControl ? handler.ViewerControl as ViewerPane : null;
 			var viewer = pane != null ? pane.Viewer : null;
 			
 			if (BGI != null)
 				BGI.Control = viewer;
 			else
-				BGI = new BGICanvas(Generator.Current, viewer);
+				BGI = new BGICanvas(viewer);
 		}
 
 		protected override void LoadStream(Stream stream, Format format, Handler handler)

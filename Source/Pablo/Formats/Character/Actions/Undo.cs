@@ -4,7 +4,7 @@ using Eto;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class Undo : Command
+	public class Undo : PabloCommand
 	{
 		public const string ActionID = "character_undo";
 		
@@ -14,12 +14,13 @@ namespace Pablo.Formats.Character.Actions
 			: base(handler)
 		{
 			this.ID = ActionID;
-			this.Text = "&Undo|Undo|Undo the last action";
-			this.Accelerator = CommonModifier | Key.Z;
+			this.MenuText = "&Undo";
+			this.ToolTip = "Undo the last action";
+			this.Shortcut = CommonModifier | Keys.Z;
 		}
 		
 		public override bool Enabled {
-			get { return Handler.AllowKeyboardEditing; }
+			get { return Handler.AllowKeyboardEditing && Handler.Undo.CanUndo && base.Enabled; }
 			set { base.Enabled = value; }
 		}
 		

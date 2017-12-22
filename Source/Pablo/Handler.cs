@@ -7,6 +7,7 @@ using Pablo.Network;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Pablo
 {
@@ -17,7 +18,6 @@ namespace Pablo
 		float zoom = 1;
 		bool enableZoom = true;
 		readonly Document document;
-		ActionCollection actions;
 
 		public event EventHandler<EventArgs> ActionsChanged;
 		public event EventHandler<EventArgs> InvalidateVisible;
@@ -32,7 +32,7 @@ namespace Pablo
 			set;
 		}
 
-		public Generator Generator
+		public Platform Generator
 		{
 			get { return document.Generator; }
 		}
@@ -86,6 +86,11 @@ namespace Pablo
 				}
 				return viewer;
 			}
+		}
+
+		public bool HasViewer
+		{
+			get { return viewer != null; }
 		}
 
 		public bool HasViewerControl
@@ -161,13 +166,14 @@ namespace Pablo
 
 		public void UpdateActionState()
 		{
+			/* TODO: Fix for menus
 			if (actions != null)
 			{
 				foreach (var action in actions)
 				{
 					action.Enabled = action.Enabled;
 				}
-			}
+			}*/
 		}
 
 		public void TriggerInvalidateVisible()
@@ -259,22 +265,38 @@ namespace Pablo
 			Document.Save(stream, format, this);
 		}
 
+		public void Load(string fileName, Format format = null)
+		{
+			format = format ?? DocumentInfoCollection.Default.FindFormat(fileName);
+			Document.Load(fileName, format, this);
+		}
+
+		public void Save(string fileName, Format format = null)
+		{
+			format = format ?? DocumentInfoCollection.Default.FindFormat(fileName);
+			Document.Save(fileName, format, this);
+		}
+
 		public void SaveWithBackup(string fileName, Format format)
 		{
 			if (ClientDelegate != null && ClientDelegate.EnableBackups && File.Exists(fileName))
 			{
 				var tempFile = Path.GetTempFileName();
 
-				var stream = new FileStream(tempFile, FileMode.Create, FileAccess.Write);
-				Save(stream, format);
+				using (var stream = new FileStream(tempFile, FileMode.Create, FileAccess.Write))
+				{
+					Save(stream, format);
+				}
 				var backupFile = GetBackupFile(fileName);
 				File.Move(fileName, backupFile);
 				File.Move(tempFile, fileName);
 			}
 			else
 			{
-				var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-				Save(stream, format);
+				using (var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+				{
+					Save(stream, format);
+				}
 			}
 		}
 
@@ -297,6 +319,15 @@ namespace Pablo
 		public virtual void OnKeyDown(KeyEventArgs e)
 		{
 			// no default implementation
+			if (args != null)
+			{
+				var cmd = args.KeyboardCommands.FirstOrDefault(r => r.Shortcut == e.KeyData && r.Enabled);
+				if (cmd != null)
+				{
+					cmd.Execute();
+					e.Handled = true;
+				}
+			}
 		}
 
 		public virtual void OnMouseDown(MouseEventArgs e)
@@ -356,12 +387,18 @@ namespace Pablo
 			CalculateRect(Rectangle.Round(rectDraw), out rectScreen, out rectGenerate);
 							  
 			//Console.WriteLine("{0}, {1}, {2}", Size, rectScreen, rectGenerate);
-			var bmp = new Bitmap(rectScreen.Width, rectScreen.Height, PixelFormat.Format32bppRgb, Generator);
-			var graphics = new Graphics(Generator, bmp);
-			GenerateRegion(graphics, rectGenerate, rectScreen);
-			graphics.Flush();
-			graphics.Dispose();
+			var bmp = new Bitmap(rectScreen.Width, rectScreen.Height, PixelFormat.Format32bppRgb);
+			GenerateRegion(bmp, rectGenerate, rectScreen);
 			return bmp;
+		}
+
+		protected virtual void GenerateRegion(Bitmap bitmap, Rectangle rectGenerate, Rectangle rectScreen)
+		{
+			using (var graphics = new Graphics(bitmap))
+			{
+				GenerateRegion(graphics, rectGenerate, rectScreen);
+				graphics.Flush();
+			}
 		}
 
 		protected virtual Control CreateViewerControl()
@@ -378,28 +415,29 @@ namespace Pablo
 
 		public abstract void GenerateRegion(Graphics graphics, Rectangle rectSource, Rectangle rectDest);
 
-		public virtual void GenerateActions(GenerateActionArgs args)
+		GenerateCommandArgs args;
+		public virtual void GenerateCommands(GenerateCommandArgs args)
 		{
 			Document.GenerateActions(args);
-			actions = args.Actions;
+			if (args.Area == "viewer")
+			{
+				this.args = args;
+			}
+			//actions = args.Actions;
 
-			string area = (string)args.GetArgument("area", string.Empty);
+			string area = args.Area;
 			if (area == "main")
 			{
-				if (Document.EditMode)
-					args.Actions.Add(new Actions.SaveFile(this));
-				args.Actions.Add(new Actions.SaveAs(this));
-
-				ActionItemSubMenu aiFile = args.Menu.GetSubmenu("&File");
+				var aiFile = args.Menu.Items.GetSubmenu("&File");
 				
 				if (Document.EditMode)
-					aiFile.Actions.Add("save");
-				aiFile.Actions.Add("saveas");
+					aiFile.Items.Add(new Actions.SaveFile(this), 500);
+				aiFile.Items.Add(new Actions.SaveAs(this), 500);
 				
 				if (Document.EditMode)
-					args.ToolBar.Add("save");
+					args.ToolBar.Items.Add(new Actions.SaveFile(this), 500);
 				
-				Viewer.GenerateActions(args);
+				Viewer.GenerateCommands(args);
 			}
 			
 		}

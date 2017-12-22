@@ -7,7 +7,7 @@ using Pablo.Formats.Character.Tools;
 
 namespace Pablo.Formats.Character.Actions.Block
 {
-	public class Delete : Command
+	public class Delete : PabloCommand
 	{
 		Selection tool;
 		public new CharacterHandler Handler { get { return base.Handler as CharacterHandler; } }
@@ -18,11 +18,18 @@ namespace Pablo.Formats.Character.Actions.Block
 		{
 			this.tool = tool;
 			ID = ActionID;
-			Text = "&Delete|Delete|Delete block|Deletes the selected region";
+			MenuText = "&Delete";
+			ToolTip = "Deletes the selected region";
 			Name = "Paste";
-			Accelerators = new Key[] { Key.Delete, Key.E };
+			Shortcut = Keys.Delete; //new [] { Keys.Delete, Keys.E };
 		}
-		
+
+		public override bool Enabled
+		{
+			get { return base.Enabled && tool.DrawMode == DrawMode.Selecting; }
+			set { base.Enabled = value; }
+		}
+
 		public override int CommandID {
 			get { return (int)NetCommands.BlockDelete; }
 		}

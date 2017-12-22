@@ -9,7 +9,7 @@
     <NoStandardLibraries>false</NoStandardLibraries>
     <AssemblyName>Mono.Nat</AssemblyName>
     <RootNamespace>Mono.Nat</RootNamespace>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <TargetFrameworkProfile />
     <ReleaseVersion>
@@ -140,6 +140,7 @@
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio AllowExistingFolder="true" />
   </ProjectExtensions>

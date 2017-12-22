@@ -5,7 +5,7 @@ using Pablo.Formats.Character.Tools;
 
 namespace Pablo.Formats.Character.Actions.Block
 {
-	public class SelectAll : ButtonAction
+	public class SelectAll : Command
 	{
 		Selection tool;
 		public const string ActionID = "character_SelectAll";
@@ -14,13 +14,13 @@ namespace Pablo.Formats.Character.Actions.Block
 		{
 			this.tool = tool;
 			ID = ActionID;
-			Text = "Select All|Select All|Selects everything";
-			Accelerator = Command.CommonModifier | Key.A;
+			MenuText = ToolBarText = "Select All";
+			ToolTip = "Selects everything";
+			Shortcut = PabloCommand.CommonModifier | Keys.A;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
-			
 			var page = tool.Handler.CurrentPage;
 			var canvas = page.Canvas;
 			var endx = canvas.FindEndX (CanvasElement.Default);

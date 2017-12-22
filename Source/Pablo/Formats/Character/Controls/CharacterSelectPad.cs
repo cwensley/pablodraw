@@ -35,7 +35,7 @@ namespace Pablo.Formats.Character.Controls
 				Update();
 			}).MakeWeak(e => Handler.DrawAttributeChanged -= e);
 
-			var layout = new DynamicLayout(Padding.Empty, Size.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty, Spacing = Size.Empty };
 
 			layout.Add(new Label { Text = "Char", HorizontalAlign = HorizontalAlign.Center, Font = new Font(SystemFont.Default, 7) });
 
@@ -76,7 +76,7 @@ namespace Pablo.Formats.Character.Controls
 			{
 				SelectedCharacter = this.tool.CurrentCharacter
 			};
-			var result = dlg.ShowDialog(this);
+			var result = dlg.ShowModal(this);
 			if (result == DialogResult.Ok)
 			{
 				this.tool.CurrentCharacter = dlg.SelectedCharacter;

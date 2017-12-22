@@ -4,7 +4,7 @@ using Eto.Drawing;
 
 namespace Pablo.Interface.Dialogs
 {
-	public class ClientDialog : Dialog
+	public class ClientDialog : Dialog<DialogResult>
 	{
 		TextBox passwordTextBox;
 		TextBox aliasTextBox;
@@ -54,7 +54,7 @@ namespace Pablo.Interface.Dialogs
 			Content = layout;
 		}
 		
-		public override void OnLoad (EventArgs e)
+		protected override void OnLoad (EventArgs e)
 		{
 			base.OnLoad (e);
 			if (string.IsNullOrEmpty (Alias))
@@ -154,7 +154,7 @@ namespace Pablo.Interface.Dialogs
 					MessageBox.Show (this, "You must specify a server IP/name and the port of the server you are connecting to", MessageBoxButtons.OK, MessageBoxType.Error);
 				}
 				else {
-					DialogResult = DialogResult.Ok;
+					Result = DialogResult.Ok;
 					Close ();
 				}
 			};
@@ -168,7 +168,7 @@ namespace Pablo.Interface.Dialogs
 			};
 			AbortButton = control;
 			control.Click += delegate {
-				DialogResult = DialogResult.Cancel;
+				Result = DialogResult.Cancel;
 				Close ();
 			};
 			return control;

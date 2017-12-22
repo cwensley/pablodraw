@@ -3,7 +3,7 @@ using Eto.Forms;
 
 namespace Pablo.Actions
 {
-	public class FitWidth : CheckAction
+	public class FitWidth : CheckCommand
 	{
 		public const string ActionID = "zoomFitWidth";
 		
@@ -13,14 +13,14 @@ namespace Pablo.Actions
 		{
 			this.ViewerPane = viewerPane;
 			this.ID = ActionID;
-			this.Text = "Fit &Width|Fit Width|Fit the document to the width of the view";
+			this.MenuText = "Fit &Width";
+			this.ToolTip = "Fit the document to the width of the view";
 
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated (e);
-			this.Checked = !this.Checked;
+			base.OnExecuted(e);
 			ViewerPane.ZoomInfo.FitWidth = this.Checked;
 			ViewerPane.UpdateSizes ();
 		}

@@ -5,18 +5,20 @@ using Pablo.Formats.Character.Tools;
 
 namespace Pablo.Formats.Character.Actions.Block
 {
-	public class BlockSelect : ButtonAction
+	public class BlockSelect : Command
 	{
 		Tools.Selection tool;
 		public BlockSelect(Tools.Selection tool)
 		{
 			this.tool = tool;
 			ID = "character_blockSelect";
-			Text = "Block Select|Select|Start block selection|Starts selecting a block of text";
-			Accelerator = Key.B | Key.Alt;
+			MenuText = "Block Select";
+			ToolBarText = "Select";
+			ToolTip = "Starts selecting a block of text";
+			Shortcut = Keys.B | Keys.Alt;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
 			Point pos = tool.Handler.CursorPosition;
 			tool.DrawMode = DrawMode.Selecting;

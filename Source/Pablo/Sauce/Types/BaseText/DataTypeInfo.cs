@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Pablo.Sauce.Types.BaseText
 {
-	public class DataTypeInfo : Pablo.Sauce.Types.BaseFileType.DataTypeInfo
+	public abstract class DataTypeInfo : Pablo.Sauce.Types.BaseFileType.DataTypeInfo
 	{
 		protected SauceBitFlag ICEColorsFlag { get; private set; }
 
@@ -19,6 +19,11 @@ namespace Pablo.Sauce.Types.BaseText
 			ICEColorsFlag = new SauceBitFlag(Sauce, "iCE Colors", 0);
 			LetterSpacingFlag = new SauceTwoBitFlag(Sauce, "9px Letter Spacing", 1, 0x2, 0x1);
 			AspectRatioFlag = new SauceTwoBitFlag(Sauce, "Legacy Aspect Ratio", 3);
+		}
+
+		public override Eto.Forms.Control GenerateUI()
+		{
+			return new Admin<DataTypeInfo>(this);
 		}
 
 		public bool ICEColors
@@ -45,13 +50,13 @@ namespace Pablo.Sauce.Types.BaseText
 			set { Sauce.TInfoS = value; } 
 		}
 
-		public virtual bool HasICEColors { get { return true; } }
+		public abstract bool HasICEColors { get; }
 
-		public virtual bool HasLetterSpacing { get { return true; } }
+		public abstract bool HasLetterSpacing { get; }
 
-		public virtual bool HasAspectRatio { get { return true; } }
+		public abstract bool HasAspectRatio { get; }
 
-		public virtual bool HasFontName { get { return true; } }
+		public abstract bool HasFontName { get; }
 
 		public BitFont GetFont(IEnumerable<BitFontSet> availableFonts)
 		{

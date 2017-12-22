@@ -7,15 +7,15 @@ using Pablo.Network;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class InsertColumn : Command
+	public class InsertColumn : PabloCommand
 	{
 		public InsertColumn (CharacterHandler handler)
 			: base(handler)
 		{
 			ID = "character_insertColumn";
-			Text = "Insert Column";
-			Description = "Inserts a new column at the cursor position";
-			Accelerators = new Key[] { Key.Right | Key.Alt };
+			MenuText = "Insert Column";
+			ToolTip = "Inserts a new column at the cursor position";
+			Shortcut = Keys.Right | Keys.Alt;
 		}
 		
 		public new CharacterHandler Handler {

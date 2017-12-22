@@ -7,7 +7,6 @@
 using System;
 using Eto;
 using Eto.Forms;
-using Eto.Misc;
 using System.Reflection;
 using Eto.IO;
 using System.ComponentModel;
@@ -17,7 +16,7 @@ using Eto.Drawing;
 
 namespace Pablo.Interface
 {
-	public class Application : Eto.Forms.Application
+	public class PabloApplication : Eto.Forms.Application
 	{
 		public Main Main { get; private set; }
 #if TWO_WINDOWS
@@ -25,22 +24,27 @@ namespace Pablo.Interface
 #endif
 		
 #if DEBUG
-		static Application ()
+		static PabloApplication ()
 		{
+			Debug.Listeners.Clear();
 			Debug.Listeners.Add (new TextWriterTraceListener (System.Console.Out));
 		}
 #endif
-		
-		public Application ()
-			: this (Generator.Detect)
+		public PabloApplication()
+			: this(Platform.Detect)
 		{
 		}
-		
-		public Application(Generator g)
-			: base(g)
+
+		public PabloApplication(Platform platform)
+			: base(platform)
 		{
 			this.Name = "PabloDraw";
 			this.Style = "application";
+			Eto.Style.Add<TableLayout>(null, widget =>
+			{
+				widget.Padding = new Padding(10);
+				widget.Spacing = new Size(5, 5);
+			});
 			EtoDirectoryInfo.AddVirtualDirectoryType<SharpCompressDirectoryInfo>(".rar");
 			EtoDirectoryInfo.AddVirtualDirectoryType<SharpCompressDirectoryInfo>(".7z");
 			//EtoDirectoryInfo.AddVirtualDirectoryType<SharpCompressDirectoryInfo>(".tar.gz");
@@ -49,7 +53,7 @@ namespace Pablo.Interface
 			EtoDirectoryInfo.AddVirtualDirectoryType<SharpCompressDirectoryInfo>(".zip");
 		}
 	
-		public override void OnInitialized (EventArgs e)
+		protected override void OnInitialized (EventArgs e)
 		{
 			this.Main = new Main();
 			base.OnInitialized(e);
@@ -62,7 +66,7 @@ namespace Pablo.Interface
 #endif
 		}
 		
-		public override void OnTerminating (CancelEventArgs e)
+		protected override void OnTerminating (CancelEventArgs e)
 		{
 			base.OnTerminating (e);
 			

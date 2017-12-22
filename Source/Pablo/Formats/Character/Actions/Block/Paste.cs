@@ -6,7 +6,7 @@ using Pablo.Formats.Character.Tools;
 
 namespace Pablo.Formats.Character.Actions.Block
 {
-	public class Paste : Command
+	public class Paste : PabloCommand
 	{
 		public const string ActionID = "character_Paste";
 		
@@ -16,11 +16,18 @@ namespace Pablo.Formats.Character.Actions.Block
 		{
 			this.tool = tool;
 			ID = ActionID;
-			Text = "&Paste Block|Paste|Paste selected region|Copies the selected region";
+			MenuText = "&Paste Block";
+			ToolTip = "Paste the selected region";
 			Name = "Paste";
-			Accelerator = Key.Enter;
+			Shortcut = Keys.Enter;
 		}
 		
+		public override bool Enabled
+		{
+			get { return base.Enabled && tool.DrawMode == DrawMode.Paste; }
+			set { base.Enabled = value; }
+		}
+
 		public override int CommandID {
 			get { return (int)NetCommands.BlockPaste; }
 		}

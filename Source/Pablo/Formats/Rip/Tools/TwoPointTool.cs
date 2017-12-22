@@ -39,9 +39,9 @@ namespace Pablo.Formats.Rip.Tools
 		
 		
 		
-		protected abstract void SetStartLocation (Point start, Key modifiers, Point location);
+		protected abstract void SetStartLocation (Point start, Keys modifiers, Point location);
 
-		protected abstract void SetEndLocation (Point end, Key modifiers, Point location);
+		protected abstract void SetEndLocation (Point end, Keys modifiers, Point location);
 		
 		public override void OnMouseDown (MouseEventArgs e)
 		{
@@ -63,7 +63,7 @@ namespace Pablo.Formats.Rip.Tools
 		public override void OnKeyDown(KeyEventArgs e)
 		{
 			if (Command != null) {
-				if (e.Key == Key.S || e.Key == Key.Space || e.Key == Key.Enter) {
+				if (e.Key == Keys.S || e.Key == Keys.Space || e.Key == Keys.Enter) {
 					if (ApplyDuplicate ())
 						e.Handled = true;
 				}

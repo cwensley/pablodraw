@@ -17,7 +17,7 @@ namespace PabloDraw.Console
 		bool Process(ProcessCommandLineArgs args);
 	}
 
-	public class ProcessCommandLineArgs : EventArgs
+	public class ProcessCommandLineArgs
 	{
 		public IndentedTextWriter Writer { get; set; }
 		public CommandLine Command { get; set; }

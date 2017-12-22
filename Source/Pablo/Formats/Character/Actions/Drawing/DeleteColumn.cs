@@ -6,15 +6,15 @@ using Eto;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class DeleteColumn : Command
+	public class DeleteColumn : PabloCommand
 	{
 		public DeleteColumn (CharacterHandler handler)
 			: base(handler)
 		{
 			ID = "character_deleteColumn";
-			Text = "Remove Column";
-			Description = "Removes the column at the cursor position";
-			Accelerators = new Key[] { Key.Left | Key.Alt };
+			MenuText = "Remove Column";
+			ToolTip = "Removes the column at the cursor position";
+			Shortcut = Keys.Left | Keys.Alt;
 		}
 		
 		public new CharacterHandler Handler {

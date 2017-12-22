@@ -26,14 +26,14 @@ namespace Pablo.Formats.Character.Actions
 			set { base.Enabled = value; }
 		}
 		
-		public DrawCharacterSetChar(CharacterHandler handler, int character, Key accelerator)
+		public DrawCharacterSetChar(CharacterHandler handler, int character, Keys accelerator)
 			: base(handler)
 		{
 			base.Character = character;
 			ID = "character_drawChar" + character;
-			Text = "Draw Character";
-			Description = "Draws a character";
-			Accelerator = accelerator;
+			MenuText = "Draw Character";
+			ToolTip = "Draws a character";
+			Shortcut = accelerator;
 		}
 
 	}

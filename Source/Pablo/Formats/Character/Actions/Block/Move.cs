@@ -6,19 +6,27 @@ using Pablo.Formats.Character.Tools;
 
 namespace Pablo.Formats.Character.Actions.Block
 {
-	public class Move : ButtonAction
+	public class Move : Command
 	{
 		Selection tool;
 		public Move(Selection tool)
 		{
 			this.tool = tool;
 			ID = "character_Move";
-			Text = "&Move Block|Move|Move selected region|Moves the selected region";
-			Accelerator = Key.M;
+			MenuText = "&Move Block";
+			ToolBarText = "Move";
+			ToolTip = "Moves the selected region";
+			Shortcut = Keys.M;
 			Enabled = tool.Handler.Client == null || tool.Handler.Client.CurrentUser.Level >= UserLevel.Editor;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		public override bool Enabled
+		{
+			get { return base.Enabled && tool.DrawMode == DrawMode.Selecting; }
+			set { base.Enabled = value; }
+		}
+
+		protected override void OnExecuted(EventArgs e)
 		{
 			if (tool.SelectedRegion == null)
 				return;

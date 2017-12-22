@@ -11,7 +11,7 @@ namespace Pablo.Formats.Character.Controls
 		public SizePad (Tools.SizeTool tool)
 		{
 			this.tool = tool;
-			var layout = new DynamicLayout(Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			
 			layout.BeginVertical (Padding.Empty, Size.Empty);
 			layout.Add (new Label{ Text = "Size", HorizontalAlign = HorizontalAlign.Center, Font = new Font (SystemFont.Default, 7)});

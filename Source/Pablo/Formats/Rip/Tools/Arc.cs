@@ -14,14 +14,14 @@ namespace Pablo.Formats.Rip.Tools
 			get { return "Draws an elliptical or circular arc (A)"; }
 		}
 
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.A;
+				return Keys.A;
 			}
 		}
 		
 		public override Eto.Drawing.Image Image {
-			get { return Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Arc.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Arc.png"); }
 		}
 		
 		public override IEnumerable<RipOptionalCommand> Styles {
@@ -51,7 +51,7 @@ namespace Pablo.Formats.Rip.Tools
 			this.Command.EndAngle = angle;
 		}
 		
-		protected override void Finish (Key modifiers, IList<Rectangle> updates)
+		protected override void Finish (Keys modifiers, IList<Rectangle> updates)
 		{
 			if (IsSquare) {
 				ApplyStyles ();
@@ -69,7 +69,7 @@ namespace Pablo.Formats.Rip.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout(Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			layout.Add (Separator ());
 			layout.Add (new Controls.LineStylePad(Handler, false));
 			return layout;

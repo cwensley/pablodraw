@@ -14,7 +14,7 @@ namespace Pablo.Formats.Character.Tools
 
 		protected bool IsCentered { get; private set; }
 
-		protected abstract void UpdateWithLocation (Rectangle rect, Key modifiers, Point end);
+		protected abstract void UpdateWithLocation (Rectangle rect, Keys modifiers, Point end);
 		
 		protected override Rectangle? CurrentRectangle {
 			get {
@@ -39,14 +39,14 @@ namespace Pablo.Formats.Character.Tools
 			currentRect = null;
 		}
 		
-		protected sealed override void Update (Point start, Point end, Key modifiers, Point location)
+		protected sealed override void Update (Point start, Point end, Keys modifiers, Point location)
 		{
 			var rect = new Rectangle ();
 			var aspect = Handler.CurrentPage.Font.Aspect / Handler.Aspect;
 			var size = new Size(end - start);
 			
-			var shouldBeSquare = (!modifiers.HasFlag (Command.CommonModifier) && modifiers.HasFlag (Key.Shift)) ^ IsSquare;
-			var shouldBeCentered = modifiers.HasFlag (Key.Alt) ^ IsCentered;
+			var shouldBeSquare = (!modifiers.HasFlag (PabloCommand.CommonModifier) && modifiers.HasFlag (Keys.Shift)) ^ IsSquare;
+			var shouldBeCentered = modifiers.HasFlag (Keys.Alt) ^ IsCentered;
 			
 			
 			if (shouldBeSquare) {
@@ -90,7 +90,7 @@ namespace Pablo.Formats.Character.Tools
 		Control SquareButton ()
 		{
 			var control = new ImageButton{
-				Image = Bitmap.FromResource ("Pablo.Formats.Character.Icons.Square.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.Square.png"),
 				Toggle = true,
 				Pressed = IsSquare,
 #if DESKTOP
@@ -107,7 +107,7 @@ namespace Pablo.Formats.Character.Tools
 		Control CenteredButton ()
 		{
 			var control = new ImageButton{
-				Image = Bitmap.FromResource ("Pablo.Formats.Character.Icons.Centered.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.Centered.png"),
 				Toggle = true,
 				Pressed = IsCentered,
 #if DESKTOP
@@ -123,7 +123,7 @@ namespace Pablo.Formats.Character.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout (Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			
 			layout.BeginVertical (Padding.Empty, Size.Empty);
 			layout.AddRow (SquareButton (), CenteredButton ());

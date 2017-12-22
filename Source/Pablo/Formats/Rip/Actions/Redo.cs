@@ -3,12 +3,11 @@ using Eto.Forms;
 using Eto;
 using System.Collections.Generic;
 using Eto.Drawing;
-using Eto.Misc;
 using System.Linq;
 
 namespace Pablo.Formats.Rip.Actions
 {
-	public class Redo : Command
+	public class Redo : PabloCommand
 	{
 		RipHandler handler;
 		public const string ActionID = "rip_redo";
@@ -20,11 +19,11 @@ namespace Pablo.Formats.Rip.Actions
 			this.ID = ActionID;
 			this.MenuText = "Redo";
 			this.ToolBarText = "Redo";
-			this.TooltipText = "re-applies the last command removed via Undo";
+			this.ToolTip = "re-applies the last command removed via Undo";
 			if (EtoEnvironment.Platform.IsMac)
-				this.Accelerators = new Key[] { Command.CommonModifier | Key.Shift | Key.Z, Command.CommonModifier | Key.Y };
+				this.Shortcut = PabloCommand.CommonModifier | Keys.Shift | Keys.Z; // TODO: Shortcut , PabloCommand.CommonModifier | Keys.Y };
 			else
-				this.Accelerators = new Key[] { Command.CommonModifier | Key.Y, Command.CommonModifier | Key.Shift | Key.Z };
+				this.Shortcut = PabloCommand.CommonModifier | Keys.Y; //, PabloCommand.CommonModifier | Keys.Shift | Keys.Z };
 		}
 		
 		IEnumerable<RipCommand> commandsToSend;

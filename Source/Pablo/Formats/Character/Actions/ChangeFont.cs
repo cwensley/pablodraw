@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class ChangeFont : RadioAction, ICommand
+	public class ChangeFont : RadioCommand, ICommand
 	{
 		public BitFont Font { get; private set; }
 
@@ -23,13 +23,13 @@ namespace Pablo.Formats.Character.Actions
 				this.Enabled = Handler.Client.CurrentUser.Level >= this.Level;
 		}
 
-		public ChangeFont(RadioAction mainRadio, CharacterHandler handler, BitFont font)
-			: base(mainRadio)
+		public ChangeFont(RadioCommand mainRadio, CharacterHandler handler, BitFont font)
 		{
+			this.Controller = mainRadio;
 			this.Handler = handler;
 			this.Font = font;
 			ID = string.Format("{0}{1}", ActionID, font.ID);
-			Text = font.Name; //string.Format ("{0} {1}x{2}", font.Name, font.Width, font.Height);
+			MenuText = font.Name; //string.Format ("{0} {1}x{2}", font.Name, font.Width, font.Height);
 			//Text = string.Format ("CP {0} {1}x{2}", font.Encoding.CodePage, font.Width, font.Height);
 			//Name = "Change Font";
 			if (Handler != null)
@@ -48,9 +48,9 @@ namespace Pablo.Formats.Character.Actions
 			}
 		}
 
-		protected override void OnActivated(EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated(e);
+			base.OnExecuted(e);
 			if (Handler != null)
 			{
 				if (Handler.Client != null)

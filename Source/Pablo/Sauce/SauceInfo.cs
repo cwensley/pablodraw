@@ -178,7 +178,7 @@ namespace Pablo.Sauce
 
 		public static bool HasSauce(Stream s)
 		{
-			if (s.Length < SauceSize)
+			if (s.Length <= SauceSize + 1) // +1 for eof
 				return false;
 			long pos = s.Position;
 			s.Seek(s.Length - SauceSize, SeekOrigin.Begin);
@@ -268,7 +268,12 @@ namespace Pablo.Sauce
 			{
 				var br = new BinaryReader(stream);
 				if (seekPosition)
-					br.BaseStream.Seek(stream.Length - SauceSize - 1, SeekOrigin.Begin);
+				{
+					var saucePos = stream.Length - SauceSize - 1;
+					if (saucePos < 0)
+						throw new Exception("Sauce does not exist! File is too small.");
+					br.BaseStream.Seek(saucePos, SeekOrigin.Begin);
+				}
 				var eof = br.ReadByte();
 				var hasEof = eof == 26;
 				long start = br.BaseStream.Position;
@@ -299,7 +304,13 @@ namespace Pablo.Sauce
 				TInfoS = Encoding.ASCII.GetString(infoSBytes, 0, zeroIdx);
 
 				if (numComments > 0)
-					br.BaseStream.Seek(start - (numComments * SauceComment.CommentSize) - 5, SeekOrigin.Begin);
+				{
+					var commentPos = start - (numComments * SauceComment.CommentSize) - 5;
+					if (commentPos >= 0)
+						br.BaseStream.Seek(commentPos, SeekOrigin.Begin);
+					else
+						numComments = 0;
+				}
 
 				comments = new SauceComment(br, numComments);
 				FileSize = (int)(stream.Length - SauceSize);
@@ -320,6 +331,7 @@ namespace Pablo.Sauce
 				stream.Seek(0, SeekOrigin.End);
 			FileSize = (int)stream.Position;
 			var bw = new BinaryWriter(stream);
+
 
 			bw.Write((byte)26); // EOF
 
@@ -379,7 +391,7 @@ namespace Pablo.Sauce
 					typeInfo = new Types.Vector.DataTypeInfo();
 					break;
 				case SauceDataType.XBIN:
-					typeInfo = new XBinDataTypeInfo();
+					typeInfo = new Types.XBin.DataTypeInfo();
 					break;
 			}
 			typeInfo.Sauce = this;
@@ -450,7 +462,18 @@ namespace Pablo.Sauce
 				int month = Convert.ToInt32(s.Substring(4, 2));
 				int day = Convert.ToInt32(s.Substring(6, 2));
 
-				return new DateTime(year, month, day);
+				if (year > 1900 && year < 3000)
+				{
+					if (month >= 1 && month <= 12)
+					{
+						if (day > 1 && day <= DateTime.DaysInMonth(year, month))
+						{
+							return new DateTime(year, month, day);
+						}
+					}
+				}
+
+				return null;
 			}
 			set
 			{
@@ -458,6 +481,14 @@ namespace Pablo.Sauce
 					value = DateTime.Today;
 				string s = value.Value.ToString("yyyyMMdd");
 				date = Encoding.ASCII.GetBytes(s);
+			}
+		}
+
+		public bool IsValid
+		{
+			get {
+
+				return TypeInfo != null && TypeInfo.IsValid;
 			}
 		}
 

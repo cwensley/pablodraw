@@ -8,7 +8,6 @@ using Eto.Forms;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Diagnostics;
 
 namespace Pablo.BGI
 {
@@ -99,16 +98,15 @@ namespace Pablo.BGI
 
 		public const double ASPECT = 350.0 / 480.0 * 1.06; //0.772; //7.0/9.0; //350.0 / 480.0 * 1.066666;
 		const int BITS_PER_PIXEL = 8;
-		Generator generator;
 		IndexedBitmap bmp;
 		BitmapData bd;
 		byte* bits;
-		Palette palEga = Palette.GetEgaPalette();
-		Palette pal = Palette.GetDosPalette();
+		readonly Palette palEga = Palette.GetEgaPalette();
+		readonly Palette pal = Palette.GetDosPalette();
 		byte color = 7;
-		byte bkcolor = 0;
-		byte fillcolor = 0;
-		int[] colors = new int[16];
+		byte bkcolor;
+		byte fillcolor;
+		readonly int[] colors = new int[16];
 		Graphics graphics;
 		int totalrectcomplexity;
 		FillStyle fillStyle;
@@ -118,11 +116,11 @@ namespace Pablo.BGI
 		FontType font = FontType.Small;
 		int characterSize = 4;
 		WriteMode writeMode = WriteMode.Copy;
-		Point currentPos = new Point();
+		Point currentPos;
 		Rectangle viewPort = new Rectangle(0, 0, 640, 350);
-		Size windowSize = new Size(640, 350);
+		readonly Size windowSize = new Size(640, 350);
 		int scanWidth = 640;
-		string[] fontTypes = new string[] {
+		readonly string[] fontTypes = {
 			string.Empty,
 			"TRIP.CHR",
 			"LITT.CHR",
@@ -135,10 +133,10 @@ namespace Pablo.BGI
 			"EURO.CHR",
 			"BOLD.CHR"
 		};
-		Dictionary<FontType, IBGIFont> fontCache = new Dictionary<FontType, IBGIFont>();
+		readonly Dictionary<FontType, IBGIFont> fontCache = new Dictionary<FontType, IBGIFont>();
 		Drawable control;
-		byte[] DefaultUserPattern = new byte[] { 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55 };
-		byte[][] fillStyles = new byte[][] {
+		readonly byte[] DefaultUserPattern = { 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55 };
+		readonly byte[][] fillStyles = {
 			new byte[] { 0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00},
 			new byte[] { 0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF},
 			new byte[] { 0xFF,  0xFF,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00},
@@ -153,8 +151,7 @@ namespace Pablo.BGI
 			new byte[] { 0x88,  0x00,  0x22,  0x00,  0x88,  0x00,  0x22,  0x00},
 			new byte[] { 0xAA,  0x55,  0xAA,  0x55,  0xAA,  0x55,  0xAA,  0x55}
 		};
-		uint[] line_style_bits = new uint[]
-			{
+		readonly uint[] line_style_bits = {
 				(uint)0xFFFF,
 				(uint)0xCCCC,
 				(uint)0xF878,
@@ -171,7 +168,7 @@ namespace Pablo.BGI
 
 		public Palette Palette
 		{
-			get { return this.pal; }
+			get { return pal; }
 		}
 
 		public Drawable Control
@@ -201,7 +198,7 @@ namespace Pablo.BGI
 			set
 			{
 				scale = value;
-				this.IsDefaultScale = scale == new SizeF(1, 1);
+				IsDefaultScale = scale == new SizeF(1, 1);
 			}
 		}
 
@@ -219,21 +216,18 @@ namespace Pablo.BGI
 			lock (bitmapLock)
 			{
 
-				var newbmp = new IndexedBitmap(generator, bmp.Size.Width, bmp.Size.Height, 8);
+				var newbmp = new IndexedBitmap(bmp.Size.Width, bmp.Size.Height, 8);
 				newbmp.Palette = bmp.Palette.Clone();
 				using (var newbd = newbmp.Lock())
 				{
-					unsafe
+					var psrc = (byte*)bd.Data;
+					var pdest = (byte*)newbd.Data;
+					for (int i = 0; i < bmp.Size.Width * bmp.Size.Height; i++)
 					{
-						byte* psrc = (byte*)bd.Data;
-						byte* pdest = (byte*)newbd.Data;
-						for (int i = 0; i < bmp.Size.Width * bmp.Size.Height; i++)
-						{
-							*
+						*
 							pdest = *psrc;
-							pdest++;
-							psrc++;
-						}
+						pdest++;
+						psrc++;
 					}
 				}
 
@@ -260,12 +254,12 @@ namespace Pablo.BGI
 		{
 			viewPort = new Rectangle(windowSize);
 			Palette.EGAColors.CopyTo(colors, 0);
-			this.SetColor(7);
-			this.SetBkColor(0);
-			this.SetFillPattern(DefaultUserPattern);
-			this.SetLineStyle(LineStyle.Solid);
-			this.SetFillStyle(FillStyle.Solid, 0);
-			this.ClearDevice(updates);
+			SetColor(7);
+			SetBkColor(0);
+			SetFillPattern(DefaultUserPattern);
+			SetLineStyle(LineStyle.Solid);
+			SetFillStyle(FillStyle.Solid, 0);
+			ClearDevice(updates);
 		}
 
 		public void DrawRegion(Graphics g, Rectangle rect)
@@ -282,7 +276,7 @@ namespace Pablo.BGI
 
 				bd.Dispose();
 				Image b = bmp;
-				if (g.Generator.IsWpf)
+				if (g.Platform.IsWpf)
 				{
 					if (wpfbm == null)
 						wpfbm = new Bitmap(b, interpolation: ImageInterpolation.None);
@@ -305,19 +299,13 @@ namespace Pablo.BGI
 		}
 
 		public BGICanvas(Control control, Size? size = null)
-			: this(control.Generator, control, size)
-		{
-		}
-
-		public BGICanvas(Generator generator, Control control, Size? size = null)
 		{
 			this.control = control as Drawable;
-			this.generator = generator;
 
 			if (size != null)
 				this.windowSize = size.Value;
 			// generator.ThreadInit();
-			bmp = new IndexedBitmap(generator, windowSize.Width, windowSize.Height, 8);
+			bmp = new IndexedBitmap(windowSize.Width, windowSize.Height, 8);
 			//generator.ThreadDone();
 			Palette currentPal = bmp.Palette;
 			for (int i = 0; i < pal.Count; i++)
@@ -356,45 +344,43 @@ namespace Pablo.BGI
 			return color;
 		}
 
-		class BezierHandler
+		static class BezierHandler
 		{
-			static double[] StArr = new double[] { 1, 3, 3, 1 };
+			static readonly double[] StArr = { 1, 3, 3, 1 };
 
-			static double First(int N, double V)
+			static double First(int n, double v)
 			{
-				switch (N)
+				switch (n)
 				{
 					default:
-					case 0:
 						return 1;
 					case 1:
-						return V;
+						return v;
 					case 2:
-						return V * V;
+						return v * v;
 					case 3:
-						return V * V * V;
+						return v * v * v;
 				}
 			}
 
-			static double Second(int N, double V)
+			static double Second(int n, double v)
 			{
-				switch (N)
+				switch (n)
 				{
 					default:
-					case 3:
 						return 1;
 					case 2:
-						return Math.Exp(Math.Log(1.0 - V));
+						return Math.Exp(Math.Log(1.0 - v));
 					case 1:
-						return Math.Exp((double)2 * Math.Log(1.0 - V));
+						return Math.Exp((double)2 * Math.Log(1.0 - v));
 					case 0:
-						return Math.Exp((double)3 * Math.Log(1.0 - V));
+						return Math.Exp((double)3 * Math.Log(1.0 - v));
 				}
 			}
 
-			public static double Bezier(double V, int N)
+			public static double Bezier(double v, int n)
 			{
-				return StArr[N] * First(N, V) * Second(N, V);
+				return StArr[n] * First(n, v) * Second(n, v);
 			}
 		}
 
@@ -605,7 +591,7 @@ namespace Pablo.BGI
 			}
 		}
 
-		void ScanLines(int startIndex, int endIndex, List<int>[] rows, Point[] points, bool full)
+		void ScanLines(int startIndex, int endIndex, List<int>[] rows, IList<Point> points, bool full)
 		{
 			ScanLine(points[startIndex], points[endIndex], rows, full);
 		}
@@ -654,7 +640,7 @@ namespace Pablo.BGI
 				}
 			}
 			if (color != 0)
-				this.DrawPoly(points, drawUpdates);
+				DrawPoly(points, drawUpdates);
 
 			if (updates == null)
 				UpdateRegion(drawUpdates);
@@ -678,16 +664,16 @@ namespace Pablo.BGI
 
 		public void LineTo(int x, int y, IList<Rectangle> updates = null)
 		{
-			this.Line(currentPos.X, currentPos.Y, x, y, updates);
+			Line(currentPos.X, currentPos.Y, x, y, updates);
 			currentPos = new Point(x, y);
 		}
 
 		public void LineRel(int dx, int dy)
 		{
-			this.Line(currentPos.X, currentPos.Y, currentPos.X + dx, currentPos.Y + dy);
+			Line(currentPos.X, currentPos.Y, currentPos.X + dx, currentPos.Y + dy);
 		}
 
-		void FillX(int y, int startx, int count, ref int offset, IList<Rectangle> updates)
+		void FillX(int y, int startx, int count, ref int offset, ICollection<Rectangle> updates)
 		{
 			int starty = y - lineThickness / 2;
 			int endy = starty + lineThickness - 1;
@@ -737,7 +723,7 @@ namespace Pablo.BGI
 				UpdateRegion(updateRect);
 		}
 
-		private void FillY(int x, int starty, int count, ref int offset, IList<Rectangle> updates)
+		void FillY(int x, int starty, int count, ref int offset, ICollection<Rectangle> updates)
 		{
 			int startx = x - lineThickness / 2;
 			int endx = startx + lineThickness - 1;
@@ -934,12 +920,12 @@ namespace Pablo.BGI
 
 		public FillStyle GetFillStyle()
 		{
-			return this.fillStyle;
+			return fillStyle;
 		}
 
 		public byte GetFillColor()
 		{
-			return this.fillcolor;
+			return fillcolor;
 		}
 
 		public void SetFillStyle(FillStyle fillStyle, byte color)
@@ -959,28 +945,28 @@ namespace Pablo.BGI
 
 		public int GetLineThickness()
 		{
-			return this.lineThickness;
+			return lineThickness;
 		}
 
 		public void SetLineThickness(int thickness)
 		{
-			this.lineThickness = thickness;
+			lineThickness = thickness;
 		}
 
 		public uint GetLinePattern(LineStyle lineStyle)
 		{
-			return this.line_style_bits[(int)lineStyle];
+			return line_style_bits[(int)lineStyle];
 		}
 
 		public LineStyle GetLineStyle()
 		{
-			return this.lineStyle;
+			return lineStyle;
 		}
 
 		public BitArray GetLineStyleBits(LineStyle lineStyle)
 		{
 			uint pattern = line_style_bits[(int)lineStyle];
-			return new BitArray(new byte[] { (byte)(pattern >> 8), (byte)(pattern & 0xFF) });
+			return new BitArray(new [] { (byte)(pattern >> 8), (byte)(pattern & 0xFF) });
 		}
 
 		public LineStyle SetLineStyle(LineStyle lineStyle)
@@ -1046,7 +1032,7 @@ namespace Pablo.BGI
 
 		}
 
-		private bool AlreadyDrawn(List<LineInfo>[] fillLines, int x, int y)
+		static bool AlreadyDrawn(IList<List<LineInfo>> fillLines, int x, int y)
 		{
 			foreach (var li in fillLines[y])
 			{
@@ -1084,7 +1070,7 @@ namespace Pablo.BGI
 						{
 							FillLineInfo fli = pointStack.Pop();
 
-							int cury = fli.y + fli.dir;
+							int cury = fli.y + fli.Dir;
 							if (cury <= viewPort.InnerBottom && cury >= viewPort.Top)
 							{
 								int ypos = cury * scanWidth;
@@ -1100,14 +1086,14 @@ namespace Pablo.BGI
 									{
 										fillLines[li.y].Add(li);
 										cx = li.x2;
-										pointStack.Push(new FillLineInfo(li, fli.dir));
+										pointStack.Push(new FillLineInfo(li, fli.Dir));
 										if (fillcolor != 0)
 										{ // bgi doesn't go backwards when filling black!  why?  dunno.  it just does.
 											// if we go out of current line's bounds, check the opposite dir for those
 											if (li.x2 > fli.x2)
-												pointStack.Push(new FillLineInfo(li.y, fli.x2 + 1, li.x2, -fli.dir));
+												pointStack.Push(new FillLineInfo(li.y, fli.x2 + 1, li.x2, -fli.Dir));
 											if (li.x1 < fli.x1)
-												pointStack.Push(new FillLineInfo(li.y, li.x1, fli.x1 - 1, -fli.dir));
+												pointStack.Push(new FillLineInfo(li.y, li.x1, fli.x1 - 1, -fli.Dir));
 										}
 									}
 								}
@@ -1129,24 +1115,24 @@ namespace Pablo.BGI
 
 		}
 
-		private class FillLineInfo : LineInfo
+		class FillLineInfo : LineInfo
 		{
-			public int dir;
+			public int Dir { get; set; }
 
 			public FillLineInfo(LineInfo li, int dir)
 				: base(li)
 			{
-				this.dir = dir;
+				this.Dir = dir;
 			}
 
 			public FillLineInfo(int y, int x1, int x2, int dir)
 				: base(y, x1, x2)
 			{
-				this.dir = dir;
+				this.Dir = dir;
 			}
 		}
 
-		private class LineInfo
+		class LineInfo
 		{
 			public int x1;
 			public int x2;
@@ -1167,7 +1153,7 @@ namespace Pablo.BGI
 			}
 		}
 
-		private LineInfo FindLine(byte* bits, int x, int y, int border)
+		LineInfo FindLine(byte* bits, int x, int y, int border)
 		{
 			// find end pixel
 			int endx, startx;
@@ -1196,7 +1182,7 @@ namespace Pablo.BGI
 			return new LineInfo(y, startx, endx);
 		}
 
-		void arc_coords(double angle, double rx, double ry, out int x, out int y)
+		static void arc_coords(double angle, double rx, double ry, out int x, out int y)
 		{
 			if (rx == 0 || ry == 0)
 			{
@@ -1226,7 +1212,7 @@ namespace Pablo.BGI
 			Rectangle(rect.Left, rect.Top, rect.InnerRight, rect.InnerBottom, updates);
 		}
 
-		void Swap<T>(ref T l, ref T r)
+		static void Swap<T>(ref T l, ref T r)
 		{
 			var temp = l;
 			l = r;
@@ -1244,7 +1230,7 @@ namespace Pablo.BGI
 				UpdateRegion(drawUpdates);
 		}
 
-		List<int>[] CreateScanRows()
+		static List<int>[] CreateScanRows()
 		{
 			return new List<int>[352];
 		}
@@ -1270,7 +1256,7 @@ namespace Pablo.BGI
 			AddScanRow(rows, point.X, point.Y);
 		}
 
-		void AddScanRow(IList<int>[] rows, int x, int y)
+		static void AddScanRow(IList<IList<int>> rows, int x, int y)
 		{
 			if (y < -1 || y > 350)
 				return;
@@ -1283,14 +1269,14 @@ namespace Pablo.BGI
 			rowPoints.Add(x);
 		}
 
-		void ScanEllipse(int x, int y, int start_angle, int end_angle, int radiusx, int radiusy, IList<int>[] rows)
+		void ScanEllipse(int x, int y, int startAngle, int endAngle, int radiusx, int radiusy, IList<int>[] rows)
 		{
 			// check if valid angles
-			if (start_angle > end_angle)
+			if (startAngle > endAngle)
 			{
-				var tt = start_angle;
-				start_angle = end_angle;
-				end_angle = tt;
+				var tt = startAngle;
+				startAngle = endAngle;
+				endAngle = tt;
 			}
 
 			radiusx = Math.Max(1, radiusx);
@@ -1318,10 +1304,10 @@ namespace Pablo.BGI
 				long e2 = 2 * err;
 				var angle = Math.Atan((double)yoffset * aspect / (double)xoffset) * rad2deg;
 
-				symmetryScan(x, y, start_angle, end_angle, xoffset, yoffset, radiusx, radiusy, Round(angle), angle <= horizontal_angle, rows);
+				symmetryScan(x, y, startAngle, endAngle, xoffset, yoffset, Round(angle), angle <= horizontal_angle, rows);
 				if (Math.Abs(angle - horizontal_angle) < 1)
 				{
-					symmetryScan(x, y, start_angle, end_angle, xoffset, yoffset, radiusx, radiusy, Round(angle), !(angle <= horizontal_angle), rows);
+					symmetryScan(x, y, startAngle, endAngle, xoffset, yoffset, Round(angle), !(angle <= horizontal_angle), rows);
 				}
 
 				if (e2 <= stopy)
@@ -1340,10 +1326,10 @@ namespace Pablo.BGI
 			while (yoffset < radiusy)
 			{
 				var angle = Math.Atan((double)yoffset * aspect / (double)xoffset) * rad2deg;
-				symmetryScan(x, y, start_angle, end_angle, xoffset, yoffset, radiusx, radiusy, Round(angle), angle <= horizontal_angle, rows);
+				symmetryScan(x, y, startAngle, endAngle, xoffset, yoffset, Round(angle), angle <= horizontal_angle, rows);
 				if (angle == horizontal_angle)
 				{
-					symmetryScan(x, y, start_angle, end_angle, xoffset, yoffset, radiusx, radiusy, Round(angle), !(angle <= horizontal_angle), rows);
+					symmetryScan(x, y, startAngle, endAngle, xoffset, yoffset, Round(angle), !(angle <= horizontal_angle), rows);
 				}
 				yoffset++;
 			}
@@ -1424,7 +1410,7 @@ namespace Pablo.BGI
 
 		void OutlineScan(List<int>[] rows, IList<Rectangle> updates = null)
 		{
-			var oldLineStyle = this.GetLineStyle();
+			var oldLineStyle = GetLineStyle();
 			if (oldLineStyle != LineStyle.Solid)
 				SetLineStyle(LineStyle.Solid);
 
@@ -1505,7 +1491,7 @@ namespace Pablo.BGI
 							Line(mnx, y, minx, y, drawUpdates);
 						}
 
-						if (row.Count > 1 && nextrow.Count > 1 && maxx > lastmaxx && maxx <= nextmaxx)
+						if (row.Count > 1 && nextrow != null && nextrow.Count > 1 && maxx > lastmaxx && maxx <= nextmaxx)
 						{
 							var mxx = (maxx < nextmaxx) ? nextmaxx - 1 : nextmaxx;
 							Line(mxx, y, maxx, y, drawUpdates);
@@ -1549,16 +1535,16 @@ namespace Pablo.BGI
 				UpdateRegion(drawUpdates);
 		}
 
-		public void Ellipse(int x, int y, int start_angle, int end_angle, int radiusx, int radiusy, IList<Rectangle> updates = null)
+		public void Ellipse(int x, int y, int startAngle, int endAngle, int radiusx, int radiusy, IList<Rectangle> updates = null)
 		{
 			var rows = CreateScanRows();
-			if (start_angle > end_angle)
+			if (startAngle > endAngle)
 			{
-				ScanEllipse(x, y, 0, end_angle, radiusx, radiusy, rows);
-				ScanEllipse(x, y, start_angle, 360, radiusx, radiusy, rows);
+				ScanEllipse(x, y, 0, endAngle, radiusx, radiusy, rows);
+				ScanEllipse(x, y, startAngle, 360, radiusx, radiusy, rows);
 			}
 			else
-				ScanEllipse(x, y, start_angle, end_angle, radiusx, radiusy, rows);
+				ScanEllipse(x, y, startAngle, endAngle, radiusx, radiusy, rows);
 			DrawScan(rows, updates);
 
 #if BLAH
@@ -1644,22 +1630,22 @@ namespace Pablo.BGI
 			Bar(x - xoffset, y + yoffset, x + xoffset, y + yoffset, updates);
 		}
 
-		bool InAngle(int angle, int start_angle, int end_angle)
+		static bool InAngle(int angle, int startAngle, int endAngle)
 		{
-			return (angle >= start_angle && angle <= end_angle);
+			return (angle >= startAngle && angle <= endAngle);
 		}
 
-		void symmetryScan(int x, int y, int start_angle, int end_angle, int xoffset, int yoffset, int radiusx, int radiusy, int angle, bool horizontal, IList<int>[] rows)
+		void symmetryScan(int x, int y, int startAngle, int endAngle, int xoffset, int yoffset, int angle, bool horizontal, IList<int>[] rows)
 		{
 			if (lineThickness == 1)
 			{
-				if (InAngle(angle, start_angle, end_angle))
+				if (InAngle(angle, startAngle, endAngle))
 					AddScanRow(rows, x + xoffset, y - yoffset);
-				if (InAngle(180 - angle, start_angle, end_angle))
+				if (InAngle(180 - angle, startAngle, endAngle))
 					AddScanRow(rows, x - xoffset, y - yoffset);
-				if (InAngle(180 + angle, start_angle, end_angle))
+				if (InAngle(180 + angle, startAngle, endAngle))
 					AddScanRow(rows, x - xoffset, y + yoffset);
-				if (InAngle(360 - angle, start_angle, end_angle))
+				if (InAngle(360 - angle, startAngle, endAngle))
 					AddScanRow(rows, x + xoffset, y + yoffset);
 			}
 			else
@@ -1667,24 +1653,24 @@ namespace Pablo.BGI
 				int offset = lineThickness / 2;
 				if (horizontal)
 				{
-					if (InAngle(angle, start_angle, end_angle))
+					if (InAngle(angle, startAngle, endAngle))
 						AddScanHorizontal(rows, x + xoffset - offset, y - yoffset, lineThickness);
-					if (InAngle(180 - angle, start_angle, end_angle))
+					if (InAngle(180 - angle, startAngle, endAngle))
 						AddScanHorizontal(rows, x - xoffset - offset, y - yoffset, lineThickness);
-					if (InAngle(180 + angle, start_angle, end_angle))
+					if (InAngle(180 + angle, startAngle, endAngle))
 						AddScanHorizontal(rows, x - xoffset - offset, y + yoffset, lineThickness);
-					if (InAngle(360 - angle, start_angle, end_angle))
+					if (InAngle(360 - angle, startAngle, endAngle))
 						AddScanHorizontal(rows, x + xoffset - offset, y + yoffset, lineThickness);
 				}
 				else
 				{
-					if (InAngle(angle, start_angle, end_angle))
+					if (InAngle(angle, startAngle, endAngle))
 						AddScanVertical(rows, x + xoffset, y - yoffset - offset, lineThickness);
-					if (InAngle(180 - angle, start_angle, end_angle))
+					if (InAngle(180 - angle, startAngle, endAngle))
 						AddScanVertical(rows, x - xoffset, y - yoffset - offset, lineThickness);
-					if (InAngle(180 + angle, start_angle, end_angle))
+					if (InAngle(180 + angle, startAngle, endAngle))
 						AddScanVertical(rows, x - xoffset, y + yoffset - offset, lineThickness);
-					if (InAngle(360 - angle, start_angle, end_angle))
+					if (InAngle(360 - angle, startAngle, endAngle))
 						AddScanVertical(rows, x + xoffset, y + yoffset - offset, lineThickness);
 				}
 
@@ -1773,18 +1759,18 @@ namespace Pablo.BGI
 			);
 		}
 
-		public void Sector(int x, int y, int start_angle, int end_angle, int radiusx, int radiusy, IList<Rectangle> updates = null)
+		public void Sector(int x, int y, int startAngle, int endAngle, int radiusx, int radiusy, IList<Rectangle> updates = null)
 		{
 			var drawUpdates = updates ?? new List<Rectangle>();
 			var center = new Point(x, y);
 			var rows = CreateScanRows();
-			var startPoint = center + GetAngleSize(start_angle, radiusx, radiusy);
-			var endPoint = center + GetAngleSize(end_angle, radiusx, radiusy);
+			var startPoint = center + GetAngleSize(startAngle, radiusx, radiusy);
+			var endPoint = center + GetAngleSize(endAngle, radiusx, radiusy);
 
 			var oldthickness = GetLineThickness();
 			if (lineStyle != LineStyle.Solid)
 				lineThickness = 1;
-			ScanEllipse(x, y, start_angle, end_angle, radiusx, radiusy, rows);
+			ScanEllipse(x, y, startAngle, endAngle, radiusx, radiusy, rows);
 
 			ScanLine(center, startPoint, rows, true);
 			ScanLine(center, endPoint, rows, true);
@@ -1795,7 +1781,7 @@ namespace Pablo.BGI
 			if (lineStyle == LineStyle.Solid)
 			{
 				rows = CreateScanRows(); // ugh, twice, really?!
-				ScanEllipse(x, y, start_angle, end_angle, radiusx, radiusy, rows);
+				ScanEllipse(x, y, startAngle, endAngle, radiusx, radiusy, rows);
 				DrawScan(rows, drawUpdates);
 			}
 			if (lineStyle != LineStyle.Solid)
@@ -1809,9 +1795,9 @@ namespace Pablo.BGI
 				UpdateRegion(drawUpdates);
 		}
 
-		public void PieSlice(int x, int y, int start_angle, int end_angle, int radius, IList<Rectangle> updates = null)
+		public void PieSlice(int x, int y, int startAngle, int endAngle, int radius, IList<Rectangle> updates = null)
 		{
-			Sector(x, y, start_angle, end_angle, radius, Trunc(radius * ASPECT), updates);
+			Sector(x, y, startAngle, endAngle, radius, Trunc(radius * ASPECT), updates);
 		}
 
 		public void Bar(int left, int top, int right, int bottom, IList<Rectangle> updates = null)
@@ -1829,7 +1815,7 @@ namespace Pablo.BGI
 				var innerRight = rect.InnerRight;
 				var innerBottom = rect.InnerBottom;
 				int ystart = rect.Top * bd.ScanWidth + rect.Left;
-				if (this.fillStyle == FillStyle.Solid)
+				if (fillStyle == FillStyle.Solid)
 				{
 					for (int y = rect.Top; y <= innerBottom; y++)
 					{
@@ -1895,7 +1881,7 @@ namespace Pablo.BGI
 			Bar(left + lineThickness, top + lineThickness, right - lineThickness + 1, bottom - lineThickness + 1, drawUpdates);
 
 			int dy = (int)(depth * tan30);
-			Point[] p = new Point[topflag != 0 ? 11 : 8];
+			var p = new Point[topflag != 0 ? 11 : 8];
 			p[0].X = right;
 			p[0].Y = bottom;
 			p[1].X = right;
@@ -1928,9 +1914,9 @@ namespace Pablo.BGI
 				UpdateRegion(drawUpdates);
 		}
 
-		public void Arc(int x, int y, int start_angle, int end_angle, int radius, IList<Rectangle> updates = null)
+		public void Arc(int x, int y, int startAngle, int endAngle, int radius, IList<Rectangle> updates = null)
 		{
-			this.Ellipse(x, y, start_angle, end_angle, radius, Trunc(radius * ASPECT), updates);
+			Ellipse(x, y, startAngle, endAngle, radius, Trunc(radius * ASPECT), updates);
 		}
 
 		public WriteMode GetWriteMode()
@@ -2010,12 +1996,12 @@ namespace Pablo.BGI
 
 		public byte[] GetFillPattern()
 		{
-			return GetFillPattern(this.fillStyle);
+			return GetFillPattern(fillStyle);
 		}
 
 		public void ClearDevice(IList<Rectangle> updates = null)
 		{
-			this.Bar(new Rectangle(windowSize), updates);
+			Bar(new Rectangle(windowSize), updates);
 			MoveTo(0, 0);
 		}
 
@@ -2106,7 +2092,7 @@ namespace Pablo.BGI
 		{
 			rect.Restrict(viewPort);
 
-			BGIImage bi = new BGIImage
+			var bi = new BGIImage
 			{
 				Size = rect.Size,
 				Origin = rect.TopLeft
@@ -2119,7 +2105,7 @@ namespace Pablo.BGI
 			lock (bitmapLock)
 			{
 				int start = 0;
-				byte* pdest = this.bits + (rect.Top * bd.ScanWidth + rect.Left);
+				byte* pdest = bits + (rect.Top * bd.ScanWidth + rect.Left);
 				for (int cy = 0; cy < bi.Size.Height; cy++)
 				{
 					Marshal.Copy(new IntPtr(pdest), imageBits, start, bi.Size.Width);
@@ -2132,31 +2118,31 @@ namespace Pablo.BGI
 			return bi;
 		}
 
-		public void SetTextStyle(FontType font, Direction direction, int char_size)
+		public void SetTextStyle(FontType font, Direction direction, int charSize)
 		{
-			if (char_size > 10)
-				char_size = 10;
-			if (char_size < 1)
-				char_size = 1;
+			if (charSize > 10)
+				charSize = 10;
+			if (charSize < 1)
+				charSize = 1;
 
 			this.font = font;
 			textDirection = direction;
-			characterSize = char_size;
+			characterSize = charSize;
 		}
 
 		public FontType GetFontType()
 		{
-			return this.font;
+			return font;
 		}
 
 		public Direction GetTextDirection()
 		{
-			return this.textDirection;
+			return textDirection;
 		}
 
 		public int GetFontSize()
 		{
-			return this.characterSize;
+			return characterSize;
 		}
 
 		public void OutText(string str, IList<Rectangle> updates = null)
@@ -2196,16 +2182,16 @@ namespace Pablo.BGI
 		{
 			if (string.IsNullOrEmpty(str))
 				return;
-			var font = LoadFont(this.font);
+			var loadedFont = LoadFont(font);
 			int oldThickness = lineThickness;
 			lineThickness = 1;
 			var oldline = GetLineStyle();
 			SetLineStyle(LineStyle.Solid);
 
-			if (font != null)
+			if (loadedFont != null)
 			{
 				var drawUpdates = updates ?? new List<Rectangle>();
-				Size textSize = font.GetTextSize(str, textDirection, characterSize);
+				Size textSize = loadedFont.GetTextSize(str, textDirection, characterSize);
 				float xf = x;
 				float yf = y;
 
@@ -2213,7 +2199,7 @@ namespace Pablo.BGI
 					yf += textSize.Height;
 				foreach (byte c in BGICanvas.Encoding.GetBytes(str))
 				{
-					var width = font.DrawCharacter(this, xf, yf, textDirection, characterSize, c, drawUpdates);
+					var width = loadedFont.DrawCharacter(this, xf, yf, textDirection, characterSize, c, drawUpdates);
 					if (textDirection == Direction.Horizontal)
 						xf += width;
 					else
@@ -2229,7 +2215,7 @@ namespace Pablo.BGI
 
 		public IBGIFont LoadFont()
 		{
-			return LoadFont(this.font);
+			return LoadFont(font);
 		}
 
 		public IBGIFont LoadFont(FontType font)
@@ -2237,7 +2223,7 @@ namespace Pablo.BGI
 			IBGIFont fontData;
 			if (!fontCache.TryGetValue(font, out fontData))
 			{
-				string fontName = (string)fontTypes[(int)font];
+				string fontName = fontTypes[(int)font];
 				if (fontName == string.Empty)
 				{
 					Pablo.Formats.Character.BitFont f = Pablo.Formats.Character.BitFont.GetStandard8x8();
@@ -2246,7 +2232,7 @@ namespace Pablo.BGI
 				else
 				{
 					var stream = GetType().Assembly.GetManifestResourceStream(string.Format("Pablo.BGI.Fonts.{0}", fontName));
-					BGIFont bf = new BGIFont();
+					var bf = new BGIFont();
 					bf.Load(stream);
 					fontData = bf;
 				}
@@ -2295,15 +2281,15 @@ namespace Pablo.BGI
 				bottom = temp;
 			}
 
-			UpdateRegion(new Rectangle[] { new Rectangle(left, top, right - left + 1, bottom - top + 1) }, graphics);
+			UpdateRegion(new [] { new Rectangle(left, top, right - left + 1, bottom - top + 1) }, graphics);
 		}
 
 		public void UpdateRegion(Rectangle rect, Graphics graphics = null)
 		{
-			UpdateRegion(new Rectangle[] { rect }, graphics);
+			UpdateRegion(new [] { rect }, graphics);
 		}
 
-		object bitmapLock = new object();
+		readonly object bitmapLock = new object();
 		public void UpdateRegion(IList<Rectangle> rects, Graphics graphics = null)
 		{
 			const int ComplexityMaximum = 1000;
@@ -2323,22 +2309,22 @@ namespace Pablo.BGI
 				if (rectBounds.Width == 0 || rectBounds.Height == 0)
 					return;
 
-				if (generator.IsWpf || generator.IsIos)
+				var platform = Platform.Instance;
+				if (platform.IsWpf || platform.IsIos || platform.IsMac)
 				{
 					Application.Instance.AsyncInvoke(delegate
 					{
 
 						lock (bitmapLock)
 						{
-							var control = this.Control;
-							if (bmp != null && control != null)
+							if (bmp != null && Control != null)
 							{ // in case it was disposed
 								/*foreach (var rect in rects) {
 									rect.Restrict (viewPort);
 									this.Control.Invalidate (rect);
 								}*/
 								//Console.WriteLine ("Rect: {0}, {1}", rectBounds, new System.Diagnostics.StackTrace());
-								control.Invalidate(rectBounds);
+								Control.Invalidate(rectBounds);
 							}
 						}
 					});
@@ -2502,7 +2488,7 @@ namespace Pablo.BGI
 										if (!IsDefaultScale)
 										{
 											rectBounds.Inflate(1, 1);
-											rectBounds.Restrict(this.viewPort);
+											rectBounds.Restrict(viewPort);
 											var newBounds = Eto.Drawing.Rectangle.Round((RectangleF)rectBounds / Scale);
 											g.DrawImage(bmp, Eto.Drawing.Rectangle.Round((RectangleF)newBounds * Scale), newBounds);
 										}

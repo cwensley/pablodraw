@@ -35,7 +35,7 @@ namespace Pablo.Formats.Character
 			set
 			{
 				canvasSize = value;
-				ResizeCanvas(value);
+				ResizeCanvas(value, false);
 			}
 		}
 
@@ -301,10 +301,11 @@ namespace Pablo.Formats.Character
 			OnUpdate(rect);
 		}
 
-		public void ResizeCanvas(Size canvasSize, bool notify)
+		public void ResizeCanvas(Size canvasSize, bool notify, bool keepContent = false)
 		{
-			ResizeCanvas(canvasSize);
+			var oldCanvasSize = Size;
 			this.canvasSize = canvasSize;
+			ResizeCanvas(oldCanvasSize, keepContent);
 			if (notify)
 				OnSizeChanged(EventArgs.Empty);
 		}
@@ -378,7 +379,7 @@ namespace Pablo.Formats.Character
 			return -1;
 		}
 
-		protected abstract void ResizeCanvas(Size newCanvasSize);
+		protected abstract void ResizeCanvas(Size oldCanvasSize, bool keepContent);
 
 		protected virtual void OnSizeChanged(EventArgs e)
 		{

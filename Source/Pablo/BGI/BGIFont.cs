@@ -154,7 +154,7 @@ namespace Pablo.BGI
 			// fheader
 			headerSize = br.ReadUInt16();
 			byte[] name = br.ReadBytes(4);
-			fontName = ASCIIEncoding.ASCII.GetString(name);
+			fontName = Encoding.ASCII.GetString(name);
 			fontSize = br.ReadUInt16();
 			fontMajor = br.ReadByte();
 			fontMinor = br.ReadByte();
@@ -174,7 +174,7 @@ namespace Pablo.BGI
 			org_to_base = br.ReadSByte();
 			org_to_dec = br.ReadSByte();
 			byte[] shortName = br.ReadBytes(4);
-			shortFontName = ASCIIEncoding.ASCII.GetString(shortName);
+			shortFontName = Encoding.ASCII.GetString(shortName);
 			br.ReadByte(); // unused byte
 
 			// read offset table

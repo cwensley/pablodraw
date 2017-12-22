@@ -1,38 +1,31 @@
 using System;
-using System.Text;
-using System.Reflection;
-using System.Collections;
-using Eto;
-using Eto.Drawing;
 using Eto.Forms;
-using Pablo.Formats;
 using Pablo.Network;
-using System.Linq;
 
 namespace Pablo.Interface.Actions
 {
-	public class ClientConnect : ButtonAction
+	public class ClientConnect : Command, IDisposable
 	{
-		Main main;
+		readonly Main main;
 		public const string ActionID = "clientConnect";
 		
 		public ClientConnect (Main main)
 		{
 			this.main = main;
-			base.ID = ActionID;
-			this.Text = "&Connect to server...|Connect|Connects to a pablodraw server";
-			this.Accelerator = Command.CommonModifier | Key.Alt | Key.C;
+			ID = ActionID;
+			MenuText = "&Connect to server...";
+			ToolTip = "Connects to a pablodraw server";
+			Shortcut = PabloCommand.CommonModifier | Keys.Alt | Keys.C;
 			SetEnabled ();
 			
 			main.ClientChanged += main_Changed;
 		}
-		
-		protected override void OnRemoved (EventArgs e)
+
+		public void Dispose()
 		{
-			base.OnRemoved (e);
 			main.ClientChanged -= main_Changed;
 		}
-		
+
 		void main_Changed (object sender, EventArgs e)
 		{
 			SetEnabled ();
@@ -40,10 +33,10 @@ namespace Pablo.Interface.Actions
 		
 		void SetEnabled ()
 		{
-			this.Enabled = (main.Client == null);
+			Enabled = (main.Client == null);
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
 			try {
 				var dlg = new Dialogs.ClientDialog{
@@ -51,7 +44,7 @@ namespace Pablo.Interface.Actions
 					ServerIP = main.Settings.ServerIP,
 					ServerPort = main.Settings.ServerPort
 				};
-				var result = dlg.ShowDialog (main);
+				var result = dlg.ShowModal (main);
 				if (result == DialogResult.Ok) {
 					main.Settings.Alias = dlg.Alias;
 					main.Settings.ServerIP = dlg.ServerIP;
@@ -68,7 +61,7 @@ namespace Pablo.Interface.Actions
 					main.Client = client;
 				}
 			} catch (Exception exception) {
-				MessageBox.Show (main.Generator, main, string.Format ("Error connecting to server: {0}", exception.Message));
+				MessageBox.Show (main, string.Format ("Error connecting to server: {0}", exception.Message));
 			}
 		}
 	}

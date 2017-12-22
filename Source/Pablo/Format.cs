@@ -51,7 +51,37 @@ namespace Pablo
             }
             return false;
         }
-     
+
+		public Handler LoadHandler(string fileName)
+		{
+			var doc = Info.Create();
+			var handler = doc.CreateHandler();
+			doc.Load(fileName, this, handler);
+			return handler;
+		}
+
+		public Handler LoadHandler(Stream stream)
+		{
+			var doc = Info.Create();
+			var handler = doc.CreateHandler();
+			doc.Load(stream, this, handler);
+			return handler;
+		}
+
+		public Document LoadDocument(string fileName)
+		{
+			var doc = Info.Create();
+			doc.Load(fileName, this, null);
+			return doc;
+		}
+
+		public Document LoadDocument(Stream stream)
+		{
+			var doc = Info.Create();
+			doc.Load(stream, this, null);
+			return doc;
+		}
+
         public virtual void ReadXml (XmlElement element)
         {
             string extensionsString = element.GetAttribute("extensions");
@@ -97,12 +127,17 @@ namespace Pablo
         public Format Find (string fileName)
         {
             string extension = Path.GetExtension (fileName);
-            extension = extension.Trim ('.');
-			if (!string.IsNullOrEmpty (extension)) {
-            	foreach (Format format in this.Values) {
-                	if (format.TypeMatches (extension))
-	                    return format;
-    	        }
+			if (extension != null)
+			{
+				extension = extension.Trim('.');
+				if (!string.IsNullOrEmpty(extension))
+				{
+					foreach (Format format in this.Values)
+					{
+						if (format.TypeMatches(extension))
+							return format;
+					}
+				}
 			}
             return null;
         }

@@ -7,7 +7,7 @@ namespace Pablo.Sauce.Types.Binary
 		where T: DataTypeInfo
 	{
 		public Admin (T dataType)
-			: base(dataType, false)
+			: base(dataType)
 		{
 		}
 

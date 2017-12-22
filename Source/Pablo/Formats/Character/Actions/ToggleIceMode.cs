@@ -6,39 +6,42 @@ using Eto;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class ToggleIceMode : CheckAction, ICommand
+	public class ToggleIceMode : CheckCommand, ICommand
 	{
 		CharacterHandler handler;
-		
 		public const string ActionID = "character_ToggleIceMode";
-		
-		public ToggleIceMode (CharacterHandler handler)
+
+		public ToggleIceMode(CharacterHandler handler)
 		{
 			this.handler = handler;
 			this.ID = ActionID;
-			this.Text = "Use iCE Colors|iCE|Toggle iCE colors (bright backgrounds) vs. Blinking Foreground characters";
+			MenuText = "Use iCE Colors";
+			ToolBarText = "iCE";
+			ToolTip = "Toggle iCE colors (bright backgrounds) vs. Blinking Foreground characters";
 			if (handler.Document.EditMode || handler.Client != null)
 				this.Checked = handler.CharacterDocument.ICEColours;
 			else
 				this.Checked = handler.Info.iCEColours;
 			
-			if (handler.Client != null) {
-				handler.CharacterDocument.ICEColoursChanged += new EventHandler<EventArgs>(delegate {
+			if (handler.Client != null)
+			{
+				handler.CharacterDocument.ICEColoursChanged += new EventHandler<EventArgs>(delegate
+				{
 					this.Checked = handler.CharacterDocument.ICEColours;
 				}).MakeWeak(e => handler.CharacterDocument.ICEColoursChanged -= e);
 				this.Enabled = handler.Client.CurrentUser.Level >= this.Level;
 			}
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated (e);
+			base.OnExecuted(e);
 			if (handler.Client != null)
-				handler.Client.SendCommand (this);
+				handler.Client.SendCommand(this);
 			else
-				Do (!this.Checked);
+				Do(Checked);
 		}
-		
+
 		void Do(bool useIce)
 		{
 			if (handler.Document.EditMode || handler.Client != null)
@@ -47,30 +50,33 @@ namespace Pablo.Formats.Character.Actions
 				handler.Info.iCEColours = useIce;
 			this.Checked = useIce;
 		}
-		
 
-		public int CommandID {
+		public int CommandID
+		{
 			get { return (int)NetCommands.ToggleIceMode; }
 		}
 
-		public UserLevel Level {
+		public UserLevel Level
+		{
 			get { return UserLevel.Operator; }
 		}
 
-		public Lidgren.Network.NetDeliveryMethod DeliveryMethod {
+		public Lidgren.Network.NetDeliveryMethod DeliveryMethod
+		{
 			get { return NetDeliveryMethod.ReliableOrdered; }
 		}
 
-		public bool Send (Pablo.Network.SendCommandArgs args)
+		public bool Send(Pablo.Network.SendCommandArgs args)
 		{
-			args.Message.Write (!this.Checked);
+			args.Message.Write(this.Checked);
 			return true;
 		}
 
-		public void Receive (Pablo.Network.ReceiveCommandArgs args)
+		public void Receive(Pablo.Network.ReceiveCommandArgs args)
 		{
-			var useIce = args.Message.ReadBoolean ();
-			args.Invoke (delegate {
+			var useIce = args.Message.ReadBoolean();
+			args.Invoke(delegate
+			{
 				Do(useIce);
 			});
 		}

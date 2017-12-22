@@ -19,7 +19,6 @@ namespace Pablo.Interface
 
 
 		public FileList(Main main)
-			: base(main.Generator)
 		{
 			this.settings = main.Settings;
 			this.Style = "fileList";
@@ -162,7 +161,7 @@ namespace Pablo.Interface
 
 				items = newitems;
 
-				Application.Instance.Invoke(delegate
+				PabloApplication.Instance.Invoke(delegate
 				{
 					Enabled = true;
 					this.directory = directory;
@@ -175,7 +174,7 @@ namespace Pablo.Interface
 			}
 			catch (Exception ex)
 			{
-				Application.Instance.Invoke(delegate
+				PabloApplication.Instance.Invoke(delegate
 				{
 					Enabled = true;
 					MessageBox.Show(this, string.Format("Error loading directory contents\n{0}", ex));
@@ -189,7 +188,7 @@ namespace Pablo.Interface
 		{
 			directory = directory ?? this.directory;
 			hasfocus = HasFocus;
-			if (Generator.IsWinForms && this.Loaded) // hack since winforms doesn't set focus if disabled
+			if (Platform.IsWinForms && this.Loaded) // hack since winforms doesn't set focus if disabled
 				Enabled = false;
 			var listitems = new ListItemCollection();
 			listitems.Add(new ListItem { Text = "Loading..." });
@@ -200,7 +199,7 @@ namespace Pablo.Interface
 
 		}
 
-		public override void OnActivated(EventArgs e)
+		protected override void OnActivated(EventArgs e)
 		{
 			base.OnActivated(e);
 			int index = SelectedIndex;

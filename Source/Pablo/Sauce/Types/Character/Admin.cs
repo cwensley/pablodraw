@@ -7,7 +7,7 @@ namespace Pablo.Sauce.Types.Character
 		where T: DataTypeInfo
 	{
 		public Admin(T dataType)
-			: base(dataType, true)
+			: base(dataType)
 		{
 		}
 

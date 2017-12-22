@@ -5,7 +5,7 @@ using Pablo.Controls;
 
 namespace Pablo.Formats.Character.Controls
 {
-	public class ColourEditor : Dialog
+	public class ColourEditor : Dialog<bool>
 	{
 		readonly CharacterHandler handler;
 		Scrollable coloursHolder;
@@ -36,7 +36,7 @@ namespace Pablo.Formats.Character.Controls
 				}
 			}
 
-			public override void OnPaint(PaintEventArgs pe)
+			protected override void OnPaint(PaintEventArgs pe)
 			{
 				base.OnPaint(pe);
 				if (HasFocus)
@@ -55,25 +55,25 @@ namespace Pablo.Formats.Character.Controls
 				CanFocus = true;
 			}
 
-			public override void OnGotFocus(EventArgs e)
+			protected override void OnGotFocus(EventArgs e)
 			{
 				base.OnGotFocus(e);
 				Invalidate();
 			}
 
-			public override void OnLostFocus(EventArgs e)
+			protected override void OnLostFocus(EventArgs e)
 			{
 				base.OnLostFocus(e);
 				Invalidate();
 			}
 
-			public override void OnMouseDown(MouseEventArgs e)
+			protected override void OnMouseDown(MouseEventArgs e)
 			{
 				base.OnMouseDown(e);
 				Editor.SelectedIndex = Index;
 			}
 
-			public override void OnMouseDoubleClick(MouseEventArgs e)
+			protected override void OnMouseDoubleClick(MouseEventArgs e)
 			{
 				base.OnMouseDoubleClick(e);
 
@@ -106,7 +106,7 @@ namespace Pablo.Formats.Character.Controls
 				Size = new Size(50, 50)
 			});
 			
-			layout.BeginVertical(true, true);
+			layout.BeginVertical(xscale: true, yscale: true);
 			layout.BeginHorizontal();
 			layout.Add(ColoursHolder(), true);
 			layout.Add(ColourButtons());
@@ -220,7 +220,7 @@ namespace Pablo.Formats.Character.Controls
 			
 			control.Click += delegate
 			{
-				DialogResult = DialogResult.Cancel;
+				Result = false;
 				Close();
 			};
 			AbortButton = control;
@@ -234,7 +234,7 @@ namespace Pablo.Formats.Character.Controls
 			
 			control.Click += delegate
 			{
-				DialogResult = DialogResult.Ok;
+				Result = true;
 				if (handler.Client != null)
 				{
 					handler.Client.SendCommand(new Actions.SetPalette(handler) { Palette = Palette });

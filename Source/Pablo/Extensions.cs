@@ -17,9 +17,9 @@ namespace Pablo
 		    }
 		}
 		
-		public static void WriteTo(this Stream source, Stream stream)
+		public static void WriteTo(this Stream source, Stream stream, int bufferSize = 16384)
 		{
-			var buffer = new byte[4096];
+			var buffer = new byte[bufferSize];
 			while (true) {
 				var len = source.Read (buffer, 0, buffer.Length);
 				if (len <= 0) break;

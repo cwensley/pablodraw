@@ -62,7 +62,7 @@ namespace Pablo.Formats.Rip.Tools
 			return angle;
 		}
 		
-		void UpdateArc (Point location, Key modifiers)
+		void UpdateArc (Point location, Keys modifiers)
 		{
 			if (Command == null)
 				return;
@@ -128,14 +128,14 @@ namespace Pablo.Formats.Rip.Tools
 			this.BGI.SetColor (oldcol);
 		}
 		
-		sealed protected override void FinishCommand (Key modifiers, IList<Eto.Drawing.Rectangle> updates)
+		sealed protected override void FinishCommand (Keys modifiers, IList<Eto.Drawing.Rectangle> updates)
 		{
 			RemoveDrawing (updates);
 			adjustingArc = true;
 			ApplyDrawing (updates);
 		}
 		
-		void DoFinish(Key modifiers)
+		void DoFinish(Keys modifiers)
 		{
 			var updates = new List<Rectangle>();
 			RemoveDrawing (updates);
@@ -144,7 +144,7 @@ namespace Pablo.Formats.Rip.Tools
 			Reset ();
 		}
 		
-		protected virtual void Finish (Key modifiers, IList<Rectangle> updates = null)
+		protected virtual void Finish (Keys modifiers, IList<Rectangle> updates = null)
 		{
 			base.FinishCommand (modifiers, updates);
 		}

@@ -3,20 +3,20 @@ using Eto.Forms;
 
 namespace Pablo.Interface.Actions
 {
-	public class Homepage : ButtonAction
+	public class Homepage : Command
 	{
 		public const string ActionID = "homepage";
 		
 		public Homepage ()
 		{
-			this.Text = "PabloDraw Website|PabloDraw Website|PabloDraw Website";
+			this.MenuText = "PabloDraw Website";
 			base.ID = ActionID;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated (e);
-			Application.Instance.Open("http://picoe.ca/products/pablodraw");
+			base.OnExecuted(e);
+			PabloApplication.Instance.Open("http://picoe.ca/products/pablodraw");
 		}
 	}
 }

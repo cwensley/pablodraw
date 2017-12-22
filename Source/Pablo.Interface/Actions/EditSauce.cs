@@ -8,7 +8,7 @@ using Pablo.Sauce;
 
 namespace Pablo.Interface.Actions
 {
-	public class EditSauce : Command
+	public class EditSauce : PabloCommand, IDisposable
 	{
 		readonly Main main;
 		public const string ActionID = "editSauce";
@@ -18,14 +18,17 @@ namespace Pablo.Interface.Actions
 		{
 			this.main = main;
 			ID = ActionID;
-			Text = "Edit &Sauce Info|Sauce|View/Edit sauce infomation for the current file";
-			Image = Icon.FromResource("Pablo.Interface.Icons.sauce.ico");
-			Enabled = main.Document != null;
-			if (main.Generator.IsMac)
-				Accelerator = Command.CommonModifier | Key.I;
+			MenuText = "Edit &Sauce Info";
+			ToolBarText = "Sauce";
+			ToolTip = "View/Edit sauce infomation for the current file";
+			Image = ImageCache.IconFromResource("Pablo.Interface.Icons.sauce.ico");
+			Enabled = (main.EditMode && main.Document != null) || (!main.EditMode && main.FileList.SelectedFile != null);
+			if (main.Platform.IsMac)
+				Shortcut = PabloCommand.CommonModifier | Keys.I;
 			else
-				Accelerator = Command.CommonModifier | Key.F11;
+				Shortcut = PabloCommand.CommonModifier | Keys.F11;
 			main.DocumentChanged += document_Changed;
+			main.FileList.SelectedIndexChanged += document_Changed;
 		}
 
 		public override int CommandID
@@ -38,15 +41,15 @@ namespace Pablo.Interface.Actions
 			get { return UserLevel.Viewer; }
 		}
 
-		protected override void OnRemoved(EventArgs e)
+		public void Dispose()
 		{
-			base.OnRemoved(e);
 			main.DocumentChanged -= document_Changed;
+			main.FileList.SelectedIndexChanged -= document_Changed;
 		}
 
 		void document_Changed(object sender, EventArgs e)
 		{
-			Enabled = main.Document != null;
+			Enabled = (main.EditMode && main.Document != null) || (!main.EditMode && main.FileList.SelectedFile != null);
 		}
 
 		protected override void Execute(CommandExecuteArgs args)
@@ -58,7 +61,7 @@ namespace Pablo.Interface.Actions
 				if (file != null || doc != null)
 				{
 					var si = new SauceInfoDialog(file, doc);
-					if (si.ShowDialog(main) == DialogResult.Ok && !main.EditMode)
+					if (si.ShowModal(main) == DialogResult.Ok && !main.EditMode)
 						main.ReloadFile(false, false, false);
 				}
 			}
@@ -71,7 +74,7 @@ namespace Pablo.Interface.Actions
 			{
 				var si = new SauceInfoDialog(null, main.Document, args.CurrentUser.Level < UserLevel.Editor, false);
 
-				var result = si.ShowDialog(main);
+				var result = si.ShowModal(main);
 				if (result == DialogResult.Ok)
 				{
 					if (si.Sauce == null)

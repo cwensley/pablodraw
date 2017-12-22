@@ -6,7 +6,7 @@ using Eto;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class ToggleDosAspect : CheckAction, ICommand
+	public class ToggleDosAspect : CheckCommand, ICommand
 	{
 		readonly CharacterHandler handler;
 		public const string ActionID = "character_ToggleDosAspect";
@@ -15,7 +15,8 @@ namespace Pablo.Formats.Character.Actions
 		{
 			this.handler = handler;
 			this.ID = ActionID;
-			this.Text = "Emulate &Legacy Aspect|Aspect|Stretch image vertically to emulate legacy display";
+			this.MenuText = "Emulate &Legacy Aspect";
+			this.ToolTip = "Stretch image vertically to emulate legacy display";
 			
 			if (handler.Document.EditMode || handler.Client != null)
 			{
@@ -35,16 +36,16 @@ namespace Pablo.Formats.Character.Actions
 			}
 		}
 
-		protected override void OnActivated(EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated(e);
+			base.OnExecuted(e);
 			if (handler.Client != null)
 			{
 				handler.Client.SendCommand(this);
 			}
 			else
 			{
-				Do(!Checked);
+				Do(Checked);
 			}
 		}
 
@@ -74,7 +75,7 @@ namespace Pablo.Formats.Character.Actions
 
 		public bool Send(SendCommandArgs args)
 		{
-			args.Message.Write(!Checked);
+			args.Message.Write(Checked);
 			return true;
 		}
 

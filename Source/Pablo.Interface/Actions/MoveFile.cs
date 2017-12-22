@@ -8,7 +8,7 @@ using Eto;
 
 namespace Pablo.Interface.Actions
 {
-	public class MoveFile : ButtonAction
+	public class MoveFile : Command, IDisposable
 	{
 		Main main;
 		
@@ -18,15 +18,15 @@ namespace Pablo.Interface.Actions
 		{
 			this.main = main;
 			base.ID = ActionID;
-			this.Text = "&Move...|Move|Move the selected file to another folder";
+			this.MenuText = "&Move...";
+			this.ToolTip = "Move the selected file to another folder";
 			this.Enabled = main.FileList.SelectedFile != null;
-			this.Accelerator = Command.CommonModifier | Key.Shift | Key.M;
+			this.Shortcut = PabloCommand.CommonModifier | Keys.Shift | Keys.M;
 			main.FileList.SelectedIndexChanged += fileList_Changed;
 		}
-		
-		protected override void OnRemoved (EventArgs e)
+
+		public void Dispose()
 		{
-			base.OnRemoved (e);
 			main.FileList.SelectedIndexChanged -= fileList_Changed;
 		}
 		
@@ -35,11 +35,9 @@ namespace Pablo.Interface.Actions
 			this.Enabled = main.FileList.SelectedFile != null;
 		}
 
-		protected override void OnActivated (EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated (e);
-
-			
+			base.OnExecuted(e);
 			var file = main.FileList.SelectedFile;
 			if (file != null && File.Exists(file.FullName)) {
 				var dialog = new SelectFolderDialog();

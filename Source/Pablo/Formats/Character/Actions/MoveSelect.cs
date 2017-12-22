@@ -8,15 +8,11 @@ namespace Pablo.Formats.Character.Actions
 	public class MoveSelect : Move
 	{
 		Selection tool;
-		public MoveSelect(Selection tool, string id, string name, string text, MoveDirection direction, Key modifier, params Key[] accelerators)
-			: base(tool.Handler, id, name, text, direction, accelerators)
+		public MoveSelect(Selection tool, string id, MoveDirection direction, Keys modifier, Keys accelerator)
+			: base(tool.Handler, id, direction, accelerator | modifier)
 		{
 			this.tool = tool;
-			this.ID = this.ID + "_Select";
-			for (int i = 0; i<Accelerators.Length; i++)
-			{
-				Accelerators[i] |= modifier;
-			}
+			this.ID += "_Select";
 		}
 		
 		protected override void Execute(CommandExecuteArgs args)

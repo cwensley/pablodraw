@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Pablo.Interface
 {
-	public class NewFileDialog : Dialog
+	public class NewFileDialog : Dialog<DialogResult>
 	{
 		ListBox fileTypeListBox;
 		Settings settings;
@@ -22,17 +22,17 @@ namespace Pablo.Interface
 		}
 		
 		/*
-		public override void OnKeyDown(KeyPressEventArgs e)
+		protected override void OnKeyDown(KeyPressEventArgs e)
 		{
 			if (e.KeyData == Key.Enter)
 			{
-				this.DialogResult = DialogResult.Ok;
+				this.Result = DialogResult.Ok;
 				this.Close();
 				e.Handled = true;
 			}
 			else if (e.KeyData == Key.Escape)
 			{
-				this.DialogResult = DialogResult.Cancel;
+				this.Result = DialogResult.Cancel;
 				this.Close();
 				e.Handled = true;
 			}
@@ -56,7 +56,7 @@ namespace Pablo.Interface
 				Size = new Size (150, 100)
 			};
 			fileTypeListBox.Activated += delegate {
-				this.DialogResult = DialogResult.Ok;
+				this.Result = DialogResult.Ok;
 				this.Close ();
 			};
 			fileTypeListBox.SelectedIndexChanged += fileTypeListBox_SelectedIndexChanged;
@@ -119,13 +119,13 @@ namespace Pablo.Interface
 		
 		private void cancelButton_Click (Object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
+			this.Result = DialogResult.Cancel;
 			this.Close ();
 		}
 		
 		private void okButton_Click (Object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Ok;
+			this.Result = DialogResult.Ok;
 			this.Close ();
 		}
 	}

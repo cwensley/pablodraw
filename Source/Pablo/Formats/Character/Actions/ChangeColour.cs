@@ -4,25 +4,23 @@ using System;
 namespace Pablo.Formats.Character.Actions
 {
 
-	public class ChangeColour : ButtonAction
+	public class ChangeColour : Command
 	{
 		int? foreground;
 		int? background;
 		CharacterHandler handler;
 		
-		public ChangeColour(CharacterHandler handler, int? foreground, int? background, Key accelerator)
+		public ChangeColour(CharacterHandler handler, int? foreground, int? background, Keys accelerator)
 		{
 			this.handler = handler;
 			this.foreground = foreground;
 			this.background = background;
 			ID = string.Format("character_changeColour:{0}:{1}", foreground, background);
-			Text = "Change Colour";
-			Description = "Change Colour";
-			Accelerator = accelerator;
+			MenuText = ToolBarText = "Change Colour";
+			Shortcut = accelerator;
 		}
 
-		
-		protected override void OnActivated (EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
 			Attribute attr = handler.DrawAttribute;
 			

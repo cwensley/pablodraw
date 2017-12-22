@@ -31,7 +31,7 @@ namespace Pablo.Formats.Character.Undo
 		public virtual void Receive (Pablo.Network.ReceiveCommandArgs args)
 		{
 			var id = args.Message.ReadInt32 ();
-			if (id != UndoID) throw new Eto.EtoException("invalid undo type");
+			if (id != UndoID) throw new InvalidOperationException("invalid undo type");
 			
 		}
 

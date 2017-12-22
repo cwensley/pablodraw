@@ -27,35 +27,7 @@ namespace PabloDraw.Console.CommandHandlers
 #endif
 			try
 			{
-				if (!string.IsNullOrEmpty(platform))
-				{
-					switch (platform.ToLowerInvariant())
-					{
-						case "gtk":
-							Generator.Initialize(Generators.GtkAssembly);
-							break;
-						case "winforms":
-						case "win":
-							Generator.Initialize(Generators.WinAssembly);
-							break;
-						case "wpf":
-							Generator.Initialize(Generators.WpfAssembly);
-							break;
-						case "osx":
-						case "mac":
-							Generator.Initialize(Generators.MacAssembly);
-							break;
-						case "auto":
-							Generator.Initialize(Generator.Detect);
-							break;
-						default:
-							throw new ArgumentException(string.Format("Platform '{0}' is not recognized. Must be one of (gtk|winforms|wpf)", platform));
-					}
-				}
-				else
-				{
-					Generator.Initialize(Generator.Detect);
-				}
+				EngineInternal.Initialize(platform);
 			}
 			catch (Exception ex)
 			{
@@ -65,9 +37,9 @@ namespace PabloDraw.Console.CommandHandlers
 #endif
 			}
 
-			mainthread = Generator.Current.ThreadStart();
+			mainthread = Platform.Instance.ThreadStart();
 
-			args.Writer.WriteLine("Using {0} platform", Generator.Current.ID);
+			args.Writer.WriteLine("Using {0} platform", Platform.Instance.ID);
 			return false;
 		}
 	}

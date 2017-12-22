@@ -15,7 +15,7 @@ namespace Pablo.Formats.Character.Controls
 		Both = Attribute | Character
 	}
 
-	public class FillDialog : Dialog
+	public class FillDialog : Dialog<bool>
 	{
 		RadioButton rbAttr;
 		RadioButton rbFore;
@@ -28,105 +28,118 @@ namespace Pablo.Formats.Character.Controls
 		Control characterPanel;
 		FontTextBox charTextBox;
 
-		public Attribute Attribute {
+		public Attribute Attribute
+		{
 			get { return colours.Attribute; }
 		}
 
-		public Character Character {
-			get { return charTextBox.Canvas [0, 0].Character; }
+		public Character Character
+		{
+			get { return charTextBox.Canvas[0, 0].Character; }
 		}
-		
+
 		new CharacterHandler Handler { get; set; }
 
-		public FillMode FillMode {
+		public FillMode FillMode
+		{
 			get { return mode; }
 		}
 
-		public override void OnKeyDown (KeyEventArgs e)
+		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			RadioButton rb = null;
-			switch (e.KeyData) {
-			case Key.F:
-				rb = rbFore;
-				break;
-			case Key.B:
-				rb = rbBack;
-				break;
-			case Key.C:
-				rb = rbChar;
-				break;
-			case Key.A:
-				rb = rbAttr;
-				break;
-			case Key.O:
-				rb = rbBoth;
-				break;
-			case Key.Escape:
-				DialogResult = DialogResult.Cancel;
-				e.Handled = true;
-				this.Close ();
-				break;
-			case Key.Enter:
-				if (colours.HasFocus && characterPanel.Visible) {
-					// now set character
-					charTextBox.Focus ();
-				} else {
-					DialogResult = DialogResult.Ok;
+			switch (e.KeyData)
+			{
+				case Keys.F:
+					rb = rbFore;
+					break;
+				case Keys.B:
+					rb = rbBack;
+					break;
+				case Keys.C:
+					rb = rbChar;
+					break;
+				case Keys.A:
+					rb = rbAttr;
+					break;
+				case Keys.O:
+					rb = rbBoth;
+					break;
+				case Keys.Escape:
+					Result = false;
 					e.Handled = true;
-					this.Close ();
-				}
-				break;
+					this.Close();
+					break;
+				case Keys.Enter:
+					if (colours.HasFocus && characterPanel.Visible)
+					{
+						// now set character
+						charTextBox.Focus();
+					}
+					else
+					{
+						Result = true;
+						e.Handled = true;
+						this.Close();
+					}
+					break;
 			}
-			if (rb != null) {
+			if (rb != null)
+			{
 				rb.Checked = true;
 				e.Handled = true;
-				UpdateSelection ();
+				UpdateSelection();
 			}
-			base.OnKeyDown (e);
+			base.OnKeyDown(e);
 		}
-		
-		Control ColoursControl ()
+
+		Control ColoursControl()
 		{
-			colours = new ColourSelection (Handler.CurrentPage.Palette, Handler.DrawAttribute);
-			colours.Size = new Size (250, 220);
-			colours.Selected += delegate {
-				if (colours.HasFocus && characterPanel.Visible) {
+			colours = new ColourSelection(Handler.CurrentPage.Palette, Handler.DrawAttribute);
+			colours.Size = new Size(250, 220);
+			colours.Selected += delegate
+			{
+				if (colours.HasFocus && characterPanel.Visible)
+				{
 					// now set character
-					charTextBox.Focus ();
-				} else {
-					DialogResult = DialogResult.Ok;
-					Close ();
+					charTextBox.Focus();
+				}
+				else
+				{
+					Result = true;
+					Close();
 				}
 			};
-			colours.Changed += delegate {
-				charTextBox.SetAttribute (this.Attribute);
+			colours.Changed += delegate
+			{
+				charTextBox.SetAttribute(this.Attribute);
 			};
 			return colours;
 		}
 
-		Control RightSection ()
+		Control RightSection()
 		{
-			var layout = new DynamicLayout (Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			
-			layout.Add (ColoursControl (), yscale: true);
-			layout.Add (CreateDrawCharacter ());
+			layout.Add(ColoursControl(), yscale: true);
+			layout.Add(CreateDrawCharacter());
 			
 			return layout;
 		}
-		
-		Control TopSection ()
+
+		Control TopSection()
 		{
-			var layout = new DynamicLayout (Padding.Empty);
-			layout.BeginHorizontal ();
-			layout.Add (RightSection (), true);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
+			layout.BeginHorizontal();
+			layout.Add(RightSection(), true);
 			
-			layout.Add (CreateSelections ());
-			layout.EndHorizontal ();
+			layout.Add(CreateSelections());
+			layout.EndHorizontal();
 
 			return layout;
 		}
 
-		public FillDialog (CharacterHandler handler)
+		public FillDialog(CharacterHandler handler)
 		{
 			this.Handler = handler;
 #if DESKTOP
@@ -134,87 +147,87 @@ namespace Pablo.Formats.Character.Controls
 #endif
 			Title = "Fill Options";
 			
-			var layout = new DynamicLayout ();
-			layout.Padding = new Padding (10);
-			layout.Add (TopSection (), true, true);
-			layout.AddSeparateRow (null, CancelButton (), OkButton ());
+			var layout = new DynamicLayout();
+			layout.Padding = new Padding(10);
+			layout.Add(TopSection(), true, true);
+			layout.AddSeparateRow(null, CancelButton(), OkButton());
 
 			Content = layout;
 
-			UpdateFillMode ();
-			colours.Focus ();
+			UpdateFillMode();
+			colours.Focus();
 		}
-		
-		public override void OnLoad (EventArgs e)
+
+		protected override void OnLoad(EventArgs e)
 		{
-			base.OnLoad (e);
-			UpdateSelection ();
+			base.OnLoad(e);
+			UpdateSelection();
 		}
-		
-		Control CreateDrawCharacter ()
+
+		Control CreateDrawCharacter()
 		{
-			var layout = new DynamicLayout (Padding.Empty);
-			layout.BeginHorizontal ();
+			var layout = new DynamicLayout { Padding = Padding.Empty };
+			layout.BeginHorizontal();
 			
 			characterPanel = layout;
 			
-			layout.Add (new Label { Text = "C&haracter:" });
+			layout.Add(new Label { Text = "C&haracter:" });
 			
-			charTextBox = new FontTextBox (Handler, new Size (1, 1));
+			charTextBox = new FontTextBox(Handler, new Size(1, 1));
 			charTextBox.ReadOnly = false;
-			charTextBox.SetAttribute (this.Attribute);
+			charTextBox.SetAttribute(this.Attribute);
 			
-			layout.Add (charTextBox);
-			layout.Add (null);
+			layout.Add(charTextBox);
+			layout.Add(null);
 			
-			layout.EndHorizontal ();
+			layout.EndHorizontal();
 			
 			
 			return layout;
 		}
 
-		Control CreateSelections ()
+		Control CreateSelections()
 		{
-			var layout = new DynamicLayout (Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 
-			rbAttr = new RadioButton (null);
+			rbAttr = new RadioButton(null);
 			rbAttr.Text = "&Attribute";
 			rbAttr.Checked = true;
 			rbAttr.CheckedChanged += rb_CheckedChanged;
-			layout.Add (rbAttr);
+			layout.Add(rbAttr);
 			rbController = rbAttr;
 
-			rbFore = new RadioButton (rbController);
+			rbFore = new RadioButton(rbController);
 			rbFore.Text = "&Foreground";
 			rbFore.CheckedChanged += rb_CheckedChanged;
-			layout.Add (rbFore);
+			layout.Add(rbFore);
 
-			rbBack = new RadioButton (rbController);
+			rbBack = new RadioButton(rbController);
 			rbBack.Text = "&Background";
 			rbBack.CheckedChanged += rb_CheckedChanged;
-			layout.Add (rbBack);
+			layout.Add(rbBack);
 
-			rbChar = new RadioButton (rbController);
+			rbChar = new RadioButton(rbController);
 			rbChar.Text = "&Character";
 			rbChar.CheckedChanged += rb_CheckedChanged;
-			layout.Add (rbChar);
+			layout.Add(rbChar);
 
-			rbBoth = new RadioButton (rbController);
+			rbBoth = new RadioButton(rbController);
 			rbBoth.Text = "B&oth";
 			rbBoth.CheckedChanged += rb_CheckedChanged;
-			layout.Add (rbBoth);
+			layout.Add(rbBoth);
 			
-			layout.Add (null);
+			layout.Add(null);
 			
 			return layout;
 		}
 
-		private void rb_CheckedChanged (Object sender, EventArgs e)
+		private void rb_CheckedChanged(Object sender, EventArgs e)
 		{
-			UpdateSelection ();
+			UpdateSelection();
 		}
 
-		private void UpdateSelection ()
+		private void UpdateSelection()
 		{
 			colours.Visible = rbFore.Checked | rbBack.Checked | rbAttr.Checked | rbBoth.Checked;
 
@@ -222,17 +235,20 @@ namespace Pablo.Formats.Character.Controls
 			colours.ShowForeground = rbFore.Checked | rbAttr.Checked | rbBoth.Checked;
 			characterPanel.Visible = rbChar.Checked | rbBoth.Checked;
 			
-			UpdateFillMode ();
-			if (colours.Visible) {
-				colours.Focus ();
-				charTextBox.SetAttribute (this.Attribute);
-			} else {
-				charTextBox.SetAttribute (CanvasElement.Default.Attribute);
-				charTextBox.Focus ();
+			UpdateFillMode();
+			if (colours.Visible)
+			{
+				colours.Focus();
+				charTextBox.SetAttribute(this.Attribute);
+			}
+			else
+			{
+				charTextBox.SetAttribute(CanvasElement.Default.Attribute);
+				charTextBox.Focus();
 			}
 		}
 
-		void UpdateFillMode ()
+		void UpdateFillMode()
 		{
 			mode = FillMode.None;
 			if (rbAttr.Checked)
@@ -247,29 +263,32 @@ namespace Pablo.Formats.Character.Controls
 				mode |= FillMode.Both;
 		}
 
-		Control OkButton ()
+		Control OkButton()
 		{
-			var control = new Button {
+			var control = new Button
+			{
 				Text = "O&k"
 			};
-			control.Click += delegate {
-				Close (DialogResult.Ok);
+			control.Click += delegate
+			{
+				Close(true);
 			};
 			DefaultButton = control;
 			return control;
 		}
 
-		Control CancelButton ()
+		Control CancelButton()
 		{
-			var control = new Button {
+			var control = new Button
+			{
 				Text = "Cancel"
 			};
-			control.Click += delegate {
-				Close (DialogResult.Cancel);
+			control.Click += delegate
+			{
+				Close(false);
 			};
 			AbortButton = control;
 			return control;
 		}
-
 	}
 }

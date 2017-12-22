@@ -8,7 +8,7 @@ using Eto.Forms;
 
 namespace Pablo.Formats.Character.Actions.Drawing
 {
-	public class DrawLine : Command
+	public class DrawLine : PabloCommand
 	{
 		public Point Start { get; set; }
 

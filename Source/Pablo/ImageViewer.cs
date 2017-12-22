@@ -10,34 +10,31 @@ namespace Pablo
 	public class ImageViewer : Drawable
 	{
 		ViewerPane viewerPane;
-		GenerateActionArgs viewerArgs;
-		
+
 		Handler ViewHandler {
 			get { return viewerPane.ViewHandler; }
 		}
 		
 		public ImageViewer(ViewerPane viewerPane, bool largeCanvas)
-#if MOBILE
 			: base(largeCanvas)
-#endif
 		{
-			this.Style = "imageViewer";
+			Style = "imageViewer";
 			CanFocus = true;
 			this.viewerPane = viewerPane;
-			viewerArgs = new GenerateActionArgs(this);
 		}
 		
-		public override void OnMouseDown(MouseEventArgs e)
+		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			ViewHandler.OnMouseDown(e);
+			Focus();
 		}
 
-		public override void OnMouseUp(MouseEventArgs e)
+		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			ViewHandler.OnMouseUp(e);
 		}
 
-		public override void OnMouseMove(MouseEventArgs e)
+		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			ViewHandler.OnMouseMove(e);
 		}
@@ -51,7 +48,7 @@ namespace Pablo
 			handler.RegionUpdated += handler_UpdateRegion;
 			handler.InvalidateRegion += handler_InvalidateRegion;
 			handler.InvalidateVisible += delegate {
-				this.Invalidate ();
+				Invalidate ();
 			};
 			handler.SizeChanged += handler_SizeChanged;
 			handler.ZoomChanged += handler_ZoomChanged;
@@ -74,9 +71,7 @@ namespace Pablo
 			rect.Restrict (viewerPane.VisibleRect);
 #endif
 			if (rect.Width != 0 && rect.Height != 0) {
-				Application.Instance.AsyncInvoke (delegate {
-					this.Invalidate(rect);
-				});
+				Application.Instance.AsyncInvoke(() => Invalidate(rect));
 			}
 			/**/
 		}
@@ -88,8 +83,8 @@ namespace Pablo
 
 		void ResetSize()
 		{
-			this.Size = DrawSize;
-			this.Visible = (this.Size.Width > 0 || this.Size.Height > 0);
+			Size = DrawSize;
+			Visible = true; // (Size.Width > 0 || Size.Height > 0);
 			Invalidate ();
 		}
 
@@ -99,7 +94,7 @@ namespace Pablo
 		}
 
 
-		public override void OnPaint(PaintEventArgs pe)
+		protected override void OnPaint(PaintEventArgs e)
 		{
 			try
 				//lock (this)
@@ -107,7 +102,7 @@ namespace Pablo
 				Rectangle rectScreen;
 				Rectangle rectGenerate;
 
-				ViewHandler.CalculateRect (pe.ClipRectangle, out rectScreen, out rectGenerate);
+				ViewHandler.CalculateRect ((Rectangle)e.ClipRectangle, out rectScreen, out rectGenerate);
 
 				if (rectGenerate.Width > 0 && rectGenerate.Height > 0) {
 					/*
@@ -124,17 +119,21 @@ namespace Pablo
 					g.Dispose();
 					/*
 					 */
-					ViewHandler.GenerateRegion (pe.Graphics, rectGenerate, rectScreen);
+					ViewHandler.GenerateRegion (e.Graphics, rectGenerate, rectScreen);
 					/*
 					 */
 				}
 			} catch (Exception ex) {
 				Debug.WriteLine ("Error generating region: {0}", ex);
+#if DEBUG
+				// use for d2d when regenerating target control.. ugh
+				throw;
+#endif
 			}
 				
 		}
 
-		public override void OnKeyDown(KeyEventArgs e)
+		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown (e);
 			if (!e.Handled)
@@ -190,7 +189,7 @@ namespace Pablo
 			{
 				// faster to invalidate and let main thread do drawing in gtk! (and works well in osx too)
 				Application.Instance.AsyncInvoke (delegate {
-					this.Invalidate(rect);
+					Invalidate(rect);
 				});
 			}
 			/*
@@ -220,14 +219,10 @@ namespace Pablo
 #endif
 		}
 		
-		public void GenerateActions(GenerateActionArgs args)
+		public void GenerateCommands(GenerateCommandArgs args)
 		{
-			viewerArgs.Clear();
-			viewerArgs.CopyArguments(args);
-			viewerArgs.Arguments["area"] = "viewer";
-			viewerArgs.Arguments["control"] = this;
-			ViewHandler.GenerateActions(viewerArgs);
-			args.Merge(viewerArgs);
+			var subArgs = new GenerateCommandArgs(args) { Area = "viewer", Control = this };
+			ViewHandler.GenerateCommands(subArgs);
 		}
 	}
 }

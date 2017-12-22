@@ -5,18 +5,26 @@ using Pablo.Formats.Character.Tools;
 
 namespace Pablo.Formats.Character.Actions.Block
 {
-	public class Rotate : ButtonAction
+	public class Rotate : Command
 	{
 		Selection tool;
 		public Rotate(Selection tool)
 		{
 			this.tool = tool;
 			ID = "character_Rotate";
-			Text = "&Rotate|Rotate|Rotate the region";
-			Accelerator = Key.R;
+			MenuText = "&Rotate";
+			ToolBarText = "Rotate";
+			ToolTip = "Rotate the region";
+			Shortcut = Keys.R;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		public override bool Enabled
+		{
+			get { return base.Enabled && tool.DrawMode == DrawMode.Paste; }
+			set { base.Enabled = value; }
+		}
+
+		protected override void OnExecuted(EventArgs e)
 		{
 			Canvas canvas = tool.PasteCanvas;
 			

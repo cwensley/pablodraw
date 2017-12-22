@@ -34,6 +34,11 @@ namespace Pablo.Sauce.Types.Character
 			}
 		}
 
+		public bool IsValidSize
+		{
+			get { return Width > 0 && Height > 0; }
+		}
+
 		public ushort Width
 		{
 			get { return Sauce.TInfo1; }

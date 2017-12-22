@@ -60,7 +60,7 @@ namespace Pablo.Formats.Rip
 			get { return Formats["rip"]; }
 		}
 
-		public override Document Create(Generator generator)
+		public override Document Create(Platform generator)
 		{
 			Document doc = new RipDocument(this);
 			doc.Generator = generator;

@@ -1,55 +1,58 @@
 using System;
 using Eto.Forms;
-using Eto.Misc;
 using Eto;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class Redo : Command
+	public class Redo : PabloCommand
 	{
 		public const string ActionID = "character_redo";
-		
+
 		public new CharacterHandler Handler { get { return base.Handler as CharacterHandler; } }
-		
-		public Redo (CharacterHandler handler)
+
+		public Redo(CharacterHandler handler)
 			: base(handler)
 		{
 			this.ID = ActionID;
-			this.Text = "&Redo|Redo|Redo the last action";
+			this.MenuText = "&Redo";
+			this.ToolTip = "Redo the last action";
 			if (EtoEnvironment.Platform.IsMac)
-				this.Accelerators = new Key[] { CommonModifier | Key.Shift | Key.Z, CommonModifier | Key.Y };
+				this.Shortcut = CommonModifier | Keys.Shift | Keys.Z; // new [] { CommonModifier | Keys.Shift | Keys.Z, CommonModifier | Keys.Y };
 			else
-				this.Accelerators = new Key[] { CommonModifier | Key.Y, CommonModifier | Key.Shift | Key.Z };
+				this.Shortcut = CommonModifier | Keys.Y; // TODO: Shortcut new [] { CommonModifier | Keys.Y, CommonModifier | Keys.Shift | Keys.Z };
 		}
-		
-		public override bool Enabled {
-			get { return Handler.AllowKeyboardEditing; }
+
+		public override bool Enabled
+		{
+			get { return Handler.AllowKeyboardEditing && Handler.Undo.CanRedo && base.Enabled; }
 			set { base.Enabled = value; }
 		}
-		
-		public override int CommandID {
+
+		public override int CommandID
+		{
 			get { return (int)NetCommands.Redo; }
 		}
-		
-		public override Pablo.Network.UserLevel Level {
+
+		public override Pablo.Network.UserLevel Level
+		{
 			get { return Pablo.Network.UserLevel.Operator; }
 		}
-		
-		protected override void Execute (CommandExecuteArgs args)
+
+		protected override void Execute(CommandExecuteArgs args)
 		{
-			Handler.Undo.Redo ();
+			Handler.Undo.Redo();
 		}
-		
-		public override bool Send (Pablo.Network.SendCommandArgs args)
+
+		public override bool Send(Pablo.Network.SendCommandArgs args)
 		{
-			base.Send (args);
+			base.Send(args);
 			return true;
 		}
-		
-		public override void Receive (Pablo.Network.ReceiveCommandArgs args)
+
+		public override void Receive(Pablo.Network.ReceiveCommandArgs args)
 		{
-			base.Receive (args);
-			Handler.Undo.Redo (args);
+			base.Receive(args);
+			Handler.Undo.Redo(args);
 		}
 	}
 }

@@ -1,7 +1,9 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace Pablo.Formats.Character
 {
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
 	public struct Attribute
 	{
 		public static implicit operator Attribute(byte b)
@@ -9,8 +11,8 @@ namespace Pablo.Formats.Character
 			return new Attribute(b);
 		}
 
-		int foreground;
-		int background;
+		byte foreground;
+		byte background;
 		//bool blink;
 		public Attribute(byte b)
 		{
@@ -21,15 +23,15 @@ namespace Pablo.Formats.Character
 
 		public Attribute(int foreground, int background)
 		{
-			this.foreground = foreground;
-			this.background = background;
+			this.foreground = (byte)foreground;
+			this.background = (byte)background;
 			//blink = false;
 		}
 
 		public Attribute(byte foreground, byte background, bool bold, bool blink)
 		{
-			this.foreground = (int)(foreground & 0x07);
-			this.background = (int)(background & 0x07);
+			this.foreground = (byte)(foreground & 0x07);
+			this.background = (byte)(background & 0x07);
 			//this.blink = blink;
 			if (bold)
 				this.foreground |= 0x08;
@@ -51,25 +53,25 @@ namespace Pablo.Formats.Character
 		public int ForegroundOnly
 		{
 			get { return foreground < 16 ? (foreground & (byte)0x7) : foreground; }
-			set { foreground = value < 16 ? ((foreground & (byte)0x8) + (value & (byte)0x7)) : value; }
+			set { foreground = (byte)(value < 16 ? ((foreground & (byte)0x8) + (value & (byte)0x7)) : (byte)value); }
 		}
 
 		public int BackgroundOnly
 		{
 			get { return background < 16 ? (byte)(background & (byte)0x7) : background; }
-			set { background = value < 16 ? (byte)((background & (byte)0x8) + (value & (byte)0x7)) : value; }
+			set { background = value < 16 ? (byte)((background & (byte)0x8) + (value & (byte)0x7)) : (byte)value; }
 		}
 
 		public int Foreground
 		{
 			get { return foreground; }
-			set { foreground = value; }
+			set { foreground = (byte)value; }
 		}
 
 		public int Background
 		{
 			get { return background; }
-			set { background = value; }
+			set { background = (byte)value; }
 		}
 
 		public bool Bold

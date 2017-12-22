@@ -12,7 +12,7 @@ namespace Pablo
 
 		void EnsureVisible(Rectangle rect);
 
-		void GenerateActions(GenerateActionArgs args);
+		void GenerateCommands(GenerateCommandArgs args);
 
 		void PreLoad();
 

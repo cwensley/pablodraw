@@ -21,24 +21,24 @@ namespace Pablo.Formats.Rip.Tools
 			get { return "Draws a scattered set of pixels (B)"; }
 		}
 
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.B;
+				return Keys.B;
 			}
 		}
 		
-		bool EnableMulti (Key modifiers)
+		bool EnableMulti (Keys modifiers)
 		{
-			return (modifiers == Key.Shift) ^ enableMulti;
+			return (modifiers == Keys.Shift) ^ enableMulti;
 		}
 
-		bool EnableForegroundBackground (Key modifiers, bool useForeground)
+		bool EnableForegroundBackground (Keys modifiers, bool useForeground)
 		{
-			return (modifiers == Key.Alt) ^ useForeground;
+			return (modifiers == Keys.Alt) ^ useForeground;
 		}
 		
 		public override Eto.Drawing.Image Image {
-			get { return Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Brush.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Brush.png"); }
 		}
 		
 		class BackColor : Commands.Color
@@ -125,14 +125,14 @@ namespace Pablo.Formats.Rip.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout (Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 
 			layout.Add(Separator());
 			layout.BeginVertical (Padding.Empty);
 			layout.BeginHorizontal ();
 			
 			var b = new ImageButton{
-				Image = Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Brush-Multi.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Brush-Multi.png"),
 				Toggle = true,
 				Pressed = enableMulti
 			};

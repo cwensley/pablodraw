@@ -29,16 +29,16 @@ namespace Pablo.Formats.Character.Tools
 		}
 		
 		public override Eto.Drawing.Image Image {
-			get { return Eto.Drawing.Bitmap.FromResource ("Pablo.Formats.Character.Icons.ColourBrush.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.ColourBrush.png"); }
 		}
 
 		public override string Description {
 			get { return "Color Brush - paint only foreground and/or background colour"; }
 		}
 		
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.B | Key.Shift | (Handler.Generator.IsMac ? Key.Control : Key.Alt);
+				return Keys.B | Keys.Shift | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
 			}
 		}
 		
@@ -49,13 +49,13 @@ namespace Pablo.Formats.Character.Tools
 			PaintBackground = true;
 		}
 		
-		Controls.FillMode GetFillMode (Key modifiers)
+		Controls.FillMode GetFillMode (Keys modifiers)
 		{
 			var mode = Controls.FillMode.None;
-			if (modifiers.HasFlag (Key.Shift) ^ PaintForeground)
+			if (modifiers.HasFlag (Keys.Shift) ^ PaintForeground)
 				mode |= Controls.FillMode.Foreground;
 			
-			if (modifiers.HasFlag (Key.Alt) ^ PaintBackground)
+			if (modifiers.HasFlag (Keys.Alt) ^ PaintBackground)
 				mode |= Controls.FillMode.Background;
 			return mode;
 		}
@@ -68,7 +68,7 @@ namespace Pablo.Formats.Character.Tools
 					Mode = GetFillMode (e.Modifiers),
 					Attribute = Handler.DrawAttribute
 				};
-				action.Activate ();
+				action.Execute();
 				
 				var middle = (Size - 1) / 2;
 				Handler.CursorPosition = new Point (location.X + middle, location.Y + middle);
@@ -78,7 +78,7 @@ namespace Pablo.Formats.Character.Tools
 		Control FGButton ()
 		{
 			var control = new ImageButton{
-				Image = Bitmap.FromResource ("Pablo.Formats.Character.Icons.DrawForeground.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.DrawForeground.png"),
 				Toggle = true,
 				Pressed = PaintForeground,
 #if DESKTOP
@@ -95,7 +95,7 @@ namespace Pablo.Formats.Character.Tools
 		Control BGButton ()
 		{
 			var control = new ImageButton{
-				Image = Bitmap.FromResource ("Pablo.Formats.Character.Icons.DrawBackground.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.DrawBackground.png"),
 				Toggle = true,
 				Pressed = PaintBackground,
 #if DESKTOP
@@ -111,7 +111,7 @@ namespace Pablo.Formats.Character.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout (Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			
 			layout.Add (Separator ());
 			layout.BeginVertical (Padding.Empty, Eto.Drawing.Size.Empty);

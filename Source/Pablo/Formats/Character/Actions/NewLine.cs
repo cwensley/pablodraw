@@ -6,15 +6,15 @@ using Pablo.Network;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class NewLine : Command
+	public class NewLine : PabloCommand
 	{
 		public NewLine (Handler handler) : base(handler)
 		{
 			ID = "character_newline";
-			Text = "New Line";
+			MenuText = "New Line";
 			Name = "New Line";
-			Description = "Adds a new line to the document";
-			Accelerator = Key.Enter;
+			ToolTip = "Adds a new line to the document";
+			Shortcut = Keys.Enter;
 		}
 
 		public new CharacterHandler Handler {

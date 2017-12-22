@@ -112,7 +112,7 @@ namespace Pablo.Network
 		{
 			get {
 				if (operatorImage == null)
-					operatorImage = Bitmap.FromResource ("Pablo.Icons.operator.png");
+					operatorImage = ImageCache.BitmapFromResource("Pablo.Icons.operator.png");
 				return operatorImage;
 			}
 		}
@@ -122,7 +122,7 @@ namespace Pablo.Network
 		{
 			get {
 				if (editorImage == null)
-					editorImage = Bitmap.FromResource ("Pablo.Icons.editor.png");
+					editorImage = ImageCache.BitmapFromResource("Pablo.Icons.editor.png");
 				return editorImage;
 			}
 		}
@@ -132,7 +132,7 @@ namespace Pablo.Network
 		{
 			get {
 				if (viewerImage == null)
-					viewerImage = Bitmap.FromResource ("Pablo.Icons.viewer.png");
+					viewerImage = ImageCache.BitmapFromResource("Pablo.Icons.viewer.png");
 				return viewerImage;
 			}
 		}

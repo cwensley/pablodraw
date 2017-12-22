@@ -7,7 +7,7 @@ using Eto.Forms;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class DrawCharacter : Command
+	public class DrawCharacter : PabloCommand
 	{
 		protected virtual int Character { get; set; }
 		
@@ -33,7 +33,7 @@ namespace Pablo.Formats.Character.Actions
 		public void Activate (int character)
 		{
 			this.Character = character;
-			Activate ();
+			Execute();
 		}
 		
 		protected override void Execute (CommandExecuteArgs args)

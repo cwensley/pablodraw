@@ -3,7 +3,7 @@ using System;
 
 namespace Pablo.Formats.Rip.Actions
 {
-	public class Animate : ButtonAction
+	public class Animate : Command
 	{
 		//RipHandler handler;
 		
@@ -13,13 +13,12 @@ namespace Pablo.Formats.Rip.Actions
 		{
 			//this.handler = handler;
 			ID = ActionID;
-			Text = "Animate";
-			Description = "Animate";
-			Accelerator = Key.Alt | Key.A;
+			MenuText = "Animate";
+			Shortcut = Keys.Alt | Keys.A;
 		}
 
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
 			// start thread to animate!
 		}

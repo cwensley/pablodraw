@@ -18,6 +18,7 @@ namespace Pablo
 	public abstract class Document : IDisposable, INetworkReadWrite
 	{
 		readonly DocumentInfo info;
+		bool converted;
 
 		public event EventHandler<EventArgs> StartLoad;
 		public event EventHandler<EventArgs> Initialized;
@@ -54,7 +55,7 @@ namespace Pablo
 				Initialized(this, e);
 		}
 
-		public Generator Generator { get; set; }
+		public Platform Generator { get; set; }
 
 		public Format LoadedFormat { get; set; }
 
@@ -96,6 +97,7 @@ namespace Pablo
 
 		public virtual void Load(string fileName, Format format, Handler handler)
 		{
+			this.FileName = fileName;
 			var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read); // can't dispose here if we load in background!
 			Load(stream, format, handler);
 		}
@@ -110,8 +112,8 @@ namespace Pablo
 
 			try
 			{
-				if (handler != null)
-					handler.PreLoad(ss, format);
+				//if (handler != null)
+				//	handler.PreLoad(ss, format);
 				LoadStream(ss, format, handler);
 				OnLoaded(EventArgs.Empty);
 				if (handler != null)
@@ -143,9 +145,13 @@ namespace Pablo
 
 		public virtual void Save(Stream stream, Format format, Handler handler)
 		{
-			var doc = ConvertDocument(format.Info, handler);
+			var doc = converted ? null : ConvertDocument(format.Info, handler);
 			if (doc != null)
+			{
+				doc.converted = true;
 				doc.Save(stream, format, handler);
+				doc.Dispose();
+			}
 			else
 			{
 				SaveStream(stream, format, handler);
@@ -157,7 +163,6 @@ namespace Pablo
 				}
 				if (LoadedFormat == null)
 					LoadedFormat = format;
-				stream.Close();
 			}
 			OnSaved(EventArgs.Empty);
 		}
@@ -188,9 +193,9 @@ namespace Pablo
 
 		#endregion
 
-		public virtual void GenerateActions(GenerateActionArgs args)
+		public virtual void GenerateActions(GenerateCommandArgs args)
 		{
-			Info.GenerateActions(args);
+			Info.GenerateCommands(args);
 		}
 
 		#region INetworkReadWrite implementation

@@ -11,73 +11,83 @@ using Pablo.Network;
 
 namespace Pablo.Interface.Actions
 {
-	public class ViewFile : CheckAction, ICommand
+	public class ViewFile : RadioCommand, ICommand, IDisposable
 	{
 		Main main;
 		public const string ActionID = "viewFile";
-		
-		public ViewFile (Main main)
+
+		public ViewFile(Main main)
 		{
 			this.main = main;
 			base.ID = ActionID;
-			this.Text = "&View|View|Views the document";
-			this.Image = Icon.FromResource ("Pablo.Interface.Icons.view.ico");
+			this.MenuText = "&View";
+			this.ToolBarText = "View";
+			this.ToolTip = "Views the document";
+			this.Image = ImageCache.IconFromResource("Pablo.Interface.Icons.view.ico");
 			this.Checked = !main.EditMode;
-			this.Accelerator = Command.CommonModifier | Key.V;
+			this.Shortcut = PabloCommand.CommonModifier | Keys.V;
 			main.EditModeChanged += editModeChanged;
 			this.Enabled = (main.Client == null || main.Client.CurrentUser.Level >= Level);
 		}
-		
-		protected override void OnRemoved (EventArgs e)
+
+		public void Dispose()
 		{
-			base.OnRemoved (e);
 			main.EditModeChanged -= editModeChanged;
 		}
-		
-		void editModeChanged (object sender, EventArgs e)
+
+
+		void editModeChanged(object sender, EventArgs e)
 		{
 			this.Checked = !main.EditMode;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
+			base.OnExecuted(e);
 			if (main.Document == null)
 				return;
 
-			if (FileModifiedDialog.Show (main) == DialogResult.Ok) {
-				if (main.Client != null) {
-					main.Client.SendCommand (this);
-				} else {
+			if (FileModifiedDialog.Show(main) == DialogResult.Ok)
+			{
+				if (main.Client != null)
+				{
+					main.Client.SendCommand(this);
+				}
+				else
+				{
 					main.EditMode = !main.EditMode;
 					//if (!main.EditMode) 
 					//	main.ReloadFile ();
 				}
 			}
 		}
-		
-		public int CommandID {
+
+		public int CommandID
+		{
 			get { return (int)NetCommands.EditFile; }
 		}
-		
-		public UserLevel Level {
+
+		public UserLevel Level
+		{
 			get { return UserLevel.Operator; }
 		}
-		
-		public Lidgren.Network.NetDeliveryMethod DeliveryMethod {
+
+		public Lidgren.Network.NetDeliveryMethod DeliveryMethod
+		{
 			get { return Lidgren.Network.NetDeliveryMethod.ReliableOrdered; }
 		}
-		
+
 		#region INetworkReadWrite implementation
-		
-		public bool Send (SendCommandArgs args)
+
+		public bool Send(SendCommandArgs args)
 		{
-			args.Message.Write (false);
+			args.Message.Write(false);
 			return true;
 		}
 
-		public void Receive (ReceiveCommandArgs args)
+		public void Receive(ReceiveCommandArgs args)
 		{
-			throw new NotImplementedException (); // should not get here
+			throw new NotImplementedException(); // should not get here
 		}
 		#endregion
 	}

@@ -8,7 +8,7 @@ using Pablo.Formats.Character.Tools;
 
 namespace Pablo.Formats.Character.Actions.Block
 {
-	public class PasteFromClipboard : Command
+	public class PasteFromClipboard : PabloCommand
 	{
 		public const string ActionID = "character_pasteFromClipboard";
 		readonly Selection tool;
@@ -18,8 +18,15 @@ namespace Pablo.Formats.Character.Actions.Block
 		{
 			this.tool = tool;
 			this.ID = ActionID;
-			this.Text = "&Paste|Paste|Paste at the current position from the clipboard";
-			this.Accelerator = CommonModifier | Key.V;
+			this.MenuText = "&Paste";
+			this.ToolTip = "Paste at the current position from the clipboard";
+			this.Shortcut = CommonModifier | Keys.V;
+		}
+
+		public override bool Enabled
+		{
+			get { return base.Enabled && tool.DrawMode == DrawMode.Normal; }
+			set { base.Enabled = value; }
 		}
 
 		public override int CommandID
@@ -67,8 +74,7 @@ namespace Pablo.Formats.Character.Actions.Block
 					// load it up
 					canvas = new MemoryCanvas(new Size(width, height));
 					var ascii = new Types.Ascii(handler.Info);
-					ascii.LineWrap = false;
-					ascii.Load(textstream, canvas, null);
+					ascii.Load(textstream, canvas, null, false);
 					//pasteMode = PasteMode.Transparent;
 				}
 			}

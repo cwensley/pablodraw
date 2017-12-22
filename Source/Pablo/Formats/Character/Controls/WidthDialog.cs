@@ -4,7 +4,7 @@ using Eto.Drawing;
 
 namespace Pablo.Formats.Character.Controls
 {
-	public class WidthDialog : Dialog
+	public class WidthDialog : Dialog<DialogResult>
 	{
 		int width;
 		TextBox widthControl;
@@ -26,7 +26,7 @@ namespace Pablo.Formats.Character.Controls
 			control.Click += delegate {
 				if (int.TryParse (widthControl.Text, out width)) {
 					if (width > 0 && width <= 5000) {
-						DialogResult = DialogResult.Ok;
+						Result = DialogResult.Ok;
 						Close ();
 					} else {
 						MessageBox.Show(this, "Width must be a numeric value between 1 and 5000");
@@ -43,7 +43,7 @@ namespace Pablo.Formats.Character.Controls
 				Text = "Cancel"
 			};
 			control.Click += delegate {
-				DialogResult = DialogResult.Cancel;
+				Result = DialogResult.Cancel;
 				Close ();
 			};
 			base.AbortButton = control;

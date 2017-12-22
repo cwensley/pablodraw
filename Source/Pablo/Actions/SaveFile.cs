@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace Pablo.Actions
 {
-	public class SaveFile : ButtonAction
+	public class SaveFile : Command
 	{
 		readonly Handler handler;
 		public const string ActionID = "save";
@@ -17,12 +17,14 @@ namespace Pablo.Actions
 		{
 			this.handler = handler;
 			this.ID = ActionID;
-			this.Text = "&Save|Save|Saves the current file";
-			this.Image = Icon.FromResource("Pablo.Icons.save.ico");
-			this.Accelerator = Command.CommonModifier | Key.S;
+			this.MenuText = "&Save";
+			this.ToolBarText = "Save";
+			this.ToolTip = "Saves the current file";
+			this.Image = ImageCache.IconFromResource("Pablo.Icons.save.ico");
+			this.Shortcut = PabloCommand.CommonModifier | Keys.S;
 		}
 
-		protected override void OnActivated(EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
 			var file = handler.Document.FileName;
 			var shouldSave = string.IsNullOrEmpty(file) || !File.Exists(file) || File.GetAttributes(file).HasFlag(FileAttributes.ReadOnly);

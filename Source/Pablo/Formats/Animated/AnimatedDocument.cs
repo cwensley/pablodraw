@@ -13,7 +13,7 @@ namespace Pablo.Formats.Animated
 		bool animationDetected;
 		bool canAnimate;
 
-		public AnimatedDocument(DocumentInfo info) : base(info)
+		protected AnimatedDocument(DocumentInfo info) : base(info)
 		{
 		}
 
@@ -60,14 +60,14 @@ namespace Pablo.Formats.Animated
 		internal class DocumentThreadLoader : IDisposable
 		{
 			AnimatedDocument document;
-			Handler handler;
+			readonly Handler handler;
 			Stream stream;
 			BaudStream bs;
 			Format format;
 			bool aborting;
-			System.Threading.ManualResetEvent threadKilledEvent;
-			System.Threading.ManualResetEvent quitThreadEvent;
-			Thread loadingThread;
+			readonly ManualResetEvent threadKilledEvent;
+			readonly ManualResetEvent quitThreadEvent;
+			readonly Thread loadingThread;
 			bool running;
 			//bool stop = false;
 			public Handler Handler
@@ -104,8 +104,8 @@ namespace Pablo.Formats.Animated
 
 			public DocumentThreadLoader(AnimatedDocument document, Handler handler, Stream stream, Format format)
 			{
-				threadKilledEvent = new System.Threading.ManualResetEvent(false);
-				quitThreadEvent = new System.Threading.ManualResetEvent(false);
+				threadKilledEvent = new ManualResetEvent(false);
+				quitThreadEvent = new ManualResetEvent(false);
 				this.handler = handler;
 				this.document = document;
 				this.stream = stream;
@@ -133,7 +133,7 @@ namespace Pablo.Formats.Animated
 			{
 				try
 				{
-					using (var context = Generator.Current.ThreadStart())
+					using (var context = Platform.Instance.ThreadStart())
 					{
 						// if switched quickly, the thread may abort here!!
 						try
@@ -235,12 +235,12 @@ namespace Pablo.Formats.Animated
 			}
 		}
 
-		public void LoadBase(System.IO.Stream stream, Format format, Handler handler)
+		public void LoadBase(Stream stream, Format format, Handler handler)
 		{
 			base.Load(stream, format, handler);
 		}
 
-		protected virtual void LoadingAnimated(System.IO.Stream stream, Format format, Handler handler)
+		protected virtual void LoadingAnimated(Stream stream, Format format, Handler handler)
 		{
 			
 		}
@@ -259,7 +259,7 @@ namespace Pablo.Formats.Animated
 			}
 		}
 
-		public override void Load(System.IO.Stream stream, Format format, Handler handler)
+		public override void Load(Stream stream, Format format, Handler handler)
 		{
 			if (loader != null)
 			{

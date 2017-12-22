@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Pablo.Formats.Character.Controls
 {
-	public class BrushEditor : Dialog
+	public class BrushEditor : Dialog<DialogResult>
 	{
 		FontTextBox lastSet;
 		readonly List<Canvas> brushCanvases = new List<Canvas>();
@@ -30,7 +30,7 @@ namespace Pablo.Formats.Character.Controls
 			this.CharacterHandler = handler;
 		}
 
-		public override void OnPreLoad(EventArgs e)
+		protected override void OnPreLoad(EventArgs e)
 		{
 			base.OnPreLoad(e);
 
@@ -99,7 +99,7 @@ namespace Pablo.Formats.Character.Controls
 					e.Handled = true;
 					var c = (RadioButton)sender;
 					SelectedBrush = (int)c.Tag;
-					DialogResult = DialogResult.Ok;
+					Result = DialogResult.Ok;
 					Save();
 					Close();
 				};
@@ -168,7 +168,7 @@ namespace Pablo.Formats.Character.Controls
 
 			control.Click += delegate
 			{
-				DialogResult = DialogResult.Cancel;
+				Result = DialogResult.Cancel;
 				Close();
 			};
 			AbortButton = control;
@@ -185,7 +185,7 @@ namespace Pablo.Formats.Character.Controls
 
 			control.Click += delegate
 			{
-				DialogResult = DialogResult.Ok;
+				Result = DialogResult.Ok;
 				Save();
 				Close();
 			};

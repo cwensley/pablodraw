@@ -17,11 +17,11 @@ namespace Pablo.Formats.Rip.Tools
 		}
 		
 		public override Eto.Drawing.Image Image {
-			get { return Bitmap.FromResource("Pablo.Formats.Rip.Icons.Text.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Text.png"); }
 		}
 		
-		public override Key Accelerator {
-			get { return Key.T; }
+		public override Keys Accelerator {
+			get { return Keys.T; }
 		}
 		
 		public override IEnumerable<RipOptionalCommand> Styles {
@@ -123,7 +123,7 @@ namespace Pablo.Formats.Rip.Tools
 		public override void OnKeyDown(KeyEventArgs e)
 		{
 			var updates = new List<Rectangle> ();
-			if (e.KeyData == Key.Enter) {
+			if (e.KeyData == Keys.Enter) {
 				if (Command != null) {
 					var font = this.BGI.LoadFont (this.BGI.GetFontType ());
 					var fontSize = font.GetMaxCharacterSize (this.BGI.GetTextDirection (), this.BGI.GetFontSize ());
@@ -143,7 +143,7 @@ namespace Pablo.Formats.Rip.Tools
 				base.OnKeyDown (e);
 				if (!e.Handled && Command != null) {
 					
-					if (e.KeyData == Key.Backspace) {
+					if (e.KeyData == Keys.Backspace) {
 						RemoveDrawing (updates);
 						if (!string.IsNullOrEmpty (this.Command.Text))
 							this.Command.Text = this.Command.Text.Substring (0, this.Command.Text.Length - 1);
@@ -185,7 +185,7 @@ namespace Pablo.Formats.Rip.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout(Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			layout.Add(Separator());
 			layout.Add (new Controls.FontStylePad (this.Handler));
 			return layout;

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Pablo.Formats.Rip.Actions
 {
-	public class Undo : Command
+	public class Undo : PabloCommand
 	{
 		RipHandler handler;
 		public const string ActionID = "rip_undo";
@@ -17,8 +17,8 @@ namespace Pablo.Formats.Rip.Actions
 			this.ID = ActionID;
 			this.MenuText = "Undo";
 			this.ToolBarText = "Undo";
-			this.TooltipText = "removes the last command and redraws the screen";
-			this.Accelerator = Command.CommonModifier | Key.Z;
+			this.ToolTip = "Removes the last command and redraws the screen";
+			this.Shortcut = PabloCommand.CommonModifier | Keys.Z;
 		}
 
 		protected override void Execute (CommandExecuteArgs args)

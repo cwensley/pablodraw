@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 namespace Pablo.Interface.Actions
 {
-	public class ServerStart : ButtonAction
+	public class ServerStart : Command, IDisposable
 	{
 		Main main;
 		public const string ActionID = "serverStart";
@@ -22,8 +22,9 @@ namespace Pablo.Interface.Actions
 		{
 			this.main = main;
 			base.ID = ActionID;
-			this.Text = "&Start Server|Start Server|Starts the pablodraw server";
-			this.Accelerator = Command.CommonModifier | Key.Alt | Key.S;
+			this.MenuText = "&Start Server";
+			this.ToolTip = "Starts the pablodraw server";
+			this.Shortcut = PabloCommand.CommonModifier | Keys.Alt | Keys.S;
 			SetEnabled();
 			
 			//new EnabledConnector(this);
@@ -31,7 +32,7 @@ namespace Pablo.Interface.Actions
 			main.ClientChanged += main_Changed;
 		}
 
-		protected override void OnRemoved(EventArgs e)
+		public void Dispose()
 		{
 			main.ClientChanged -= main_Changed;
 			main.ServerChanged -= main_Changed;
@@ -47,7 +48,7 @@ namespace Pablo.Interface.Actions
 			Enabled = (main.Server == null && main.Client == null);
 		}
 
-		protected override void OnActivated(EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
 			if (main.Server == null)
 			{
@@ -64,7 +65,7 @@ namespace Pablo.Interface.Actions
 						UseNat = main.Settings.UseNat,
 						OperatorPassword = main.Settings.ServerOperatorPassword
 					};
-					var result = dlg.ShowDialog(main);
+					var result = dlg.ShowModal(main);
 					if (result == DialogResult.Ok)
 					{
 						main.Settings.Alias = dlg.Alias;
@@ -116,7 +117,7 @@ namespace Pablo.Interface.Actions
 						main.Client.Stop();
 						main.Client = null;
 					}
-					MessageBox.Show(main.Generator, main, string.Format("Could not start server: {0}", exception.Message));
+					MessageBox.Show(main, string.Format("Could not start server: {0}", exception.Message));
 				}
 //#endif
 			}

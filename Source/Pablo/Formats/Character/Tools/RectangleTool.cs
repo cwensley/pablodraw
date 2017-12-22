@@ -13,16 +13,16 @@ namespace Pablo.Formats.Character.Tools
 		ScanLines lines = new ScanLines ();
 		
 		public override Eto.Drawing.Image Image {
-			get { return Eto.Drawing.Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Rectangle.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Rectangle.png"); }
 		}
 
 		public override string Description {
 			get { return "Rectangle - Draw a box"; }
 		}
 		
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.R | (Handler.Generator.IsMac ? Key.Control : Key.Alt);
+				return Keys.R | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
 			}
 		}
 		
@@ -61,13 +61,13 @@ namespace Pablo.Formats.Character.Tools
 					Filled = this.Filled,
 					Element = new CanvasElement (CurrentCharacter, Handler.DrawAttribute)
 				};
-				action.Activate ();
+				action.Execute();
 				return true;
 			}
 			return false;
 		}
 		
-		protected override void UpdateWithLocation (Rectangle rect, Key modifiers, Point end)
+		protected override void UpdateWithLocation (Rectangle rect, Keys modifiers, Point end)
 		{
 			shouldApplyCharacter = ApplyCharacter; //modifiers.HasFlag (Key.Shift | Application.Instance.CommonModifier) ^ ApplyCharacter;
 			shouldApplyColour = ApplyColour; //modifiers.HasFlag (Key.Alt | Application.Instance.CommonModifier) ^ ApplyColour;
@@ -122,7 +122,7 @@ namespace Pablo.Formats.Character.Tools
 		Control ApplyColourButton ()
 		{
 			var control = new ImageButton{
-				Image = Bitmap.FromResource ("Pablo.Formats.Character.Icons.ApplyColour.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.ApplyColour.png"),
 				Toggle = true,
 				Pressed = ApplyColour,
 #if DESKTOP
@@ -139,7 +139,7 @@ namespace Pablo.Formats.Character.Tools
 		Control ApplyCharacterButton ()
 		{
 			var control = new ImageButton{
-				Image = Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Text-Horizontal.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Text-Horizontal.png"),
 				Toggle = true,
 				Pressed = ApplyCharacter,
 #if DESKTOP
@@ -156,7 +156,7 @@ namespace Pablo.Formats.Character.Tools
 		Control FilledButton ()
 		{
 			var control = new ImageButton{
-				Image = Bitmap.FromResource ("Pablo.Formats.Rip.Icons.FilledRectangle.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.FilledRectangle.png"),
 				Toggle = true,
 				Pressed = Filled,
 #if DESKTOP
@@ -172,7 +172,7 @@ namespace Pablo.Formats.Character.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout (Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			
 			layout.Add (Separator ());
 			layout.Add (base.GeneratePad ());

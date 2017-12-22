@@ -47,6 +47,11 @@ namespace Pablo.Sauce
 			}
 		}
 
+		public virtual bool IsValid
+		{
+			get { return true; }
+		}
+
 		protected virtual void Initialize()
 		{
 		}

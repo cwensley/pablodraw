@@ -6,14 +6,15 @@ namespace Pablo.Mobile
 {
 	public class PabloApplication : Application
 	{
-		public PabloApplication ()
+		public PabloApplication (Eto.Platform platform = null)
+			: base(platform ?? Eto.Platform.Detect)
 		{
 			this.Style = "pablo";
 			EtoDirectoryInfo.AddVirtualDirectoryType<SharpCompressDirectoryInfo>(".rar");
 			EtoDirectoryInfo.AddVirtualDirectoryType<SharpCompressDirectoryInfo>(".zip");
 		}
 
-		public override void OnInitialized (EventArgs e)
+		protected override void OnInitialized (EventArgs e)
 		{
 			base.OnInitialized (e);
 			

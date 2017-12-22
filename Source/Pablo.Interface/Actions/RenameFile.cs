@@ -8,7 +8,7 @@ using Eto;
 
 namespace Pablo.Interface.Actions
 {
-	public class RenameFile : ButtonAction
+	public class RenameFile : Command, IDisposable
 	{
 		Main main;
 		
@@ -18,15 +18,15 @@ namespace Pablo.Interface.Actions
 		{
 			this.main = main;
 			base.ID = ActionID;
-			this.Text = "&Rename|Rename|Rename the selected file";
+			this.MenuText = "&Rename";
+			this.ToolTip = "Rename the selected file";
 			this.Enabled = main.FileList.SelectedFile != null || main.FileList.SelectedDirectory != null;
-			this.Accelerator = Command.CommonModifier | Key.R;
+			this.Shortcut = PabloCommand.CommonModifier | Keys.R;
 			main.FileList.SelectedIndexChanged += fileList_Changed;
 		}
-		
-		protected override void OnRemoved (EventArgs e)
+
+		public void Dispose()
 		{
-			base.OnRemoved (e);
 			main.FileList.SelectedIndexChanged -= fileList_Changed;
 		}
 		
@@ -35,15 +35,13 @@ namespace Pablo.Interface.Actions
 			this.Enabled = main.FileList.SelectedFile != null || main.FileList.SelectedDirectory != null;
 		}
 
-		protected override void OnActivated (EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated (e);
-
-			
+			base.OnExecuted(e);
 			var file = main.FileList.SelectedFile;
 			if (file != null && File.Exists(file.FullName)) {
 				var dialog = new RenameDialog(file.FullName);
-				var result = dialog.ShowDialog(null);
+				var result = dialog.ShowModal(main);
 				if (result == DialogResult.Ok)
 				{
 					File.Move(file.FullName, dialog.NewName);
@@ -54,7 +52,7 @@ namespace Pablo.Interface.Actions
 			var dir = main.FileList.SelectedDirectory;
 			if (dir != null) {
 				var dialog = new RenameDialog(dir.FullName);
-				var result = dialog.ShowDialog(null);
+				var result = dialog.ShowModal(null);
 				if (result == DialogResult.Ok)
 				{
 					if (Directory.Exists(dir.FullName)) Directory.Move(dir.FullName, dialog.NewName);

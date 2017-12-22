@@ -16,7 +16,7 @@ namespace Pablo.Formats.Rip.Controls
 		public FillStylePad (RipHandler handler)
 		{
 			this.handler = handler;
-			var layout = new DynamicLayout (Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			
 			layout.BeginVertical (Padding.Empty, Size.Empty);
 			
@@ -78,7 +78,7 @@ namespace Pablo.Formats.Rip.Controls
 			};
 			button.Click += delegate {
 				var dialog = new FillStyleEditor (handler);
-				if (dialog.ShowDialog (this) == DialogResult.Ok) {
+				if (dialog.ShowModal (this) == DialogResult.Ok) {
 					handler.FillPattern = dialog.FillPattern;
 					handler.FillStyle = BGICanvas.FillStyle.User;
 					UpdateButtons ();

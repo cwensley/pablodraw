@@ -3,7 +3,7 @@ using Eto.Forms;
 
 namespace Pablo.Interface.Actions
 {
-	public class EnclosingFolder : ButtonAction
+	public class EnclosingFolder : Command
 	{
 		Main main;
 		public const string ActionID = "EnclosingFolder";
@@ -14,13 +14,13 @@ namespace Pablo.Interface.Actions
 			this.ID = ActionID;
 			this.MenuText = "Enclosing Folder";
 			this.ToolBarText = "Up";
-			this.TooltipText = "Opens the parent folder";
-			this.Accelerator = Command.CommonModifier | Key.Shift | Key.Up;
+			this.ToolTip = "Opens the parent folder";
+			this.Shortcut = PabloCommand.CommonModifier | Keys.Shift | Keys.Up;
 		}
 
-		protected override void OnActivated (EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated (e);
+			base.OnExecuted(e);
 
 			main.FileList.GoToParent ();
 		}

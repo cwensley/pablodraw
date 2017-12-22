@@ -1,5 +1,6 @@
 using System;
 using Eto.Drawing;
+using System.Collections.Generic;
 
 namespace Pablo.Formats.Character
 {
@@ -7,15 +8,11 @@ namespace Pablo.Formats.Character
 	{
 		CanvasElement ceDefault;
 		CanvasElement[][] canvas;
-		
+
 		public MemoryCanvas(Size canvasSize) : base(canvasSize)
 		{
 			ceDefault = CanvasElement.Default;
 			canvas = new CanvasElement[canvasSize.Height][];
-			for (int i=0; i<canvasSize.Height; i++)
-			{
-				canvas[i] = null;
-			}
 		}
 
 		public override void Fill(CanvasElement ce)
@@ -205,19 +202,36 @@ namespace Pablo.Formats.Character
 			this.OnUpdate(new Rectangle(0, y, Width, Height - y));
 		}
 
-		protected override void ResizeCanvas(Size newCanvasSize)
+		protected override void ResizeCanvas(Size oldCanvasSize, bool keepContent)
 		{
-			if (newCanvasSize == Size) return;
-			Size oldCanvasSize = this.Size;
+			if (oldCanvasSize == Size) return;
+			var newCanvasSize = Size;
 			var oldCanvas = canvas;
 			canvas = new CanvasElement[newCanvasSize.Height][];
+
+			var maxWidth = Math.Min(newCanvasSize.Width, oldCanvasSize.Width);
 			for (int i=0; i<newCanvasSize.Height; i++)
 			{
 				if (oldCanvasSize.Width == newCanvasSize.Width)
 				{
 					canvas[i] = (i < oldCanvas.Length) ? oldCanvas[i] : null;
 				}
-				else canvas[i] = null;
+				else if (keepContent)
+				{
+					var oldline = oldCanvas[i];
+					if (oldline != null)
+					{
+						var line = GetLine(i);
+						for (int x = 0; x < maxWidth; x++)
+						{
+							line[x] = oldline[x];
+						}
+					}
+				}
+				else
+				{
+					canvas[i] = null;
+				}
 			}
 			// need to copy over old info later.. maybe using a parameter to specify?
 		}

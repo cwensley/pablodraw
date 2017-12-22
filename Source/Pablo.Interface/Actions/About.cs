@@ -3,7 +3,7 @@ using Eto.Forms;
 
 namespace Pablo.Interface.Actions
 {
-	public class About : ButtonAction
+	public class About : Command
 	{
 		public Main Main { get; private set; }
 		
@@ -13,13 +13,13 @@ namespace Pablo.Interface.Actions
 		{
 			this.Main = main;
 			base.ID = ActionID;
-			this.Text = "&About PabloDraw|About|About PabloDraw.NET";
+			this.MenuText = "&About PabloDraw";
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated (e);
-			new Dialogs.About ().ShowDialog (Main);
+			base.OnExecuted(e);
+			new Dialogs.About ().ShowModal(Main);
 		}
 	}
 }

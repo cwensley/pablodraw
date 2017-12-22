@@ -39,7 +39,7 @@ namespace Pablo.Formats.Character.Tools
 			return canvas [point];
 		}
 		
-		public virtual void TranslateColour (Point point, ref uint foreColour, ref uint backColour)
+		public virtual void TranslateColour (Point point, ref int foreColour, ref int backColour)
 		{
 		}
 		

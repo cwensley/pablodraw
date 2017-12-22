@@ -8,34 +8,34 @@ using System.Collections.Generic;
 
 namespace Pablo.Actions
 {
-	public class SaveAs : ButtonAction
+	public class SaveAs : Command
 	{
-		Handler handler;
+		readonly Handler handler;
 
 		public SaveAs(Handler handler)
 		{
 			this.handler = handler;
 			this.ID = "saveas";
-			this.Text = "&Save As...|Save As|Saves a copy of the current file";
+			this.MenuText = "&Save As...";
+			this.ToolBarText = "Save As";
+			this.ToolTip = "Saves a copy of the current file";
 			//this.Accelerator = Key.Alt | Key.S;
-			this.Accelerator = Command.CommonModifier | Key.Shift | Key.S;
+			this.Shortcut = PabloCommand.CommonModifier | Keys.Shift | Keys.S;
 		}
 
 		public static void Activate(Handler handler, bool setCurrent = false)
 		{
-			var ofd = new SaveFileDialog(handler.Document.Generator);
+			var ofd = new SaveFileDialog();
 			ofd.Title = "Specify the file to save";
-			var filters = new List<IFileDialogFilter>();
 			var compatibleFormats = handler.Document.Info.GetCompatibleDocuments().GetFormats();
 			var formats = compatibleFormats.Values.Where(r => r.CanSave).ToList();
 			var allFormats = new List<string>();
 			foreach (Format format in formats)
 			{
 				allFormats.AddRange(format.Extensions);
-				filters.Add(new FileDialogFilter{ Name = format.Name, Extensions = format.Extensions });
+				ofd.Filters.Add(new FileDialogFilter{ Name = format.Name, Extensions = format.Extensions });
 			}
-			filters.Insert(0, new FileDialogFilter{ Name = "Auto Detect", Extensions = allFormats.ToArray() });
-			ofd.Filters = filters;
+			ofd.Filters.Insert(0, new FileDialogFilter{ Name = "Auto Detect", Extensions = allFormats.ToArray() });
 			if (!handler.Generator.IsMac || setCurrent)
 			{
 				if (!string.IsNullOrEmpty(handler.Document.FileName))
@@ -79,7 +79,7 @@ namespace Pablo.Actions
 				}
 				//Console.WriteLine("Saving as format {0}", format);
 				if (format == null)
-					MessageBox.Show(handler.Generator, null, "Cannot find format to save based on file extension");
+					MessageBox.Show("Cannot find format to save based on file extension");
 				else
 				{
 					try
@@ -105,7 +105,7 @@ namespace Pablo.Actions
 			}
 		}
 
-		protected override void OnActivated(EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
 			Activate(handler);
 		}

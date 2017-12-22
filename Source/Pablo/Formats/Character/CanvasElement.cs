@@ -1,8 +1,10 @@
 using System;
 using Eto.Drawing;
+using System.Runtime.InteropServices;
 
 namespace Pablo.Formats.Character
 {
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
 	public struct CanvasElement
 	{
 		Character character;

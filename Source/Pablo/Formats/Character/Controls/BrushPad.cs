@@ -31,7 +31,7 @@ namespace Pablo.Formats.Character.Controls
 				Update();
 			}).MakeWeak(e => Handler.DrawAttributeChanged -= e);
 
-			var layout = new DynamicLayout(Padding.Empty, Size.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty, Spacing = Size.Empty };
 
 			layout.Add(new Label { Text = "Brush", HorizontalAlign = HorizontalAlign.Center, Font = new Font(SystemFont.Default, 7) });
 
@@ -115,7 +115,7 @@ namespace Pablo.Formats.Character.Controls
 			{
 				SelectedBrush = this.tool.CurrentBrushIndex
 			};
-			var result = dlg.ShowDialog(this);
+			var result = dlg.ShowModal(this);
 			if (result == DialogResult.Ok)
 			{
 				this.tool.CurrentBrushIndex = dlg.SelectedBrush;

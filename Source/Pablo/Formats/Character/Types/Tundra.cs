@@ -7,7 +7,7 @@ namespace Pablo.Formats.Character.Types
 {
 	public class Tundra : CharacterFormat
 	{
-		public const string TUNDRA_ID = "TUNDRA24";
+		public const string TundraID = "TUNDRA24";
 
 		public Tundra(DocumentInfo info) : base(info, "tnd", "Tundra Draw", "tnd")
 		{
@@ -28,7 +28,7 @@ namespace Pablo.Formats.Character.Types
 
 		public override bool RequiresSauce(CharacterDocument document)
 		{
-			return document.Pages[0].Canvas.Size.Width != DefaultWidth || !document.IsUsingStandard8x16Font;
+			return base.RequiresSauce(document) || document.Pages[0].Canvas.Size.Width != DefaultWidth || !document.IsUsingStandard8x16Font;
 		}
 
 		public override bool CanSave
@@ -52,7 +52,7 @@ namespace Pablo.Formats.Character.Types
 			if (asTundra)
 			{
 				bw.Write((byte)24);
-				bw.Write(Encoding.ASCII.GetBytes(TUNDRA_ID));
+				bw.Write(Encoding.ASCII.GetBytes(TundraID));
 			}
 			
 			var page = document.Pages[0];
@@ -113,7 +113,7 @@ namespace Pablo.Formats.Character.Types
 							if ((color_notice & 2) != 0)
 							{
 								var col = pal[attr.Foreground];
-								bw.Write((byte)col.Ab);
+								bw.Write((byte)0); // tundradraw does not like 255 here, requires 0
 								bw.Write((byte)col.Rb);
 								bw.Write((byte)col.Gb);
 								bw.Write((byte)col.Bb);
@@ -122,7 +122,7 @@ namespace Pablo.Formats.Character.Types
 							if ((color_notice & 4) != 0)
 							{
 								var col = pal[attr.Background];
-								bw.Write((byte)(col.Ab));
+								bw.Write((byte)0); // tundradraw does not like 255 here, requires 0
 								bw.Write((byte)(col.Rb));
 								bw.Write((byte)(col.Gb));
 								bw.Write((byte)(col.Bb));
@@ -165,7 +165,7 @@ namespace Pablo.Formats.Character.Types
 			ResizeCanvasWidth(fs, document, canvas);
 			br.ReadByte(); // read version byte (unused)
 			var id = Encoding.ASCII.GetString(br.ReadBytes(8)); // read signature ID
-			if (id != TUNDRA_ID)
+			if (id != TundraID)
 				throw new Exception("Not a valid tundra24 file");
 				
 			var pal = new Palette();

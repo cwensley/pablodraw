@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F847A961-35B0-4098-BF22-321FC4CED6CD}</ProjectGuid>
     <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -90,6 +90,9 @@
       </EnvironmentVariables>
     </EnvironmentVariables>
     <MtouchUseSGen>True</MtouchUseSGen>
+    <CodesignProvision>06B0CF1A-693E-4B2B-A24C-8A3EB54097B1</CodesignProvision>
+    <IpaPackageName>
+    </IpaPackageName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -107,15 +110,8 @@
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Platform.iOS\Eto.Platform.iOS.csproj">
-      <Project>{E711B298-D141-4EC5-9BFD-84962B264F90}</Project>
-      <Name>Eto.Platform.iOS</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto - iOS.csproj">
-      <Project>{83452633-C37C-490F-852A-3ADE0A2CF0D4}</Project>
-      <Name>Eto - iOS</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Pablo\Pablo - iOS.csproj">
       <Project>{2D49CD9B-63D3-4808-8BB3-2262A6140701}</Project>
       <Name>Pablo - iOS</Name>
@@ -123,6 +119,14 @@
     <ProjectReference Include="..\Pablo.Mobile\Pablo.Mobile - iOS.csproj">
       <Project>{1B141E90-F0AA-41BC-882D-420F91B53035}</Project>
       <Name>Pablo.Mobile - iOS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.iOS\Eto.iOS.csproj">
+      <Project>{E711B298-D141-4EC5-9BFD-84962B264F90}</Project>
+      <Name>Eto.iOS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto - Pcl.csproj">
+      <Project>{35EF0A4E-2A1A-492C-8BED-106774EA09F2}</Project>
+      <Name>Eto - Pcl</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

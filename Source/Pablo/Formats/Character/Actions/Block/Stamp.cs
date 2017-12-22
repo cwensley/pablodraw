@@ -6,18 +6,25 @@ using Pablo.Formats.Character.Tools;
 
 namespace Pablo.Formats.Character.Actions.Block
 {
-	public class Stamp : Command
+	public class Stamp : PabloCommand
 	{
 		Selection tool;
 		public Stamp (Selection tool) : base(tool.Handler)
 		{
 			this.tool = tool;
 			ID = "character_Stamp";
-			Text = "&Stamp|Stamp|Stamp selected region|Copies the selected region";
+			MenuText = "&Stamp";
+			ToolTip = "Stamp selected region";
 			Name = "Stamp";
-			Accelerators = new Key[] { Key.S, Key.Space };
+			Shortcut = Keys.S; //new [] { Keys.S, Keys.Space };
 		}
-		
+
+		public override bool Enabled
+		{
+			get { return base.Enabled && tool.DrawMode == DrawMode.Paste; }
+			set { base.Enabled = value; }
+		}
+
 		public override int CommandID {
 			get {
 				return (int)NetCommands.BlockStamp;

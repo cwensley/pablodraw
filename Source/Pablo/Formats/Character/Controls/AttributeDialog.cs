@@ -4,7 +4,7 @@ using Eto.Forms;
 
 namespace Pablo.Formats.Character.Controls
 {
-	public class AttributeDialog : Dialog
+	public class AttributeDialog : Dialog<bool>
 	{
 		ColourSelection colours;
 		CharacterHandler handler;
@@ -14,13 +14,13 @@ namespace Pablo.Formats.Character.Controls
 			get { return colours.Attribute; }
 		}
 
-		public override void OnKeyDown(KeyEventArgs e)
+		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);
-			if (e.KeyData == Key.Escape ||
-				e.KeyData == Key.Enter)
+			if (e.KeyData == Keys.Escape ||
+				e.KeyData == Keys.Enter)
 			{
-				DialogResult = DialogResult.Ok;
+				Result = true;
 				Close();
 				e.Handled = true;
 			}
@@ -30,7 +30,11 @@ namespace Pablo.Formats.Character.Controls
 		{
 			this.handler = handler;
 			Title = "Select attribute";
-			ClientSize = handler.CharacterDocument.Info.AttributeDialogSize ?? new Size(260, 260);
+			var pos = handler.CharacterDocument.Info.AttributeDialogBounds;
+			if (pos != null)
+				Bounds = pos.Value;
+			else
+				ClientSize = handler.CharacterDocument.Info.AttributeDialogSize ?? new Size(260, 260);
 #if DESKTOP
 			this.Resizable = true;
 #endif
@@ -48,21 +52,22 @@ namespace Pablo.Formats.Character.Controls
 			Content = layout;
 		}
 
-		public override void OnLoadComplete (EventArgs e)
+		protected override void OnLoadComplete (EventArgs e)
 		{
 			base.OnLoadComplete (e);
 			colours.Focus ();
 		}
 		
-		public override void OnClosed (EventArgs e)
+		protected override void OnClosed (EventArgs e)
 		{
 			base.OnClosed (e);
+			handler.CharacterDocument.Info.AttributeDialogBounds = this.RestoreBounds;
 			handler.CharacterDocument.Info.AttributeDialogSize = this.ClientSize;
 		}
 
 		void colours_Selected(object sender, EventArgs e)
 		{
-			DialogResult = DialogResult.Ok;
+			Result = true;
 			Close();
 		}
 
@@ -87,7 +92,7 @@ namespace Pablo.Formats.Character.Controls
 
 		void bOk_Click(object sender, EventArgs e)
 		{
-			DialogResult = DialogResult.Ok;
+			Result = true;
 			Close();
 		}
 	}

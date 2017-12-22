@@ -11,7 +11,7 @@ namespace Pablo.Formats.Character
 
 		public virtual CharacterHandler Handler { get; set; }
 
-		public virtual Key Accelerator { get { return Key.None; } }
+		public virtual Keys Accelerator { get { return Keys.None; } }
 
 		public virtual bool AllowToolShortcuts { get { return true; } }
 
@@ -101,7 +101,7 @@ namespace Pablo.Formats.Character
 		{
 		}
 
-		public virtual void GenerateActions(GenerateActionArgs args)
+		public virtual void GenerateCommands(GenerateCommandArgs args)
 		{
 		}
 

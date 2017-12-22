@@ -11,7 +11,7 @@ using Lidgren.Network;
 
 namespace PabloDraw.Console.Commands
 {
-	public class EditFile : ICommand
+	class EditFile : ICommand
 	{
 		IClientDelegate clientDelegate;
 		

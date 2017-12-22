@@ -12,14 +12,14 @@ namespace Pablo.Formats.Rip.Tools
 			get { return "Draws a connected set of lines (L)"; }
 		}
 
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.L;
+				return Keys.L;
 			}
 		}
 		
 		public override Eto.Drawing.Image Image {
-			get { return Bitmap.FromResource ("Pablo.Formats.Rip.Icons.PolyLine.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.PolyLine.png"); }
 		}
 		
 		public override IEnumerable<RipOptionalCommand> Styles {
@@ -38,7 +38,7 @@ namespace Pablo.Formats.Rip.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout(Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			layout.Add (base.GeneratePad ());
 			layout.Add(Separator());
 			layout.Add (new Controls.LineStylePad (Handler, true));

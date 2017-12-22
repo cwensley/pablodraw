@@ -2,7 +2,7 @@ using System;
 using Eto.Forms;
 namespace Pablo.Interface.Actions
 {
-	public class CloseWindow : ButtonAction
+	public class CloseWindow : Command
 	{
 		Main main;
 		public const string ActionID = "closeWindow";
@@ -11,14 +11,15 @@ namespace Pablo.Interface.Actions
 		{
 			this.main = main;
 			this.ID = ActionID;
-			this.Text = "Close|Close|Closes this window";
-			this.Accelerator = Command.CommonModifier | Key.W;
+			this.MenuText = "Close";
+			this.ToolTip = "Closes this window";
+			this.Shortcut = PabloCommand.CommonModifier | Keys.W;
 			
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated (e);
+			base.OnExecuted(e);
 			main.Close();
 		}
 	}

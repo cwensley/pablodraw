@@ -6,6 +6,7 @@ using Eto;
 using Eto.Forms;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Pablo
 {
@@ -18,11 +19,11 @@ namespace Pablo
 
 	public abstract class DocumentInfo
 	{
-		FormatCollection formats = new FormatCollection();
-		Hashtable properties = new Hashtable();
-		ZoomInfo zoomInfo = new ZoomInfo();
+		readonly FormatCollection formats = new FormatCollection();
+		readonly Hashtable properties = new Hashtable();
+		readonly ZoomInfo zoomInfo = new ZoomInfo();
 		
-		public DocumentInfo(string id, string description)
+		protected DocumentInfo(string id, string description)
 		{
 			this.ID = id;
 			this.Description = description;
@@ -61,17 +62,17 @@ namespace Pablo
 		
 		public Document Create()
 		{
-			return this.Create(Generator.Current);
+			return Create(Platform.Instance);
 		}
 		
-		public abstract Document Create(Generator generator);
+		public abstract Document Create(Platform generator);
 
 		public FormatCollection Formats
 		{
 			get { return formats; }
 		}
-		
-		public virtual void GenerateActions(GenerateActionArgs args)
+
+		public virtual void GenerateCommands(GenerateCommandArgs args)
 		{
 		}
 
@@ -87,7 +88,7 @@ namespace Pablo
 		
 		public DocumentInfoCollection GetCompatibleDocuments()
 		{
-			DocumentInfoCollection documentInfos = new DocumentInfoCollection();
+			var documentInfos = new DocumentInfoCollection();
 			GetCompatibleDocuments(documentInfos);
 			return documentInfos;
 		}
@@ -100,19 +101,19 @@ namespace Pablo
 		public virtual void ReadXml(XmlElement element)
 		{
 			AutoScroll = element.GetBoolAttribute ("autoscroll") ?? true;
-			XmlElement formats = (XmlElement)element.SelectSingleNode("formats");
-			if (formats != null) this.formats.ReadXml(formats);
-			XmlElement zoomInfoElement = (XmlElement)element.SelectSingleNode("zoomInfo");
-			if (zoomInfoElement != null) this.zoomInfo.ReadXml(zoomInfoElement);
+			var formatsElement = (XmlElement)element.SelectSingleNode("formats");
+			if (formatsElement != null) formats.ReadXml(formatsElement);
+			var zoomInfoElement = (XmlElement)element.SelectSingleNode("zoomInfo");
+			if (zoomInfoElement != null) zoomInfo.ReadXml(zoomInfoElement);
 		}
 		
 		public virtual void WriteXml(XmlElement element)
 		{
 			if (!AutoScroll)
 				element.SetAttribute ("autoscroll", AutoScroll);
-			XmlElement formats = element.OwnerDocument.CreateElement("formats");
-			this.formats.WriteXml(formats);
-			element.AppendChild(formats);
+			XmlElement formatsElement = element.OwnerDocument.CreateElement("formats");
+			formats.WriteXml(formatsElement);
+			element.AppendChild(formatsElement);
 			XmlElement zoomInfoElement = element.OwnerDocument.CreateElement("zoomInfo");
 			zoomInfo.WriteXml(zoomInfoElement);
 			element.AppendChild(zoomInfoElement);
@@ -122,38 +123,39 @@ namespace Pablo
 		{
 			return Description;
 		}
-		
-		public override int GetHashCode()
-		{
-			return base.GetHashCode();
-		}
 	}
 
 	public class DocumentInfoCollection : Dictionary<string, DocumentInfo>, IXmlReadable
 	{
 		public Format DefaultFormat { get; set; }
 
+		static readonly object locker = new object();
+		static DocumentInfoCollection defaultInfos;
 		public static DocumentInfoCollection Default
 		{
 			get
 			{
-				var info = new DocumentInfoCollection();
-				info.Add(new Pablo.Formats.Character.CharacterDocumentInfo());
-				info.Add(new Pablo.Formats.Rip.RipDocumentInfo());
-				info.Add(new Pablo.Formats.Image.ImageDocumentInfo());
-				info.DefaultFormat = info[Pablo.Formats.Character.CharacterDocumentInfo.DocumentID].Formats["ansi"];
-				return info;
+				if (defaultInfos == null)
+				{
+					lock (locker)
+					{
+						if (defaultInfos == null)
+						{
+							defaultInfos = new DocumentInfoCollection();
+							defaultInfos.Add(new Pablo.Formats.Character.CharacterDocumentInfo());
+							defaultInfos.Add(new Pablo.Formats.Rip.RipDocumentInfo());
+							defaultInfos.Add(new Pablo.Formats.Image.ImageDocumentInfo());
+							defaultInfos.DefaultFormat = defaultInfos[Pablo.Formats.Character.CharacterDocumentInfo.DocumentID].Formats["ansi"];
+						}
+					}
+				}
+				return defaultInfos;
 			}
-		}
-		
-		public DocumentInfoCollection()
-		{
-			// initialize default values
 		}
 		
 		public void Add(DocumentInfo value)
 		{
-			this.Add(value.ID, value);
+			Add(value.ID, value);
 		}
 		
 		public DocumentInfo Find(string fileName, string defaultInfo)
@@ -165,7 +167,7 @@ namespace Pablo
 		
 		public DocumentInfo Find(string fileName)
 		{
-			foreach (DocumentInfo info in this.Values)
+			foreach (DocumentInfo info in Values)
 			{
 				Format format = info.Formats.Find(fileName);
 				if (format != null) return info;
@@ -206,7 +208,7 @@ namespace Pablo
 				if (!string.IsNullOrEmpty (id))
 				{
 					DocumentInfo info;
-					if (this.TryGetValue (id, out info))
+					if (TryGetValue (id, out info))
 						info.ReadXml(infoElement);
 				}
 			}
@@ -214,7 +216,7 @@ namespace Pablo
 		
 		public void WriteXml(XmlElement element)
 		{
-			foreach (DocumentInfo info in this.Values)
+			foreach (DocumentInfo info in Values)
 			{
 				XmlElement infoElement = element.OwnerDocument.CreateElement("documentInfo");
 				infoElement.SetAttribute("infoId", info.ID);

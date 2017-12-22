@@ -4,7 +4,7 @@ using Eto.Drawing;
 
 namespace Pablo.Interface.Actions
 {
-	public class Exit : ButtonAction
+	public class Exit : Command
 	{
 		public Main Main { get; private set; }
 		
@@ -14,15 +14,16 @@ namespace Pablo.Interface.Actions
 		{
 			this.Main = main;
 			this.ID = ActionID;
-			this.Text = "E&xit|Exit|Exit the application";
-			this.Image = Icon.FromResource ("Pablo.Interface.Icons.close.ico");
-			this.Accelerator = Key.X | Key.Alt;
+			this.MenuText = "E&xit";
+			this.ToolTip = "Exit the application";
+			this.Image = ImageCache.IconFromResource("Pablo.Interface.Icons.close.ico");
+			this.Shortcut = Keys.X | Keys.Alt;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated (e);
-			
+			base.OnExecuted(e);
+
 			Main.ExitApplication ();
 		}
 	}

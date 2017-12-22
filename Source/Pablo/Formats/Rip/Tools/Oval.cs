@@ -13,14 +13,14 @@ namespace Pablo.Formats.Rip.Tools
 			get { return "Draws an ellipse or circle (E)"; }
 		}
 		
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.E;
+				return Keys.E;
 			}
 		}
 		
 		public override Eto.Drawing.Image Image {
-			get { return Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Oval.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Oval.png"); }
 		}
 		
 		public override IEnumerable<RipOptionalCommand> Styles {
@@ -40,7 +40,7 @@ namespace Pablo.Formats.Rip.Tools
 			this.Command.EndAngle = 360;
 		}
 		
-		protected override void FinishCommand (Key modifiers, IList<Rectangle> updates = null)
+		protected override void FinishCommand (Keys modifiers, IList<Rectangle> updates = null)
 		{
 			if (IsSquare) {
 				var command = RipCommands.Create<Commands.Circle> (Document);
@@ -54,7 +54,7 @@ namespace Pablo.Formats.Rip.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout (Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 
 			layout.Add(Separator());
 			layout.Add (new Controls.LineStylePad (Handler, false));

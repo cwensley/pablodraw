@@ -14,14 +14,14 @@ namespace Pablo.Formats.Rip.Tools
 		bool lastPoint;
 		bool enableMulti;
 		
-		bool EnableMulti (Key modifiers)
+		bool EnableMulti (Keys modifiers)
 		{
-			return enableMulti ^ (modifiers == Key.Shift);
+			return enableMulti ^ (modifiers == Keys.Shift);
 		}
 		
 		protected abstract void ApplyPoints (List<Point> points);
 
-		protected override void SetStartLocation (Point start, Key modifiers, Point location)
+		protected override void SetStartLocation (Point start, Keys modifiers, Point location)
 		{
 			points = new List<Point> ();
 			points.Add (Point.Max (Point.Empty, start));
@@ -35,7 +35,7 @@ namespace Pablo.Formats.Rip.Tools
 			lastPoint = false;
 		}
 		
-		protected override void SetEndLocation (Point end, Key modifiers, Point location)
+		protected override void SetEndLocation (Point end, Keys modifiers, Point location)
 		{
 			if (!lastPoint) {
 				AddPoint (end);
@@ -114,14 +114,14 @@ namespace Pablo.Formats.Rip.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout (Padding.Empty, Size.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty, Spacing = Size.Empty };
 
 			layout.Add(TopSeparator());
 			layout.BeginVertical (Padding.Empty);
 			layout.BeginHorizontal ();
 			
 			var b = new ImageButton{
-				Image = Bitmap.FromResource ("Pablo.Formats.Rip.Icons.MultiPoint-Multi.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.MultiPoint-Multi.png"),
 				Toggle = true,
 				Pressed = enableMulti
 			};

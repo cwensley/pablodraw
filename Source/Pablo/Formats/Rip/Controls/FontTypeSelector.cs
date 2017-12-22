@@ -8,7 +8,7 @@ using Pablo.Controls;
 
 namespace Pablo.Formats.Rip.Controls
 {
-	public class FontTypeSelector : Dialog
+	public class FontTypeSelector : Dialog<DialogResult>
 	{
 		RipHandler handler;
 		BGICanvas canvas;
@@ -157,14 +157,14 @@ namespace Pablo.Formats.Rip.Controls
 			};
 
 			var items = from r in Enum.GetValues(typeof(BGICanvas.FontType)).Cast<BGICanvas.FontType>()
-						where r != BGICanvas.FontType.User
-						select CreateItem((BGICanvas.FontType)Enum.ToObject(typeof(BGICanvas.FontType), r));
+			            where r != BGICanvas.FontType.User
+			            select CreateItem((BGICanvas.FontType)Enum.ToObject(typeof(BGICanvas.FontType), r));
 
 			control.Items.AddRange(items.OrderBy(r => r.Text).Cast<IListItem>());
 
 			control.Activated += delegate
 			{
-				DialogResult = DialogResult.Ok;
+				Result = DialogResult.Ok;
 				Close();
 			};
 
@@ -178,7 +178,7 @@ namespace Pablo.Formats.Rip.Controls
 
 		Control FontAndSizes()
 		{
-			var layout = new DynamicLayout(new Padding(5));
+			var layout = new DynamicLayout { Padding = new Padding(5) };
 			layout.BeginHorizontal();
 
 			layout.Add(null, true);
@@ -199,7 +199,8 @@ namespace Pablo.Formats.Rip.Controls
 
 			control.Paint += delegate(object sender, PaintEventArgs pe)
 			{
-				canvas.DrawRegion(pe.Graphics, new Rectangle(canvas.WindowSize));
+				if (canvas != null)
+					canvas.DrawRegion(pe.Graphics, new Rectangle(canvas.WindowSize));
 			};
 
 			control.LoadComplete += delegate
@@ -217,7 +218,7 @@ namespace Pablo.Formats.Rip.Controls
 
 			control.Click += delegate
 			{
-				DialogResult = DialogResult.Cancel;
+				Result = DialogResult.Cancel;
 				Close();
 			};
 			base.AbortButton = control;
@@ -231,7 +232,7 @@ namespace Pablo.Formats.Rip.Controls
 
 			control.Click += delegate
 			{
-				DialogResult = DialogResult.Ok;
+				Result = DialogResult.Ok;
 				Close();
 			};
 

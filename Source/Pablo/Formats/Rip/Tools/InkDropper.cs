@@ -13,13 +13,13 @@ namespace Pablo.Formats.Rip.Tools
 			get { return "Selects the foreground (left click) or background (right click) color from under the mouse (I)"; }
 		}
 
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.I;
+				return Keys.I;
 			}
 		}
 
-		public override Eto.Drawing.Image Image { get { return Bitmap.FromResource ("Pablo.Formats.Rip.Icons.InkDropper.png"); } }
+		public override Eto.Drawing.Image Image { get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.InkDropper.png"); } }
 		
 		public override void Selecting ()
 		{
@@ -27,9 +27,9 @@ namespace Pablo.Formats.Rip.Tools
 			oldTool = Handler.SelectedTool;
 		}
 		
-		void SetOldTool (Key modifiers)
+		void SetOldTool (Keys modifiers)
 		{
-			if (oldTool != null && !modifiers.HasFlag (Key.Shift)) {
+			if (oldTool != null && !modifiers.HasFlag (Keys.Shift)) {
 				Handler.SelectedTool = oldTool;
 				oldTool = null;
 			}

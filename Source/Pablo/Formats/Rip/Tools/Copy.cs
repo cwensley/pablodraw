@@ -16,14 +16,14 @@ namespace Pablo.Formats.Rip.Tools
 			get { return "Copies the selected region into the clipboard (C)"; }
 		}
 
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.C;
+				return Keys.C;
 			}
 		}
 		
 		public override Eto.Drawing.Image Image {
-			get { return Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Copy.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Copy.png"); }
 		}
 		
 		protected override void SetPosition (Rectangle rect)
@@ -32,7 +32,7 @@ namespace Pablo.Formats.Rip.Tools
 			this.Command.Rectangle = rect;
 		}
 		
-		bool EnableClear (Key modifiers)
+		bool EnableClear (Keys modifiers)
 		{
 			return enableClear/* ^ (modifiers == (Key.Alt | Key.Shift))*/;
 		}
@@ -51,7 +51,7 @@ namespace Pablo.Formats.Rip.Tools
 			this.BGI.SetLineStyle (oldlinestyle);
 		}
 		
-		protected override void FinishCommand (Key modifiers, IList<Rectangle> updates)
+		protected override void FinishCommand (Keys modifiers, IList<Rectangle> updates)
 		{
 			var rect = this.Command.Rectangle;
 			base.FinishCommand (modifiers, updates);
@@ -69,12 +69,12 @@ namespace Pablo.Formats.Rip.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout (Padding.Empty, Size.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty, Spacing = Size.Empty };
 			
 			layout.BeginHorizontal ();
 			
 			var b = new ImageButton{
-				Image = Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Copy-Clear.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Copy-Clear.png"),
 #if DESKTOP
 				ToolTip = "Clear copied region",
 #endif

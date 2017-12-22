@@ -2,8 +2,6 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9A72B697-8DA3-4A52-9E6B-05DEEEA23AD2}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -13,7 +11,6 @@
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
-    <DelaySign>false</DelaySign>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>
     </AppDesignerFolder>
@@ -24,7 +21,8 @@
     <ReleaseVersion>
     </ReleaseVersion>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <UseMSBuildEngine>False</UseMSBuildEngine>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
     <PublishUrl>Z:\Projects\download.picoe.ca\pablodraw\windows\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -58,15 +56,22 @@
     <DefineConstants>TRACE;DESKTOP</DefineConstants>
     <FileAlignment>4096</FileAlignment>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Artifacts\bin\Release\</OutputPath>
     <RegisterForComInterop>False</RegisterForComInterop>
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <WarningLevel>4</WarningLevel>
     <DebugType>pdbonly</DebugType>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="./copyassemblies.sh ${ProjectConfigName} ${ProjectDir}/Assemblies" workingdir="${ProjectDir}" />
-        <Command type="AfterBuild" command="cp -Rf ${TargetDir}/PabloDraw.exe ${SolutionDir}/../Releases/3.2" />
+        <Command>
+          <type>BeforeBuild</type>
+          <command>./copyassemblies.sh ${ProjectConfigName} ${ProjectDir}/Assemblies</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+        <Command>
+          <type>AfterBuild</type>
+          <command>cp -Rf ${TargetDir}/PabloDraw.exe ${SolutionDir}/../Releases/3.2</command>
+        </Command>
       </CustomCommands>
     </CustomCommands>
     <EnvironmentVariables>
@@ -76,6 +81,8 @@
     </EnvironmentVariables>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DebugSymbols>true</DebugSymbols>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <BaseAddress>285212672</BaseAddress>
@@ -85,14 +92,18 @@
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Artifacts\bin\Debug\</OutputPath>
     <RegisterForComInterop>False</RegisterForComInterop>
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <WarningLevel>4</WarningLevel>
     <DebugType>full</DebugType>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="./copyassemblies.sh ${ProjectConfigName} ${ProjectDir}/Assemblies" workingdir="${ProjectDir}" />
+        <Command>
+          <type>BeforeBuild</type>
+          <command>./copyassemblies.sh ${ProjectConfigName} ${ProjectDir}/Assemblies</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
       </CustomCommands>
     </CustomCommands>
     <EnvironmentVariables>
@@ -102,6 +113,7 @@
     </EnvironmentVariables>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>27086626895AC2613898D088F965B62E3B1C6CE2</ManifestCertificateThumbprint>
@@ -113,7 +125,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -144,7 +156,7 @@
 copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
     <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">cd $(ProjectDir)
 ./copyassemblies.sh $(ConfigurationName) Assemblies</PreBuildEvent>
-    <PostBuildEvent>del $(TargetDir)\Eto.dll</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">rem del $(TargetDir)\Eto.dll</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -182,8 +194,6 @@ copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assemblies\Eto.dll" />
-    <EmbeddedResource Include="Assemblies\Eto.Platform.Gtk.dll" />
-    <EmbeddedResource Include="Assemblies\Eto.Platform.Windows.dll" />
     <EmbeddedResource Include="Assemblies\Pablo.dll" />
     <EmbeddedResource Include="Assemblies\Pablo.Interface.dll" />
     <EmbeddedResource Include="Assemblies\Lidgren.Network.dll" />
@@ -194,8 +204,11 @@ copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
     <EmbeddedResource Include="..\packages\sharpcompress.0.10.1.3\lib\net40\SharpCompress.dll">
       <Link>Assemblies\SharpCompress.dll</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="Assemblies\Eto.Gtk2.dll" />
+    <EmbeddedResource Include="Assemblies\Eto.WinForms.dll" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="copyassemblies.cmd" />
     <None Include="copyassemblies.sh" />
     <None Include="PabloDraw_TemporaryKey.pfx" />
@@ -354,7 +367,7 @@ copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
     </PublishFile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assemblies\Eto.Platform.Wpf.dll" />
+    <EmbeddedResource Include="Assemblies\Eto.Wpf.dll" />
     <Content Include="PabloDraw.ico" />
     <Content Include="..\README.ans">
       <Link>README.ans</Link>
@@ -412,30 +425,37 @@ copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
     </FileAssociation>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Platform.Gtk\Eto.Platform.Gtk.csproj">
-      <Project>{1FF7BE58-A6A2-4132-8CAF-AA2EF18122A1}</Project>
-      <Name>Eto.Platform.Gtk</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Direct2D\Eto.Direct2D - net45.csproj">
+      <Project>{330EF9FD-5947-4AC9-9796-950C7633695F}</Project>
+      <Name>Eto.Direct2D - net45</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Platform.Windows\Eto.Platform.Windows.csproj">
-      <Project>{69D38C57-AD4B-4A16-A7B1-49BCFBE71491}</Project>
-      <Name>Eto.Platform.Windows</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Gtk\Eto.Gtk2 - net45.csproj">
+      <Project>{80915A80-CA54-11E3-9C1A-0800200C9A66}</Project>
+      <Name>Eto.Gtk2 - net45</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto.csproj">
-      <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
-      <Name>Eto</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Gtk\Eto.Gtk3 - net45.csproj">
+      <Project>{543B2F90-CA56-11E3-9C1A-0800200C9A66}</Project>
+      <Name>Eto.Gtk3 - net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.WinForms\Eto.WinForms - net45.csproj">
+      <Project>{9F51798A-354C-47A1-9207-4BB7D7FC7FC4}</Project>
+      <Name>Eto.WinForms - net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Wpf\Eto.Wpf - net45.csproj">
+      <Project>{63137fa0-ca55-11e3-9c1a-0800200c9a66}</Project>
+      <Name>Eto.Wpf - net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto - pcl.csproj">
+      <Project>{35EF0A4E-2A1A-492C-8BED-106774EA09F2}</Project>
+      <Name>Eto - pcl</Name>
     </ProjectReference>
     <ProjectReference Include="..\Pablo\Pablo.csproj">
       <Project>{35DBE6BB-B46D-4AE9-8156-FBFC6EC2BB69}</Project>
       <Name>Pablo</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Pablo.Interface\Pablo.Interface.csproj">
       <Project>{3FAACC7E-D156-4599-B0D1-6177AD78E8B1}</Project>
       <Name>Pablo.Interface</Name>
-      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

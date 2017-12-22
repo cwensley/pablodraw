@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace Pablo.Interface.Actions
 {
-	public class OpenFile : ButtonAction
+	public class OpenFile : Command
 	{
 		Main main;
 		
@@ -21,18 +21,18 @@ namespace Pablo.Interface.Actions
 		{
 			this.main = main;
 			base.ID = ActionID;
-			this.Text = "&Open|Open|Open a file";
-			this.Image = Icon.FromResource("Pablo.Interface.Icons.open.ico");
-			this.Accelerator = Command.CommonModifier | Key.O;
+			this.MenuText = "&Open";
+			this.ToolBarText = "Open";
+			this.ToolTip = "Open a file";
+			this.Image = ImageCache.IconFromResource("Pablo.Interface.Icons.open.ico");
+			this.Shortcut = PabloCommand.CommonModifier | Keys.O;
 			this.Enabled = main.Client == null || main.Client.CurrentUser.Level >= Pablo.Network.UserLevel.Operator;
 		}
 		
-		
-		protected override void OnActivated(EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
-			var ofd = new OpenFileDialog(main.Generator);
+			var ofd = new OpenFileDialog();
 			ofd.Title = "Select the file to open";
-			var filters = new List<IFileDialogFilter>();
 			var formats = main.Settings.Infos.GetFormats();
 			var allFormats = new List<string>();
 			foreach (Format format in formats.Values)
@@ -41,11 +41,10 @@ namespace Pablo.Interface.Actions
 				{
 					var extensions = from ex in format.Extensions select "." + ex;
 					allFormats.AddRange (extensions);
-					filters.Add(new FileDialogFilter{ Name = format.Name, Extensions = extensions.ToArray () });
+					ofd.Filters.Add(new FileDialogFilter{ Name = format.Name, Extensions = extensions.ToArray () });
 				}
 			}
-			filters.Insert(0, new FileDialogFilter{ Name = "All Formats", Extensions = allFormats.ToArray() });
-			ofd.Filters = filters;
+			ofd.Filters.Insert(0, new FileDialogFilter{ Name = "All Formats", Extensions = allFormats.ToArray() });
 
 			var dr = ofd.ShowDialog(main);
 			if (dr == DialogResult.Ok)
@@ -53,7 +52,7 @@ namespace Pablo.Interface.Actions
 				if (FileModifiedDialog.Show(main) == DialogResult.Ok) {
 					Format format = (ofd.CurrentFilterIndex > 0) ? formats.Values.ElementAtOrDefault(ofd.CurrentFilterIndex-1) : null;
 					if (format == null) format = formats.Find(ofd.FileName, string.Empty);
-					if (format == null) MessageBox.Show(main.Generator, main, "Cannot determine format to open based on file extension.");
+					if (format == null) MessageBox.Show(main, "Cannot determine format to open based on file extension.");
 	
 					if (format != null)
 					{

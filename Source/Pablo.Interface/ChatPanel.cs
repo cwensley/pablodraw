@@ -46,7 +46,7 @@ namespace Pablo.Interface
 			};
 		}
 
-		public override void OnLoad(EventArgs e)
+		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
 			text.Append(string.Empty, true);
@@ -77,10 +77,10 @@ namespace Pablo.Interface
 			var menu = new ContextMenu();
 			
 			var kick = KickItem();
-			menu.MenuItems.Add(kick);
+			menu.Items.Add(kick);
 
 			var level = LevelItem();
-			menu.MenuItems.Add(level);
+			menu.Items.Add(level);
 			
 			users.SelectedIndexChanged += delegate
 			{
@@ -92,9 +92,9 @@ namespace Pablo.Interface
 			return users;
 		}
 
-		ImageMenuItem KickItem()
+		ButtonMenuItem KickItem()
 		{
-			var item = new ImageMenuItem
+			var item = new ButtonMenuItem
 			{
 				Text = "Kick",
 				Enabled = false
@@ -106,9 +106,9 @@ namespace Pablo.Interface
 			return item;
 		}
 
-		ImageMenuItem LevelItem()
+		ButtonMenuItem LevelItem()
 		{
-			var item = new ImageMenuItem
+			var item = new ButtonMenuItem
 			{
 				Text = "Set Level",
 				Enabled = false
@@ -116,7 +116,7 @@ namespace Pablo.Interface
 			
 			foreach (var lvl in Enum.GetNames (typeof(UserLevel)))
 			{
-				var lvlitem = new ImageMenuItem
+				var lvlitem = new ButtonMenuItem
 				{
 					Text = lvl,
 					//Tag = Enum.Parse (typeof(UserLevel), lvl)
@@ -132,7 +132,7 @@ namespace Pablo.Interface
 						User = newuser
 					});
 				};
-				item.MenuItems.Add(lvlitem);
+				item.Items.Add(lvlitem);
 			}
 			return item;
 		}
@@ -170,7 +170,7 @@ namespace Pablo.Interface
 			};
 			control.KeyDown += (sender, e) =>
 			{
-				if (e.KeyData == Key.Enter)
+				if (e.KeyData == Keys.Enter)
 				{
 					// send over pipe!
 					if (!string.IsNullOrWhiteSpace(control.Text))

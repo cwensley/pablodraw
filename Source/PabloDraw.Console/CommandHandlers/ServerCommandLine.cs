@@ -90,8 +90,8 @@ namespace PabloDraw.Console.CommandHandlers
 			if (format == null)
 				throw new  ArgumentOutOfRangeException("fileName", "Could not find format of the file");
 			var doc = format.Info.Create();
-			doc.Load(stream, format, null);
 			doc.FileName = fileName;
+			doc.Load(stream, format, null);
 			doc.EditMode = editMode;
 			SetDocument(doc);
 		}
@@ -136,7 +136,7 @@ namespace PabloDraw.Console.CommandHandlers
 		public override bool Process(ProcessCommandLineArgs args)
 		{
 			var command = args.Command;
-			if (command.GetBool("server") != true)
+			if (command.GetBool("server", "s") != true)
 				return false;
 
 			EnableBackups = command.GetBool("backup") ?? true;

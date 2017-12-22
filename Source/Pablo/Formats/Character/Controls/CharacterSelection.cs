@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Pablo.Formats.Character.Controls
 {
-	public class CharacterSelection : Dialog
+	public class CharacterSelection : Dialog<DialogResult>
 	{
 		Drawable preview;
 		Bitmap previewImage;
@@ -51,11 +51,12 @@ namespace Pablo.Formats.Character.Controls
 			layout.Add(Characters());
 			layout.BeginVertical(Padding.Empty);
 			layout.AddRow(null, CancelButton(), OkButton());
+			layout.EndVertical();
 
 			Content = layout;
 		}
 
-		public override void OnLoad(EventArgs e)
+		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
 			Update();
@@ -81,14 +82,14 @@ namespace Pablo.Formats.Character.Controls
 
 					var fg = pal[CharacterHandler.DrawAttribute.Foreground].ToArgb();
 					var bg = pal[CharacterHandler.DrawAttribute.Background].ToArgb();
-					uint onColor = bd.TranslateArgbToData(fg);
-					uint offColor = bd.TranslateArgbToData(bg);
+					int onColor = bd.TranslateArgbToData(fg);
+					int offColor = bd.TranslateArgbToData(bg);
 
 					byte* scanline = (byte*)bd.Data;
 					var character = font[SelectedCharacter];
 					for (int y = 0; y < font.Size.Height * magnification; y++)
 					{
-						uint* row = (uint*)scanline;
+						int* row = (int*)scanline;
 						for (int x = 0; x < font.Size.Width * magnification; x++)
 						{
 							var bit = character[x / magnification, y / magnification];
@@ -109,7 +110,6 @@ namespace Pablo.Formats.Character.Controls
 		{
 			var control = charNum = new Label
 			{
-					
 			};
 			return control;
 		}
@@ -122,10 +122,7 @@ namespace Pablo.Formats.Character.Controls
 			};
 			
 			previewImage = new Bitmap(font.Size * magnification, PixelFormat.Format32bppRgb);
-			control.Paint += delegate(object sender, PaintEventArgs pe)
-			{
-				pe.Graphics.DrawImage(previewImage, 0, 0);
-			};
+			control.Paint += (sender, pe) => pe.Graphics.DrawImage(previewImage, 0, 0);
 
 			var panel = new Panel { Content = control, Padding = new Padding(10) };
 			var col = CharacterHandler.DrawAttribute.Background;
@@ -146,9 +143,9 @@ namespace Pablo.Formats.Character.Controls
 			control.SetAttribute(CharacterHandler.DrawAttribute);
 			control.KeyDown += (sender, e) =>
 			{
-				if (e.KeyData == Key.Enter)
+				if (e.KeyData == Keys.Enter)
 				{
-					DialogResult = DialogResult.Ok;
+					Result = DialogResult.Ok;
 					Close();
 					e.Handled = true;
 				}
@@ -168,7 +165,7 @@ namespace Pablo.Formats.Character.Controls
 			{
 				e.Handled = true;
 				this.SelectedCharacter = control.CursorElement.Character;
-				DialogResult = DialogResult.Ok;
+				Result = DialogResult.Ok;
 				Close();
 			};
 			int character = 0;
@@ -197,7 +194,7 @@ namespace Pablo.Formats.Character.Controls
 			
 			control.Click += delegate
 			{
-				DialogResult = DialogResult.Cancel;
+				Result = DialogResult.Cancel;
 				Close();
 			};
 			AbortButton = control;
@@ -214,7 +211,7 @@ namespace Pablo.Formats.Character.Controls
 			
 			control.Click += delegate
 			{
-				DialogResult = DialogResult.Ok;
+				Result = DialogResult.Ok;
 				Close();
 			};
 			

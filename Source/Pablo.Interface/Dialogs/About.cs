@@ -3,7 +3,6 @@ using Eto.Drawing;
 using Eto.Forms;
 using System;
 using System.Reflection;
-using Eto.Misc;
 
 namespace Pablo.Interface.Dialogs
 {
@@ -21,7 +20,7 @@ mO'sOul is © Desoto/Mo'Soul";
 		public About()
 		{
 			this.Title = "About PabloDraw";
-			this.Resizable = false;
+			this.Resizable = true;
 
 			var layout = new DynamicLayout();
 			layout.Padding = Padding.Empty;
@@ -30,7 +29,7 @@ mO'sOul is © Desoto/Mo'Soul";
 			layout.BeginVertical(new Padding(15, 20));
 			layout.Add(new ImageView
 			{
-				Image = Icon.FromResource("Pablo.Interface.Icons.PabloDraw.ico"),
+				Image = ImageCache.IconFromResource("Pablo.Interface.Icons.PabloDraw.ico"),
 				Size = new Size(128, 128)
 			}, yscale: true);
 
@@ -48,7 +47,7 @@ mO'sOul is © Desoto/Mo'Soul";
 				HorizontalAlign = HorizontalAlign.Center
 			});
 
-			if (!Generator.IsMac)
+			if (!Platform.IsMac)
 			{
 				var b = new Button
 				{

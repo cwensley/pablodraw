@@ -20,7 +20,7 @@ namespace Pablo.Formats.Character.Tools
 		public bool ApplyColour { get; set; }
 		
 		public override Eto.Drawing.Image Image {
-			get { return Eto.Drawing.Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Line.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Line.png"); }
 		}
 
 		public override Cursor MouseCursor {
@@ -31,9 +31,9 @@ namespace Pablo.Formats.Character.Tools
 			get { return "Line - Draw a line"; }
 		}
 		
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.L | (Handler.Generator.IsMac ? Key.Control : Key.Alt);
+				return Keys.L | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
 			}
 		}
 		
@@ -55,7 +55,7 @@ namespace Pablo.Formats.Character.Tools
 				action.Element = new CanvasElement(CurrentCharacter, Handler.DrawAttribute);
 				action.ApplyColour = shouldApplyColour;
 				action.ApplyCharacter = shouldApplyCharacter;
-				action.Activate ();
+				action.Execute();
 				return true;
 			}
 			return false;
@@ -77,7 +77,7 @@ namespace Pablo.Formats.Character.Tools
 				Handler.InvalidateCharacterRegion (rect.Value, false, false);
 		}
 		
-		protected override void UpdateWithLocation (Rectangle rect, Key modifiers, Point end)
+		protected override void UpdateWithLocation (Rectangle rect, Keys modifiers, Point end)
 		{
 			shouldApplyCharacter = ApplyCharacter; //modifiers.HasFlag (Key.Shift | Application.Instance.CommonModifier) ^ ApplyCharacter;
 			//applyInverted = modifiers.HasFlag (Key.Shift | Application.Instance.CommonModifier) ^ Inverted;
@@ -120,7 +120,7 @@ namespace Pablo.Formats.Character.Tools
 		Control ApplyColourButton ()
 		{
 			var control = new ImageButton{
-				Image = Bitmap.FromResource ("Pablo.Formats.Character.Icons.ApplyColour.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.ApplyColour.png"),
 				Toggle = true,
 				Pressed = ApplyColour,
 #if DESKTOP
@@ -137,7 +137,7 @@ namespace Pablo.Formats.Character.Tools
 		Control ApplyCharacterButton ()
 		{
 			var control = new ImageButton{
-				Image = Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Text-Horizontal.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Text-Horizontal.png"),
 				Toggle = true,
 				Pressed = ApplyCharacter,
 #if DESKTOP
@@ -153,7 +153,7 @@ namespace Pablo.Formats.Character.Tools
 	
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout (Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			
 			layout.Add (Separator ());
 			layout.Add (base.GeneratePad ());

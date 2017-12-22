@@ -20,7 +20,7 @@ namespace Pablo.Formats.Character.Types
 
 		public override bool RequiresSauce(CharacterDocument document)
 		{
-			return document.Pages[0].Canvas.Size.Width != DefaultWidth || document.ICEColours;
+			return base.RequiresSauce(document) || document.Pages[0].Canvas.Size.Width != DefaultWidth || document.ICEColours;
 		}
 
 		public static Palette GetCGPalette()

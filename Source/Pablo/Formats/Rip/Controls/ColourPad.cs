@@ -27,7 +27,7 @@ namespace Pablo.Formats.Rip.Controls
 		{
 			public abstract Color Color { get; set; }
 
-			public override void OnPaint (PaintEventArgs pe)
+			protected override void OnPaint (PaintEventArgs pe)
 			{
 				base.OnPaint (pe);
 				var rect = new Rectangle (Point.Empty, this.Size);
@@ -50,7 +50,7 @@ namespace Pablo.Formats.Rip.Controls
 			{
 			}
 			
-			public override void OnMouseDown (MouseEventArgs e)
+			protected override void OnMouseDown (MouseEventArgs e)
 			{
 				base.OnMouseDown (e);
 				
@@ -93,7 +93,7 @@ namespace Pablo.Formats.Rip.Controls
 				font = Fonts.Sans(8);
 			}
 			
-			public override void OnPaint (PaintEventArgs pe)
+			protected override void OnPaint (PaintEventArgs pe)
 			{
 				if (Enabled) {
 					base.OnPaint (pe);
@@ -115,7 +115,7 @@ namespace Pablo.Formats.Rip.Controls
 				}
 			}
 			
-			public override void OnMouseDown (MouseEventArgs e)
+			protected override void OnMouseDown (MouseEventArgs e)
 			{
 				if (!Enabled) return;
 				base.OnMouseDown (e);
@@ -132,7 +132,7 @@ namespace Pablo.Formats.Rip.Controls
 				Pad.HandleColourChanged (this, EventArgs.Empty);
 			}
 			
-			public override void OnMouseDoubleClick (MouseEventArgs e)
+			protected override void OnMouseDoubleClick (MouseEventArgs e)
 			{
 				base.OnMouseDoubleClick (e);
 				e.Handled = true;
@@ -140,7 +140,7 @@ namespace Pablo.Formats.Rip.Controls
 				var dialog = new ColourEditor(this.Pad.Handler) {
 					SelectedColor = this.Index
 				};
-				if (dialog.ShowDialog (this) == DialogResult.Ok) {
+				if (dialog.ShowModal(this) == DialogResult.Ok) {
 					this.Pad.SetColours ();
 					this.Pad.Invalidate ();
 				}

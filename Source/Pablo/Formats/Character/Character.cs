@@ -1,18 +1,20 @@
 using System;
 using Pablo.Network;
+using System.Runtime.InteropServices;
 
 namespace Pablo.Formats.Character
 {
 	/// <summary>
 	/// Summary description for Character.
 	/// </summary>
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
 	public struct Character : INetworkReadWrite
 	{
-		public int character;
+		public short character;
 		
 		public Character(int character)
 		{
-			this.character = character;
+			this.character = (short)character;
 		}
 
 		public Character(byte character)
@@ -67,7 +69,7 @@ namespace Pablo.Formats.Character
 
 		public void Receive (Pablo.Network.ReceiveCommandArgs args)
 		{
-			character = args.Message.ReadInt32 ();
+			character = args.Message.ReadInt16 ();
 		}
 		
 		#endregion

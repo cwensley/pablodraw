@@ -30,7 +30,7 @@ namespace Pablo.Mobile
 			ListNavigation = new Navigation(listBox, "PabloDraw");
 			
 			
-			if (Splitter.Supported)
+			if (Splitter.IsSupported)
 			{
 				ViewerPane = new Panel();
 				
@@ -39,12 +39,12 @@ namespace Pablo.Mobile
 				
 				split.Panel2 = ViewerPane;
 				UsingSplitter = true;
-				
-				this.AddDockedControl(split);
+
+				this.Content = split;
 			}
 			else
 			{
-				this.AddDockedControl(ListNavigation);
+				this.Content = ListNavigation;
 			}
 		}
 		
@@ -108,7 +108,7 @@ namespace Pablo.Mobile
 				}
 				else
 				{
-					ViewerPane.AddDockedControl(handler.ViewerControl);
+					ViewerPane.Content = handler.ViewerControl;
 				}
 				
 				handler.Load (loadingStream, format);

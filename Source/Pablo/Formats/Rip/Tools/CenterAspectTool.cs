@@ -8,7 +8,7 @@ namespace Pablo.Formats.Rip.Tools
 	public abstract class CenterAspectTool<T> : TwoPointTool<T>
 		where T: RipCommand
 	{
-		sealed protected override void SetStartLocation (Point start, Key modifiers, Point location)
+		sealed protected override void SetStartLocation (Point start, Keys modifiers, Point location)
 		{
 		}
 		
@@ -17,16 +17,16 @@ namespace Pablo.Formats.Rip.Tools
 
 		protected abstract void SetPosition(Rectangle rect);
 		
-		sealed protected override void SetEndLocation (Point end, Key modifiers, Point location)
+		sealed protected override void SetEndLocation (Point end, Keys modifiers, Point location)
 		{
 			var start = Start;
 			var rect = new Rectangle ();
 			var aspect = BGICanvas.ASPECT;
 			var size = Size.Abs (new Size(end - start));
-			if (modifiers.HasFlag (Key.Shift)) {
+			if (modifiers.HasFlag (Keys.Shift)) {
 				IsSquare = true;
 				int diameter = Math.Max (size.Width, (int)Math.Round (size.Height / aspect));
-				if (modifiers.HasFlag (Key.Alt)) {
+				if (modifiers.HasFlag (Keys.Alt)) {
 					IsCentered = true;
 					rect.Location = new Point(start - new Point (diameter, (int)Math.Round (diameter * aspect)));
 					diameter *= 2;
@@ -44,7 +44,7 @@ namespace Pablo.Formats.Rip.Tools
 				
 			} else {
 				IsSquare = false;
-				if (modifiers.HasFlag (Key.Alt)) {
+				if (modifiers.HasFlag (Keys.Alt)) {
 					IsCentered = true;
 					rect.Location = start - size;
 					size *= new Size (2, 2);

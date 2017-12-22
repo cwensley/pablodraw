@@ -23,7 +23,7 @@ namespace Pablo.Formats.Character.Types
 
 		public override bool RequiresSauce(CharacterDocument document)
 		{
-			return document.Pages[0].Canvas.Size.Width != DefaultWidth || document.ICEColours || !document.IsUsingStandard8x16Font;
+			return base.RequiresSauce(document) || document.Pages[0].Canvas.Size.Width != DefaultWidth || document.ICEColours || !document.IsUsingStandard8x16Font;
 		}
 
 		static readonly byte[] background = Encoding.ASCII.GetBytes ("04261537");

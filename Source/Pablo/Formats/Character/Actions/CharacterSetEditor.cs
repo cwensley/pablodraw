@@ -5,26 +5,26 @@ using Pablo.Formats.Character.Controls;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class CharacterSetEditor : ButtonAction
+	public class CharacterSetEditor : Command
 	{
 		public const string ActionID = "character_charsetEditor";
-		
 		CharacterHandler handler;
 
-		public CharacterSetEditor (CharacterHandler handler)
+		public CharacterSetEditor(CharacterHandler handler)
 		{
 			this.handler = handler;
 			ID = ActionID;
-			Text = "Edit Character Set...|CharSet|Edit the character sets";
+			MenuText = "Edit Character Set...";
+			ToolBarText = "CharSet";
+			ToolTip = "Edit the character sets";
 		}
-        
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated (e);
-            
+			base.OnExecuted(e);
 			var dlg = new Controls.CharacterSetEditor(handler);
 			
-			dlg.ShowDialog (handler.Viewer as Control);
+			dlg.ShowModal(handler.Viewer as Control);
 		}
 	}
 }

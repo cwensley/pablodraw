@@ -6,76 +6,95 @@ using Eto;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class ToggleUse9x : CheckAction, ICommand
+	public class ToggleUse9x : CheckCommand, ICommand, IDisposable
 	{
 		CharacterHandler handler;
 		public const string ActionID = "character_ToggleUse9x";
-		
-		public ToggleUse9x (CharacterHandler handler)
+
+		public ToggleUse9x(CharacterHandler handler)
 		{
 			this.handler = handler;
 			this.ID = ActionID;
-			this.Text = "Use &9px Font|9px|Toggle the 9th pixel to emulate text mode";
+			this.MenuText = "Use &9px Font";
+			this.ToolBarText = "9px";
+			this.ToolTip = "Toggle the 9th pixel to emulate text mode";
 			
-			if (handler.Document.EditMode || handler.Client != null) {
+			if (handler.Document.EditMode || handler.Client != null)
+			{
 				this.Checked = handler.CharacterDocument.Use9x;
-			} else
+			}
+			else
 				this.Checked = handler.Info.Use9x;
 			
-			if (handler.Client != null) {
+			if (handler.Client != null)
+			{
 				this.Enabled = handler.Client.CurrentUser.Level >= this.Level;
 				
-				handler.CharacterDocument.Use9xChanged += new EventHandler<EventArgs> (delegate {
-					this.Checked = handler.CharacterDocument.Use9x;
-				}).MakeWeak (e => handler.CharacterDocument.Use9xChanged -= e);
+				handler.CharacterDocument.Use9xChanged += CharacterDocument_Use9xChanged;
 			}
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		void CharacterDocument_Use9xChanged(object sender, EventArgs e)
 		{
-			base.OnActivated (e);
-			if (handler.Client != null) {
-				handler.Client.SendCommand (this);
-			} else {
-				Do (!this.Checked);
+			Checked = handler.CharacterDocument.Use9x;
+		}
+
+		public void Dispose()
+		{
+			handler.CharacterDocument.Use9xChanged -= CharacterDocument_Use9xChanged;
+		}
+
+		protected override void OnExecuted(EventArgs e)
+		{
+			base.OnExecuted(e);
+			if (handler.Client != null)
+			{
+				handler.Client.SendCommand(this);
+			}
+			else
+			{
+				Do(Checked);
 			}
 		}
-		
-		void Do (bool val)
+
+		void Do(bool val)
 		{
 			if (handler.Document.EditMode || handler.Client != null)
 				handler.CharacterDocument.Use9x = val;
 			else
 				handler.Info.Use9x = val;
-			this.Checked = val;
+			Checked = val;
 		}
 
-		public int CommandID {
+		public int CommandID
+		{
 			get { return (int)NetCommands.Toggle9x; }
 		}
 
-		public UserLevel Level {
+		public UserLevel Level
+		{
 			get { return UserLevel.Operator; }
 		}
 
-		public Lidgren.Network.NetDeliveryMethod DeliveryMethod {
+		public Lidgren.Network.NetDeliveryMethod DeliveryMethod
+		{
 			get { return NetDeliveryMethod.ReliableOrdered; }
 		}
 
-		public bool Send (Pablo.Network.SendCommandArgs args)
+		public bool Send(Pablo.Network.SendCommandArgs args)
 		{
-			args.Message.Write (!this.Checked);
+			args.Message.Write(this.Checked);
 			return true;
 		}
 
-		public void Receive (Pablo.Network.ReceiveCommandArgs args)
+		public void Receive(Pablo.Network.ReceiveCommandArgs args)
 		{
-			var use9x = args.Message.ReadBoolean ();
-			args.Invoke (delegate {
-				Do (use9x);
+			var use9x = args.Message.ReadBoolean();
+			args.Invoke(delegate
+			{
+				Do(use9x);
 			});
 		}
-		
 	}
 }
 

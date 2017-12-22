@@ -6,6 +6,16 @@ namespace Pablo.Sauce.Types.Binary
 {
 	public class DataTypeInfo : BaseText.DataTypeInfo
 	{
+		public override bool HasFileType { get { return false; } }
+
+		public override bool HasFontName { get { return true; } }
+
+		public override bool HasICEColors { get { return true; } }
+
+		public override bool HasAspectRatio { get { return true; } }
+
+		public override bool HasLetterSpacing { get { return true; } }
+
 		public int Width
 		{
 			get { return Sauce.ByteFileType * 2; }

@@ -21,12 +21,12 @@ namespace Pablo.Formats.Character.Controls
 			
 			this.Handler.ToolChanged += new EventHandler<EventArgs> (HandleToolChanged).MakeWeak (e => this.Handler.ToolChanged -= HandleToolChanged); 
 
-			var layout = new DynamicLayout (Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			layout.DefaultPadding = Padding.Empty;
 			layout.DefaultSpacing = new Size(5, 5);
 			
 			
-			layout.BeginVertical (Size.Empty);
+			layout.BeginVertical (spacing: Size.Empty);
 			layout.BeginHorizontal ();
 			layout.Add (null, true);
 			var tools = Handler.Tools.ToList ();
@@ -40,7 +40,7 @@ namespace Pablo.Formats.Character.Controls
 					Pressed = handler.SelectedTool == tool
 				};
 #if DESKTOP
-				if (tool.Accelerator != Key.None)
+				if (tool.Accelerator != Keys.None)
 					button.ToolTip = string.Format ("{0} ({1})", tool.Description, tool.Accelerator.ToShortcutString());
 				else
 					button.ToolTip = tool.Description;
@@ -68,7 +68,7 @@ namespace Pablo.Formats.Character.Controls
 			Content = layout;
 		}
 		
-		public override void OnLoadComplete (EventArgs e)
+		protected override void OnLoadComplete (EventArgs e)
 		{
 			base.OnLoadComplete (e);
 			SetSelectedTool(Handler.SelectedTool);

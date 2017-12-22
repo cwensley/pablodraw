@@ -5,20 +5,27 @@ using Pablo.Formats.Character.Tools;
 
 namespace Pablo.Formats.Character.Actions.Block
 {
-	public class FlipX : ButtonAction
+	public class FlipX : Command
 	{
 		Selection tool;
 		public FlipX(Selection tool)
 		{
 			this.tool = tool;
 			ID = "character_FlipX";
-			Text = "Flip &X|Flip X|Flip the block horizontally";
-			Accelerator = Key.X;
+			MenuText = "Flip &X";
+			ToolBarText = "Flip X";
+			ToolTip = "Flip the block horizontally";
+			Shortcut = Keys.X;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		public override bool Enabled
 		{
-			
+			get { return base.Enabled && tool.DrawMode == DrawMode.Paste; }
+			set { base.Enabled = value; }
+		}
+
+		protected override void OnExecuted(EventArgs e)
+		{
 			Canvas canvas = tool.PasteCanvas;
 			
 			canvas.FlipX(tool.Handler.Info.FlipX);

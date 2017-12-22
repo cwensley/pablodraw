@@ -6,14 +6,15 @@ using Pablo.Network;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class Delete : Command
+	public class Delete : PabloCommand
 	{
 		public Delete (CharacterHandler handler)
 			: base(handler)
 		{
 			ID = "character_delete";
-			Text = "Delete|Delete|Delete Character|Deletes the character under the cursor";
-			Accelerator = Key.Delete;
+			MenuText = "Delete";
+			ToolTip = "Deletes the character under the cursor";
+			Shortcut = Keys.Delete;
 		}
 		
 		public new CharacterHandler Handler {

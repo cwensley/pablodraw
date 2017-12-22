@@ -7,17 +7,17 @@ using Pablo.Network;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class InsertLine : Command
+	public class InsertLine : PabloCommand
 	{
 		
 		public InsertLine (Handler handler)
 			: base(handler)
 		{
 			ID = "character_insertline";
-			Text = "Insert Line";
+			MenuText = "Insert Line";
 			Name = "Insert Line";
-			Description = "Inserts a new line at the cursor position";
-			Accelerators = new Key[] { Key.Down | Key.Alt, Key.Alt | Key.I };
+			ToolTip = "Inserts a new line at the cursor position";
+			Shortcut = Keys.Down | Keys.Alt; // TODO: Shortcut, Keys.Alt | Keys.I };
 		}
 		
 		public new CharacterHandler Handler {

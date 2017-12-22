@@ -16,8 +16,9 @@ namespace PabloDraw.Console.CommandHandlers
 		{
 			var writer = args.Writer;
 			args.WriteOption("--convert=<FILE>, [input.ext]", "Input file to convert from");
-			args.WriteOption("--to=<FILE>, [output.ext]", "Output file to convert to");
+			args.WriteOption("--out=<FILE>, [output.ext]", "Output file to convert to");
 			args.WriteOption("--zoom, -z=<ZOOM>", "Sets the zoom factor (default:1.0)");
+			args.WriteOption("--max-width, -w=<ZOOM>", "Sets the maximum width for the output image");
 			foreach (var format in DocumentInfoCollection.Default.Values)
 			{
 				var options = format.Options.ToArray();
@@ -40,6 +41,7 @@ namespace PabloDraw.Console.CommandHandlers
 				}
 			}
 		}
+
 		public override bool Process(ProcessCommandLineArgs args)
 		{
 			var command = args.Command;
@@ -80,10 +82,12 @@ namespace PabloDraw.Console.CommandHandlers
 
 			args.Writer.WriteLine("Converting '{0}' ({1}.{2}) to '{3}' ({4}.{5})", inFile, sourceFormat.Info.ID, sourceFormat.ID, outFile, destinationFormat.Info.ID, destinationFormat.ID);
 
-			var sourceDoc = sourceFormat.Info.Create(Generator.Current);
+			var sourceDoc = sourceFormat.Info.Create(Platform.Instance);
 			sourceDoc.Info.SetOption("animation", "false");
 			var sourceHandler = sourceDoc.CreateHandler();
 			sourceHandler.Zoom = command.GetFloat("zoom", "z") ?? 1.0f;
+			var maxWidth = command.GetInt("max-width", "w");
+
 			var formatId = sourceDoc.Info.OptionID ?? sourceDoc.Info.ID;
 			foreach (var option in sourceDoc.Info.Options)
 			{

@@ -5,6 +5,7 @@ using Pablo.Formats.Character.Actions;
 using System.Collections.Generic;
 using Pablo.Formats.Character.Undo;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Pablo.Formats.Character
 {
@@ -90,7 +91,7 @@ namespace Pablo.Formats.Character
 		}
 
 		public void SelectTool<T>()
-			where T: CharacterTool
+			where T : CharacterTool
 		{
 			SelectedTool = Tools.OfType<T>().FirstOrDefault();
 		}
@@ -101,7 +102,7 @@ namespace Pablo.Formats.Character
 		{
 			if (ToolChanged != null)
 				ToolChanged(this, e);
-			
+
 			TriggerActionsChanged();
 		}
 
@@ -136,7 +137,7 @@ namespace Pablo.Formats.Character
 		{
 			get { return drawElement.Attribute; }
 			set
-			{ 
+			{
 				drawElement.Attribute = value;
 				OnDrawAttributeChanged(EventArgs.Empty);
 			}
@@ -279,7 +280,7 @@ namespace Pablo.Formats.Character
 			{
 				foreach (var c in base.Commands)
 					yield return c;
-				foreach (var c in Tools.SelectMany (r => r.Commands))
+				foreach (var c in Tools.SelectMany(r => r.Commands))
 					yield return c;
 				yield return new DrawCharacter(this);
 				yield return new InsertLine(this);
@@ -355,12 +356,12 @@ namespace Pablo.Formats.Character
 					blinkTimer = null;
 				}
 			}
-			
+
 			var doc = CharacterDocument;
 
 			doc.Info.DosAspectChanged -= Info_DosAspectChanged;
 			doc.Info.iCEColoursChanged -= Info_iCEColoursChanged;
-			
+
 			doc.ICEColoursChanged -= Info_iCEColoursChanged;
 			doc.SizeChanged -= document_SizeChanged;
 
@@ -370,7 +371,7 @@ namespace Pablo.Formats.Character
 		public override void PreLoad(System.IO.Stream stream, Format format)
 		{
 			base.PreLoad(stream, format);
-			
+
 			if (CharacterDocument.AnimateView)
 				CurrentPage.Canvas.Update += Canvas_Update;
 		}
@@ -378,7 +379,7 @@ namespace Pablo.Formats.Character
 		public override void Loaded()
 		{
 			base.Loaded();
-			
+
 			if (Document.EditMode)
 			{
 				CurrentPage.PaletteChanged += delegate
@@ -419,7 +420,7 @@ namespace Pablo.Formats.Character
 
 			if (!AllowEditing)
 				return;
-			
+
 			if (SelectedTool != null)
 				SelectedTool.OnMouseDown(e);
 		}
@@ -452,12 +453,15 @@ namespace Pablo.Formats.Character
 			PointF ptf = point;
 			ptf /= font.Size;
 			ptf /= ZoomRatio;
-         
+
 			return new Point(ptf);
 		}
 
 		public override void OnKeyDown(KeyEventArgs e)
 		{
+			base.OnKeyDown(e);
+			if (e.Handled)
+				return;
 			//Console.WriteLine("Pressed {0}", e.KeyData.ToString());
 			if (AllowEditing)
 			{
@@ -473,16 +477,16 @@ namespace Pablo.Formats.Character
 						}
 					}
 				}
-	
+
 				if (!e.Handled && SelectedTool != null)
 				{
 					SelectedTool.OnKeyDown(e);
 				}
-	
+
 				if (!e.Handled && AllowKeyboardEditing && e.IsChar)
 				{
 					byte[] bytes = CurrentPage.Font.Encoding.GetBytes(new char[] { e.KeyChar });
-	             
+
 					byte b = bytes[0];
 					if (b < CurrentPage.Font.NumChars)
 					{
@@ -490,7 +494,7 @@ namespace Pablo.Formats.Character
 						e.Handled = true;
 					}
 				}
-			}			
+			}
 		}
 
 		static bool UseInterpolation(float zoom)
@@ -503,7 +507,8 @@ namespace Pablo.Formats.Character
 		public override void GenerateRegion(Graphics graphics, Rectangle rectSource, Rectangle rectDest)
 		{
 			Page page = CurrentPage;
-			//Console.WriteLine ("Generating {0}, Stack: {1}", rectSource, new System.Diagnostics.StackTrace());
+			//Debug.WriteLine("Generating {0}, Stack: {1}", rectSource, new System.Diagnostics.StackTrace());
+			//Debug.WriteLine("Generating {0}", rectSource);
 			Rectangle sourceChunk = rectSource;
 			Rectangle destChunk = rectDest;
 			int chunkSize = 1024;
@@ -519,17 +524,17 @@ namespace Pablo.Formats.Character
 				graphics.ImageInterpolation = ImageInterpolation.None;
 
 			/**/
-			using (var bitmap = new Bitmap(sourceChunk.Width, sourceChunk.Height, PixelFormat.Format32bppRgb, Document.Generator))
+			using (var bitmap = new Bitmap(sourceChunk.Width, sourceChunk.Height, PixelFormat.Format32bppRgb))
 			{
 				while (chunkPos < rectSource.Height)
 				{
 					sourceChunk.Height = Math.Min(sourceChunk.Height, rectSource.Height - chunkPos);
 					destChunk.Height = Math.Min(destChunk.Height, rectDest.Height - destChunkPos);
 					//Debug.Print("Source: {0} Dest:{1}, Chunk:{2}, Size:{3}", sourceChunk, destChunk, chunkPos, rectSource.Height);
-				
+
 					page.GenerateRegion(bitmap, sourceChunk, page.Font.Size, null, null, CharacterDocument.ICEColours, blinkOn, (AllowEditing) ? (Point?)CursorPosition : null, SelectedTool != null ? SelectedTool.GetGenerator() : null);
 					graphics.DrawImage(bitmap, new Rectangle(0, 0, sourceChunk.Width, sourceChunk.Height), destChunk);
-				
+
 					sourceChunk.Y += chunkSize;
 					chunkPos += chunkSize;
 					destChunk.Y += destChunkSize;
@@ -546,157 +551,153 @@ namespace Pablo.Formats.Character
 			/**/
 		}
 
-		void AddMoveAction(GenerateActionArgs args, string id, string name, string text, MoveDirection direction, params Key[] accelerators)
+		protected override void GenerateRegion(Bitmap bitmap, Rectangle rectGenerate, Rectangle rectScreen)
 		{
-			var acceleratorArray = accelerators.Where(r => r != Key.None).ToArray();
-			args.Actions.Add(new Move(this, id, name, text, direction, acceleratorArray));
-			args.Actions.Add(new MoveSelect(Tools.OfType<Tools.Selection>().First(), id, name, text, direction, Key.Shift, acceleratorArray));
+			if (rectGenerate == rectScreen)
+			{
+				Page page = CurrentPage;
+
+				page.GenerateRegion(bitmap, rectGenerate, page.Font.Size, null, null, CharacterDocument.ICEColours, blinkOn, (AllowEditing) ? (Point?)CursorPosition : null, SelectedTool != null ? SelectedTool.GetGenerator() : null);
+			}
+			else
+				base.GenerateRegion(bitmap, rectGenerate, rectScreen);
 		}
 
-		public override void GenerateActions(GenerateActionArgs args)
+		void AddMoveAction(GenerateCommandArgs args, string id, string name, string toolTip, MoveDirection direction, Keys accelerator)
 		{
-			base.GenerateActions(args);
-         
-			string area = (string)args.GetArgument("area", string.Empty);
-			//AllowEditing = (bool)args.GetArgument ("editMode", false);
-         
-			
-			if (area == "viewer")
+			args.KeyboardCommands.Add(new Move(this, id, direction, accelerator) { Name = name, MenuText = name, ToolTip = toolTip });
+			args.KeyboardCommands.Add(new MoveSelect(Tools.OfType<Tools.Selection>().First(), id, direction, Keys.Shift, accelerator) { Name = name, MenuText = name, ToolTip = toolTip });
+		}
+
+		GenerateCommandArgs args;
+
+		public override void GenerateCommands(GenerateCommandArgs args)
+		{
+			base.GenerateCommands(args);
+
+			if (args.Area == "viewer")
 			{
-				var control = args.Arguments["control"] as Control;
-				
-				if (args.Generator.IsMac && control != null)
+				this.args = args;
+				var control = args.Control;
+
+				if (Generator.IsMac && control != null)
 				{
-					control.MapPlatformAction("cut", null);
-					control.MapPlatformAction("copy", null);
-					control.MapPlatformAction("paste", null);
-					control.MapPlatformAction("selectAll", null);
-					control.MapPlatformAction("delete", null);
-					control.MapPlatformAction("undo", null);
-					control.MapPlatformAction("redo", null);
+					control.MapPlatformCommand("cut", null);
+					control.MapPlatformCommand("copy", null);
+					control.MapPlatformCommand("paste", null);
+					control.MapPlatformCommand("selectAll", null);
+					control.MapPlatformCommand("delete", null);
+					control.MapPlatformCommand("undo", null);
+					control.MapPlatformCommand("redo", null);
 				}
 
-				var edit = args.Menu.GetSubmenu("&Edit");
-				var view = args.Menu.GetSubmenu("&View");
-				view.Actions.AddSeparator(600);
-				view.Actions.Add(Info.GetFontMenu(this, args.Actions, 600));
-				
-				
-				args.Actions.Add(new ToggleDosAspect(this));
-				args.Actions.Add(new ToggleUse9x(this));
-				args.Actions.Add(new ToggleIceMode(this));
-				view.Actions.Add(ToggleDosAspect.ActionID);
-				view.Actions.Add(ToggleUse9x.ActionID);
-				view.Actions.Add(ToggleIceMode.ActionID);
-				
+				var edit = args.Menu.Items.GetSubmenu("&Edit", 200);
+				var view = args.Menu.Items.GetSubmenu("&View", 500);
+				view.Items.AddSeparator(600);
+				view.Items.Add(Info.GetFontMenu(this, 600));
+
+
+				view.Items.Add(new ToggleDosAspect(this), 500);
+				view.Items.Add(new ToggleUse9x(this), 500);
+				view.Items.Add(new ToggleIceMode(this), 500);
+
 				if (AllowEditing)
 				{
-					args.Actions.Add(new SwitchColour(this, -1, 0, Key.Control | Key.Up));
-					args.Actions.Add(new SwitchColour(this, 1, 0, Key.Control | Key.Down));
-					args.Actions.Add(new SwitchColour(this, 0, -1, Key.Control | Key.Left));
-					args.Actions.Add(new SwitchColour(this, 0, 1, Key.Control | Key.Right));
-
-					args.Actions.Add(new DefaultColour(this));
-					args.Actions.Add(new SwitchForegroundBackground(this));
-
-					args.Actions.Add(new CharacterSetEditor(this));
-					args.Actions.Add(new SetWidth(this));
-					
-					for (int i=0; i<Math.Min (10, CurrentPage.Palette.Count / 2); i++)
-					{
-						args.Actions.Add(new ChangeColour(this, i, null, Key.Control | (Key.D0 + i)));
-						args.Actions.Add(new ChangeColour(this, null, i, Key.Alt | (Key.D0 + i)));
-					}
 #if DEBUG
-					args.Actions.Add(new Actions.StartDrawing(this));
-					edit.Actions.Add(Actions.StartDrawing.ActionID, 700);
+					edit.Items.Add(new StartDrawing(this), 700);
 #endif
-					
-					AddMoveAction(args, "up", "Move Up", "Move Up|Move Up||Moves the cursor up one row", MoveDirection.Up, Key.Up);
-					AddMoveAction(args, "down", "Move Down", "Move Down|Move Down||Moves the cursor down one row", MoveDirection.Down, Key.Down);
-					AddMoveAction(args, "left", "Move Left", "Move Left|Move Left||Moves the cursor left one column", MoveDirection.Left, Key.Left);
-					AddMoveAction(args, "right", "Move Right", "Move Right|Move Right||Moves the cursor right one column", MoveDirection.Right, Key.Right);
-					AddMoveAction(args, "home", "Home", "Home|Home||Moves the cursor to the beginning of the row", MoveDirection.First, Key.Home, (Generator.IsMac) ? Key.Application | Key.Left : Key.None);
-					AddMoveAction(args, "end", "End", "End|End||Moves the cursor to the end of the row", MoveDirection.Last, Key.End, (Generator.IsMac) ? Key.Application | Key.Right : Key.None);
-					AddMoveAction(args, "pageUp", "Move PageUp", "Page Up|Page Up||Moves the cursor up one page", MoveDirection.PageUp, Key.PageUp);
-					AddMoveAction(args, "pageDown", "Move PageDown", "Page Down|Page Down||Moves the cursor down one page", MoveDirection.PageDown, Key.PageDown);
-					AddMoveAction(args, "top", "Move Top", "Move Top|Move Top||Moves the cursor to the top of the document", MoveDirection.Top, Key.Control | Key.PageUp, (Generator.IsMac) ? Key.Application | Key.Home : Key.None);
-					AddMoveAction(args, "bottom", "Move Bottom", "Move Bottom|Move Bottom||Moves the cursor to the bottom of the document", MoveDirection.Bottom, Key.Control | Key.PageDown, (Generator.IsMac) ? Key.Application | Key.End : Key.None);
-					
-					edit.Actions.AddSeparator(700);
-					edit.Actions.Add(SetWidth.ActionID, 700);
-					edit.Actions.Add(CharacterSetEditor.ActionID, 700);
 
-					edit.Actions.AddSeparator(800);
-					edit.Actions.Add(DefaultColour.ActionID, 800);
-					edit.Actions.Add(SwitchForegroundBackground.ActionID, 800);
-					
-					
-					args.ToolBar.Add(SetWidth.ActionID);
-                 
+					edit.Items.AddSeparator(700);
+					edit.Items.Add(new SetWidth(this), 700);
+					edit.Items.Add(new CharacterSetEditor(this), 700);
+
+					edit.Items.AddSeparator(800);
+					edit.Items.Add(new DefaultColour(this), 800);
+					edit.Items.Add(new SwitchForegroundBackground(this), 800);
+
+
+					args.ToolBar.Items.Add(new SetWidth(this), 500);
+
 					if (SelectedTool != null)
-						SelectedTool.GenerateActions(args);
-					
-					
+						SelectedTool.GenerateCommands(args);
+
 					// block commands
-					args.Actions.Add(new SelectAttribute(this));
-					args.Actions.Add(new Actions.Undo(this));
-					args.Actions.Add(new Redo(this));
-					
-					if (args.Generator.IsMac && control != null)
+
+					if (Generator.IsMac && control != null)
 					{
-						control.MapPlatformAction("undo", args.Actions.Find(Actions.Undo.ActionID));
-						control.MapPlatformAction("redo", args.Actions.Find(Redo.ActionID));
+						control.MapPlatformCommand("undo", new Actions.Undo(this));
+						control.MapPlatformCommand("redo", new Redo(this));
 					}
 					else
 					{
-						edit.Actions.Add(Actions.Undo.ActionID, 100);
-						edit.Actions.Add(Redo.ActionID, 100);
+						edit.Items.Add(new Actions.Undo(this), 100);
+						edit.Items.Add(new Redo(this), 100);
 					}
-					
-					
-					args.Actions.Add(new ToggleInsertMode(this));
-					edit.Actions.Add(ToggleInsertMode.ActionID);
 
-					args.Actions.Add(new InsertColumn(this));
-					args.Actions.Add(new DeleteColumn(this));
-					args.Actions.Add(new InsertLine(this));
-					args.Actions.Add(new DeleteLine(this));
-					args.Actions.Add(new NewLine(this));
-					args.Actions.Add(new Delete(this));
-					args.Actions.Add(new Backspace(this));
-					
-					args.Actions.Add(new UseColour(this));
-                     
-					for (int i=0; i<12; i++)
+					edit.Items.Add(new ToggleInsertMode(this), 500);
+
+					args.KeyboardCommands.Add(new SwitchColour(this, -1, 0, Keys.Control | Keys.Up));
+					args.KeyboardCommands.Add(new SwitchColour(this, 1, 0, Keys.Control | Keys.Down));
+					args.KeyboardCommands.Add(new SwitchColour(this, 0, -1, Keys.Control | Keys.Left));
+					args.KeyboardCommands.Add(new SwitchColour(this, 0, 1, Keys.Control | Keys.Right));
+
+					for (int i=0; i<Math.Min (10, CurrentPage.Palette.Count / 2); i++)
 					{
-						args.Actions.Add(new DrawCharacterSetChar(this, i, (Key.F1 + i)));
+						args.KeyboardCommands.Add(new ChangeColour(this, i, null, Keys.Control | (Keys.D0 + i)));
+						args.KeyboardCommands.Add(new ChangeColour(this, null, i, Keys.Alt | (Keys.D0 + i)));
 					}
-                     
-					for (int i=0; i<10; i++)
-					{
-						args.Actions.Add(new SwitchCharacterSet(this, i, Key.Alt | (Key.F1 + i)));
-                     
-						args.Actions.Add(new SwitchCharacterSet(this, i + 10, Key.Control | (Key.F1 + i)));
-					}
+					AddMoveAction(args, "up", "Move Up", "Moves the cursor up one row", MoveDirection.Up, Keys.Up);
+					AddMoveAction(args, "down", "Move Down", "Moves the cursor down one row", MoveDirection.Down, Keys.Down);
+					AddMoveAction(args, "left", "Move Left", "Moves the cursor left one column", MoveDirection.Left, Keys.Left);
+					AddMoveAction(args, "right", "Move Right", "Moves the cursor right one column", MoveDirection.Right, Keys.Right);
+					AddMoveAction(args, "home", "Home", "Moves the cursor to the beginning of the row", MoveDirection.First, (Generator.IsMac) ? Keys.Application | Keys.Left : Keys.Home);
+					AddMoveAction(args, "end", "End", "Moves the cursor to the end of the row", MoveDirection.Last, (Generator.IsMac) ? Keys.Application | Keys.Right : Keys.End);
+					AddMoveAction(args, "pageUp", "Page Up", "Moves the cursor up one page", MoveDirection.PageUp, Keys.PageUp);
+					AddMoveAction(args, "pageDown", "Page Down", "Moves the cursor down one page", MoveDirection.PageDown, Keys.PageDown);
+					AddMoveAction(args, "top", "Move Top", "Moves the cursor to the top of the document", MoveDirection.Top, (Generator.IsMac) ? Keys.Application | Keys.Home : Keys.Control | Keys.PageUp);
+					AddMoveAction(args, "bottom", "Move Bottom", "Moves the cursor to the bottom of the document", MoveDirection.Bottom, (Generator.IsMac) ? Keys.Application | Keys.End : Keys.Control | Keys.PageDown);
+					args.KeyboardCommands.Add(new SelectAttribute(this));
+					args.KeyboardCommands.Add(new SelectAttribute(this) { Shortcut = Keys.Escape });
+					args.KeyboardCommands.Add(new InsertColumn(this));
+					args.KeyboardCommands.Add(new DeleteColumn(this));
+					args.KeyboardCommands.Add(new InsertLine(this));
+					args.KeyboardCommands.Add(new DeleteLine(this));
+					args.KeyboardCommands.Add(new NewLine(this));
+					args.KeyboardCommands.Add(new Delete(this));
+					args.KeyboardCommands.Add(new Backspace(this));
 					
+					args.KeyboardCommands.Add(new UseColour(this));
+
+					for (int i = 0; i < 12; i++)
+					{
+						args.KeyboardCommands.Add(new DrawCharacterSetChar(this, i, (Keys.F1 + i)));
+					}
+
+					for (int i = 0; i < 10; i++)
+					{
+						args.KeyboardCommands.Add(new SwitchCharacterSet(this, i, Keys.Alt | (Keys.F1 + i)));
+
+						args.KeyboardCommands.Add(new SwitchCharacterSet(this, i + 10, Keys.Control | (Keys.F1 + i)));
+					}
+
 				}
 			}
 		}
 
-		public CharacterHandler(CharacterDocument doc, bool allowBlink = true) : base(doc)
+		public CharacterHandler(CharacterDocument doc, bool allowBlink = true)
+			: base(doc)
 		{
 			this.Undo = new UndoManager(this);
 			this.allowBlink = allowBlink;
 			this.AllowEditing = doc.EditMode;
 			this.AllowToolSelection = true;
-			
+
 			doc.Info.DosAspectChanged += Info_DosAspectChanged;
 			doc.Info.iCEColoursChanged += Info_iCEColoursChanged;
-			
+
 			doc.ICEColoursChanged += Info_iCEColoursChanged;
 			doc.SizeChanged += document_SizeChanged;
-			
+
 			SetupIceColours();
 		}
 
@@ -718,7 +719,7 @@ namespace Pablo.Formats.Character
 					InvalidateBlinkingCharacters();
 				}
 			}
-			else if (blinkTimer == null)
+			else if (blinkTimer == null && HasViewer)
 			{
 				blinkTimer = new UITimer();
 				blinkTimer.Interval = 0.25;
@@ -733,6 +734,8 @@ namespace Pablo.Formats.Character
 
 		public void InvalidateBlinkingCharacters()
 		{
+			if (!HasViewer)
+				return;
 			var rectf = new RectangleF(Viewer.ScrollPosition, Viewer.ViewSize);
 			rectf.Inflate(CurrentPage.Font.Size);
 			rectf /= ZoomRatio;
@@ -830,7 +833,7 @@ namespace Pablo.Formats.Character
 			BitFont font = CurrentPage.Font;
 			var rect = new RectangleF(point * font.Size, font.Size);
 			rect *= ZoomRatio;
-         
+
 			Point scrollPos = Viewer.ScrollPosition;
 			Point oldPos = scrollPos;
 
@@ -847,7 +850,7 @@ namespace Pablo.Formats.Character
 				scrollPos.Y = 0;
 			if (scrollPos.X < 0)
 				scrollPos.X = 0;
-			
+
 			if (scrollPos != oldPos)
 				Viewer.ScrollPosition = scrollPos;
 		}
@@ -874,20 +877,19 @@ namespace Pablo.Formats.Character
 				var canEdit = Client == null || Client.CurrentUser.Level >= Pablo.Network.UserLevel.Editor;
 				if (canEdit)
 				{
-					var layout = new DynamicLayout(new Padding(5));
-					layout.BeginVertical(Padding.Empty, Size.Empty);
-					layout.BeginHorizontal();
-					layout.Add(null, true);
-					layout.Add(new Controls.ColourPad(this));
-					layout.Add(null, true);
-					layout.EndHorizontal();
-					layout.EndVertical();
-					layout.Add(new Controls.ToolboxPad(this));
+					var layout = new TableLayout
+					{
+						Padding = new Padding(5),
+						Rows = {
+							new Controls.ColourPad(this),
+							new Controls.ToolboxPad(this)
+						}
+					};
 					args.LeftPads.Add(layout);
 				}
 				
 				{
-					var layout = new DynamicLayout(Padding.Empty, Size.Empty);
+					var layout = new DynamicLayout { Padding = Padding.Empty, Spacing = Size.Empty };
 					
 					layout.BeginHorizontal();
 					if (canEdit)
@@ -902,7 +904,7 @@ namespace Pablo.Formats.Character
 				
 				/* VGA Preview
 				 */
-				//if (preview == null)
+				if (preview == null)
 				{
 					preview = new CharacterHandler(CharacterDocument, false);
 					preview.AllowToolSelection = false;

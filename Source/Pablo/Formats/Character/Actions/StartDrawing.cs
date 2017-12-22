@@ -4,7 +4,7 @@ using Eto.Drawing;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class StartDrawing : ButtonAction
+	public class StartDrawing : Command
 	{
 		CharacterHandler handler;
 		static UITimer timer;
@@ -15,10 +15,11 @@ namespace Pablo.Formats.Character.Actions
 		{
 			this.handler = handler;
 			this.ID = ActionID;
-			this.Text = "Start Random Drawing|Start Random Drawing|Random Draw!";
+			this.MenuText = "Start Random Drawing";
+			this.ToolTip = "Random Draw!";
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
 			var rand = new Random();
 			if (timer == null) {

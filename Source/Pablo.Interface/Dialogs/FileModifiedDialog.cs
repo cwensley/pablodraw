@@ -21,11 +21,11 @@ namespace Pablo.Interface.Dialogs
 		public DialogResult ShowDialog ()
 		{
 			if (main.Document != null && (main.Document.IsModified || (main.EditMode && string.IsNullOrEmpty (main.Document.FileName)))) {
-				var result = MessageBox.Show (main.Generator, main, "Do you wish to save?", "There are changes to this document", MessageBoxButtons.YesNoCancel);
+				var result = MessageBox.Show (main, "Do you wish to save?", "There are changes to this document", MessageBoxButtons.YesNoCancel);
 				if (result == DialogResult.Yes || result == DialogResult.No) {
 					if (result == DialogResult.Yes) {
-						var action = main.ActionArgs.Actions.Find (Pablo.Actions.SaveFile.ActionID);
-						action.Activate ();
+						var action = new Pablo.Actions.SaveFile(main.ViewHandler);
+						action.Execute();
 					}
 					return DialogResult.Ok;
 				} else

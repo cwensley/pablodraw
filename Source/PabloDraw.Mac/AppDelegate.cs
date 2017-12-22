@@ -1,14 +1,26 @@
 using System;
-using MonoMac.Foundation;
-using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
 using Eto.Forms;
 using Pablo.Interface;
 
+#if __Unified__
+using AppKit;
+using ObjCRuntime;
+using Foundation;
+using CoreGraphics;
+#else
+using MonoMac.AppKit;
+using MonoMac.ObjCRuntime;
+using MonoMac.Foundation;
+using MonoMac.CoreGraphics;
+using CGSize = System.Drawing.SizeF;
+using CGPoint = System.Drawing.PointF;
+using CGRect = System.Drawing.RectangleF;
+#endif
+
 namespace PabloDraw
 {
-	[MonoMac.Foundation.Register("AppDelegate")]
-	public partial class AppDelegate : Eto.Platform.Mac.AppDelegate
+	[Register("AppDelegate")]
+	public partial class AppDelegate : Eto.Mac.AppDelegate
 	{
 		string fileName;
 		

@@ -6,7 +6,7 @@ using Eto.Forms;
 
 namespace Pablo.Formats.Character.Actions.Drawing
 {
-	public class Brush : Command
+	public class Brush : PabloCommand
 	{
 		public Point Location { get; set; }
 		public BrushInfo DrawBrush { get; set; }

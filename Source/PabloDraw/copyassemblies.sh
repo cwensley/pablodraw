@@ -15,7 +15,7 @@ function CopyFile {
 echo Destination: $2
 
 mkdir -p $2
-CopyBase $1 $2 Libraries/Eto BuildOutput "Eto*.dll"
+CopyBase $1 $2 Libraries/Eto BuildOutput/net45 "Eto*.dll"
 CopyBase $1 $2 Libraries/lidgren Lidgren.Network/bin "Lidgren.Network.*"
 CopyBase $1 $2 Libraries/Mono.Nat/src Mono.Nat/bin "Mono.Nat.*"
 CopyFile $1 $2 Pablo Pablo.dll

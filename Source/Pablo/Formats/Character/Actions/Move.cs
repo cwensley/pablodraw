@@ -19,16 +19,14 @@ namespace Pablo.Formats.Character.Actions
 		Bottom
 	}
 
-	public class Move : Command
+	public class Move : PabloCommand
 	{
 		MoveDirection direction;
 
-		public Move(Handler handler, string id, string name, string text, MoveDirection direction, params Key[] accelerators) : base(handler)
+		public Move(Handler handler, string id, MoveDirection direction, Keys accelerator) : base(handler)
 		{
 			this.ID = "character_move" + id;
-			this.Text = text;
-			this.Name = name;
-			this.Accelerators = (Key[])accelerators.Clone();
+			this.Shortcut = accelerator;
 			this.direction = direction;
 		}
 		
@@ -85,7 +83,7 @@ namespace Pablo.Formats.Character.Actions
 			}
 		}
 		
-		private void MoveVertical(Point pos, int ydir)
+		void MoveVertical(Point pos, int ydir)
 		{
 			CharacterHandler handler = Handler as CharacterHandler;
 			IViewer viewer = handler.Viewer;

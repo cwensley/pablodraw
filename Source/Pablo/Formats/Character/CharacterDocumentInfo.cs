@@ -3,10 +3,8 @@ using System.Xml;
 using System.Linq;
 using Eto;
 using Eto.Forms;
-using Eto.Misc;
 using System.Collections.Generic;
 using Eto.Drawing;
-using System.Text;
 
 namespace Pablo.Formats.Character
 {
@@ -18,8 +16,7 @@ namespace Pablo.Formats.Character
 		public const int MAX_CHARACTER_SETS = 20;
 		public const int MAX_BRUSHES = 10;
 		public const int MAX_BRUSH_SIZE = 12;
-		public static readonly int[,] DefaultCharacterSets = new int[,]
-		{
+		public static readonly int[,] DefaultCharacterSets = {
 			{0xda,0xbf,0xc0,0xd9,0xc4,0xb3,0xc3,0xb4,0xc1,0xc2,0x20,0x20},
 			{0xc9,0xbb,0xc8,0xbc,0xcd,0xba,0xcc,0xb9,0xca,0xcb,0x20,0x20},
 			{0xd5,0xb8,0xd4,0xbe,0xcd,0xb3,0xc6,0xb5,0xcf,0xd1,0x20,0x20},
@@ -41,7 +38,7 @@ namespace Pablo.Formats.Character
 			{0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20},
 			{0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20}
 		};
-		public static readonly BrushInfo[] DefaultBrushes = new BrushInfo[MAX_BRUSHES] {
+		public static readonly BrushInfo[] DefaultBrushes = {
 			new BrushInfo (BitFont.StandardEncoding, 176, 177, 178, 219),
 			new BrushInfo (".,;sS$"),
 			new BrushInfo (".,;%!&#@"),
@@ -54,14 +51,14 @@ namespace Pablo.Formats.Character
 			null
 		};
 		BrushInfo[] brushes = DefaultBrushes.Clone() as BrushInfo[];
-		bool use9x = false;
-		bool dosAspect = false;
+		bool use9x;
+		bool dosAspect;
 		bool iceColours = true;
-		bool insertMode = false;
+		bool insertMode;
 		bool shiftSelect = true;
 		int[,] characterSets = (int[,])DefaultCharacterSets.Clone();
 		Dictionary<int, int> flipxdictionary;
-		static int[,] flipx = { 
+		static readonly int[,] flipx = { 
 			{16, 17}, {17, 16}, {26, 27},  {27, 26},
 			{'\'', '`'}, {'(', ')'}, {')', '('}, {'/', '\\'},
 			{'<', '>'}, {'>', '<'}, {'[', ']'}, {'\\', '/'},
@@ -79,15 +76,12 @@ namespace Pablo.Formats.Character
 		public int FlipX(int ch)
 		{
 			int ret;
-			if (flipxdictionary == null)
-				flipxdictionary = flipx.ToDictionary();
-			if (flipxdictionary.TryGetValue(ch, out ret))
-				return ret;
-			return ch;
+			flipxdictionary = flipxdictionary ?? flipx.ToDictionary();
+			return flipxdictionary.TryGetValue(ch, out ret) ? ret : ch;
 		}
 
 		Dictionary<int, int> flipydictionary;
-		static int[,] flipy = { 
+		static readonly int[,] flipy = { 
 			{24, 25}, {25, 24}, {30, 31}, {31, 30},
 			{'/', '\\'}, {'\\', '/'}, {'·', '½'}, {'¸', '¾'},
 			{'»', '¼'}, {'¼', '»'}, {'½', '·'}, {'¾', '¸'},
@@ -101,15 +95,12 @@ namespace Pablo.Formats.Character
 		public int FlipY(int ch)
 		{
 			int ret;
-			if (flipydictionary == null)
-				flipydictionary = flipy.ToDictionary();
-			if (flipydictionary.TryGetValue(ch, out ret))
-				return ret;
-			return ch;
+			flipydictionary = flipydictionary ?? flipy.ToDictionary();
+			return flipydictionary.TryGetValue(ch, out ret) ? ret : ch;
 		}
 
 		Dictionary<int, int> fliprotdictionary;
-		static int[,] fliprot = { 
+		static readonly int[,] fliprot = { 
 			{16, 31}, {17, 30}, {23, 29}, {24, 26},
 			{25, 27}, {26, 25}, {27, 24}, {29, 23},
 			{30, 16}, {31, 17}, {'³', 'Ä'}, {'´', 'Á'},
@@ -128,11 +119,8 @@ namespace Pablo.Formats.Character
 		public int FlipRotate(int ch)
 		{
 			int ret;
-			if (fliprotdictionary == null)
-				fliprotdictionary = fliprot.ToDictionary();
-			if (fliprotdictionary.TryGetValue(ch, out ret))
-				return ret;
-			return ch;
+			fliprotdictionary = fliprotdictionary ?? fliprot.ToDictionary();
+			return fliprotdictionary.TryGetValue(ch, out ret) ? ret : ch;
 		}
 
 		public const string DocumentID = "character";
@@ -206,6 +194,7 @@ namespace Pablo.Formats.Character
 				}
 			}
 		}
+		public bool AutoResize { get; set; }
 
 		public event EventHandler<EventArgs> iCEColoursChanged;
 
@@ -241,6 +230,11 @@ namespace Pablo.Formats.Character
 			get;
 			set;
 		}
+		public Rectangle? AttributeDialogBounds
+		{
+			get;
+			set;
+		}
 
 		public event EventHandler<EventArgs> DosAspectChanged;
 
@@ -266,11 +260,11 @@ namespace Pablo.Formats.Character
 			get { return base.Options.Concat(GetOptions()); }
 		}
 
-		IEnumerable<DocumentInfoOption> GetOptions()
+		static IEnumerable<DocumentInfoOption> GetOptions()
 		{
-			yield return new DocumentInfoOption { ID = "aspect", Comment = "Scales the output to dos aspect", Values = new string[] { "dos", "none" } };
-			yield return new DocumentInfoOption { ID = "use9x", Comment = "Adds a 9th pixel to each character", Values = new string[] { "true", "false" } };
-			yield return new DocumentInfoOption { ID = "ice", Comment = "iCE Color mode (16 background colors)", Values = new string[] { "true", "false" } };
+			yield return new DocumentInfoOption { ID = "aspect", Comment = "Scales the output to dos aspect", Values = new [] { "dos", "none" } };
+			yield return new DocumentInfoOption { ID = "use9x", Comment = "Adds a 9th pixel to each character", Values = new [] { "true", "false" } };
+			yield return new DocumentInfoOption { ID = "ice", Comment = "iCE Color mode (16 background colors)", Values = new [] { "true", "false" } };
 		}
 
 		public override bool SetOption(string option, string value)
@@ -281,18 +275,26 @@ namespace Pablo.Formats.Character
 					switch (value.ToLowerInvariant())
 					{
 						case "dos":
-							this.DosAspect = true;
+							DosAspect = true;
 							break;
 						case "none":
-							this.DosAspect = false;
+							DosAspect = false;
 							break;
 					}
 					break;
 				case "use9x":
-					bool use9x;
-					if (bool.TryParse(value, out use9x))
+					bool use9xValue;
+					if (bool.TryParse(value, out use9xValue))
 					{
-						this.Use9x = use9x;
+						Use9x = use9xValue;
+						return true;
+					}
+					break;
+				case "autoresize":
+					bool autoResize;
+					if (bool.TryParse(value, out autoResize))
+					{
+						AutoResize = autoResize;
 						return true;
 					}
 					break;
@@ -300,29 +302,27 @@ namespace Pablo.Formats.Character
 					bool ice;
 					if (bool.TryParse(value, out ice))
 					{
-						this.iCEColours = ice;
+						iCEColours = ice;
 					}
 					break;
 			}
 			return base.SetOption(option, value);
 		}
 
-		public override Document Create(Generator generator)
+		public override Document Create(Platform generator)
 		{
 			Document doc = new CharacterDocument(this);
 			doc.Generator = generator;
 			return doc;
 		}
 
-		public ActionItemSubMenu GetFontMenu(CharacterHandler handler, ActionCollection actions = null, int order = 600, Action<BitFont> selectFont = null, Func<BitFont, bool> fontSelected = null)
+		public MenuItem GetFontMenu(CharacterHandler handler, int order = 600, Action<BitFont> selectFont = null, Func<BitFont, bool> fontSelected = null, ISubmenu subMenu = null)
 		{
 			Actions.ChangeFont mainChangeFont = null;
-			actions = actions ?? new ActionCollection();
-			var aiChangeFonts = new ActionItemSubMenu(actions, "Change Font");
-			aiChangeFonts.Order = order;
+			var aiChangeFonts = subMenu ?? new ButtonMenuItem { Text = "Change Font", Order = order };
 			foreach (var fontSet in GetFonts())
 			{
-				var aiFontSet = aiChangeFonts.Actions.GetSubmenu(fontSet.Name);
+				var aiFontSet = aiChangeFonts.Items.GetSubmenu(fontSet.Name);
 				foreach (var font in fontSet.Fonts)
 				{
 					var chfont = new Actions.ChangeFont(mainChangeFont, handler, font);
@@ -332,44 +332,39 @@ namespace Pablo.Formats.Character
 						mainChangeFont = chfont;
 					if (selectFont != null)
 					{
-						chfont.Activated += (sender, e) => selectFont(((Actions.ChangeFont)sender).Font);
+						chfont.Executed += (sender, e) => selectFont(((Actions.ChangeFont)sender).Font);
 					}
-					actions.Add(chfont);
-					aiFontSet.Actions.Add(Actions.ChangeFont.ActionID + font.ID);
+					aiFontSet.Items.Add(chfont);
 				}
 			}
-			return aiChangeFonts;
+			return aiChangeFonts as MenuItem;
 		}
 
-		public override void GenerateActions(GenerateActionArgs args)
+		public override void GenerateCommands(GenerateCommandArgs args)
 		{
-			bool editMode = (bool)args.GetArgument("editMode", false);
-			string area = (string)args.GetArgument("area", string.Empty);
+			bool editMode = args.EditMode;;
+			string area = args.Area;
 
 			if (area == "main")
 			{
 
 
-				var edit = args.Menu.GetSubmenu("&Edit");
+				var edit = args.Menu.Items.GetSubmenu("&Edit", 200);
 
 				if (editMode)
 				{
-					var actionShiftSelect = args.Actions.AddCheck("shiftSelect", "Use Shift+Movement to select|Shift Select|Use Shift+Movement keys for selection", actionShiftSelect_CheckedChanged);
-					actionShiftSelect.Checked = ShiftSelect;
-					edit.Actions.Add(actionShiftSelect.ID);
+					var actionShiftSelect = new CheckCommand { ID = "shiftSelect", MenuText = "Use Shift+Movement to select", ToolBarText = "Shift Select", ToolTip = "Use Shift+Movement keys for selection", Checked = ShiftSelect };
+					actionShiftSelect.CheckedChanged += actionShiftSelect_CheckedChanged;
+					edit.Items.Add(actionShiftSelect);
 				}
-
-
-
 			}
 
-			base.GenerateActions(args);
+			base.GenerateCommands(args);
 		}
 
-		private void actionShiftSelect_CheckedChanged(Object sender, EventArgs e)
+		void actionShiftSelect_CheckedChanged(Object sender, EventArgs e)
 		{
-			CheckAction action = (CheckAction)sender;
-			action.Checked = !action.Checked;
+			var action = (CheckCommand)sender;
 			ShiftSelect = action.Checked;
 		}
 
@@ -402,7 +397,7 @@ namespace Pablo.Formats.Character
 			}
 		}
 
-		private void CreateCharacterSets()
+		void CreateCharacterSets()
 		{
 			characterSets = new int[20, 12];
 
@@ -430,7 +425,7 @@ namespace Pablo.Formats.Character
 			return fonts;
 		}
 
-		public override void ReadXml(System.Xml.XmlElement element)
+		public override void ReadXml(XmlElement element)
 		{
 			base.ReadXml(element);
 
@@ -442,6 +437,7 @@ namespace Pablo.Formats.Character
 			AttributeDialogSize = element.ReadChildSizeXml("attribute-dialog");
 			if (AttributeDialogSize != null && AttributeDialogSize.Value == Size.Empty)
 				AttributeDialogSize = null;
+			AttributeDialogBounds = element.ReadChildRectangleXml("attribute-dialog-bounds");
 			//element.ReadChildListXml(brushes, "brushes", "brush");
 
 			XmlNodeList charElements = element.SelectNodes("characterSets/characterSet");
@@ -464,7 +460,7 @@ namespace Pablo.Formats.Character
 			}
 		}
 
-		public override void WriteXml(System.Xml.XmlElement element)
+		public override void WriteXml(XmlElement element)
 		{
 			base.WriteXml(element);
 			element.SetAttribute("use9x", use9x);
@@ -473,6 +469,7 @@ namespace Pablo.Formats.Character
 			element.SetAttribute("insertMode", insertMode);
 			element.SetAttribute("shiftSelect", shiftSelect);
 			element.WriteChildSizeXml("attribute-dialog", AttributeDialogSize);
+			element.WriteChildRectangleXml("attribute-dialog-bounds", AttributeDialogBounds);
 
 			element.WriteChildListXml(brushes, "brushes", "brush");
 

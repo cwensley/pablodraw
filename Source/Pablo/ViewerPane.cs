@@ -3,20 +3,22 @@ using Eto.Drawing;
 using Eto.Forms;
 using Pablo;
 using System.Collections.Generic;
+using System.Timers;
 
 namespace Pablo
 {
 	public class ViewerPane : Scrollable, IViewer
 	{
+		const float MinZoom = 0.125f;
 		static readonly float[] ZOOM_LEVELS = { 2, 1.5F, 1, .75F, .50F, .25F, .125F };
 
 		#region Members
 
 		readonly ImageViewer viewer;
-		CheckAction actionZoomFitWidth;
-		CheckAction actionZoomFitHeight;
-		CheckAction actionAllowGrow;
-		readonly Dictionary<float, RadioAction> zoomLevels = new Dictionary<float, RadioAction>();
+		CheckCommand actionZoomFitWidth;
+		CheckCommand actionZoomFitHeight;
+		CheckCommand actionAllowGrow;
+		readonly Dictionary<float, RadioCommand> zoomLevels = new Dictionary<float, RadioCommand>();
 		readonly PixelLayout layout;
 		UITimer scrollTimer;
 		Point oldScrollPosition;
@@ -48,6 +50,7 @@ namespace Pablo
 #if MOBILE
 			this.MinimumZoom = 0.25f;
 			this.MaximumZoom = 3.0f;
+			ExpandContentWidth = ExpandContentHeight = false;
 #endif
 
 			BackgroundColor = handler.Document.EditMode ? Color.FromArgb(48, 48, 48) : Colors.Black;
@@ -65,14 +68,14 @@ namespace Pablo
 		}
 
 		/*
-		public override void OnMouseMove (MouseEventArgs e)
+		protected override void OnMouseMove (MouseEventArgs e)
 		{
 			//base.OnMouseMove (e);
 			viewer.OnMouseMove(new MouseEventArgs(e.Buttons, e.Modifiers, e.Location - adjust ));
 		}
 		*/
 
-		public override void OnSizeChanged(EventArgs e)
+		protected override void OnSizeChanged(EventArgs e)
 		{
 			base.OnSizeChanged(e);
 			UpdateSizes();
@@ -139,15 +142,15 @@ namespace Pablo
 				if (ZoomInfo.FitWidth && ViewHandler.Size.Width > 0)
 				{
 					float val = (float)clientSize.Width / (float)ViewHandler.Size.Width / ViewHandler.Ratio.Width;
-					if (val < 0.05F)
-						val = 0.05F;
+					if (val < MinZoom)
+						val = MinZoom;
 					zoom = val;
 				}
 				if (ZoomInfo.FitHeight && ViewHandler.Size.Height > 0)
 				{
 					float val = (float)clientSize.Height / (float)ViewHandler.Size.Height / ViewHandler.Ratio.Height;
-					if (val < 0.05F)
-						val = 0.05F;
+					if (val < MinZoom)
+						val = MinZoom;
 					if (val < zoom)
 						zoom = val;
 				}
@@ -161,7 +164,7 @@ namespace Pablo
 		{
 #if DESKTOP
 			Size clientSize = ClientSize;
-			if (Generator.IsWinForms && ScrollPosition.Y + clientSize.Height > ushort.MaxValue)
+			if (Platform.IsWinForms && ScrollPosition.Y + clientSize.Height > ushort.MaxValue)
 			{
 				//ScrollPosition = Point.Empty;
 			}
@@ -190,56 +193,56 @@ namespace Pablo
 			if (ScrollSize.Height <= ClientSize.Height)
 				return;
 
-			scrollIncrement = 0.12;
+			scrollIncrement = 0.08;
 			scrollPosition = 0;
 			scrollAmount = 0;
-			const int max = 4;
-			const double interval = 0.020;
-			var startTime = DateTime.Now;
+			const int maxSpeed = 4;
+			const double interval = 0.016;
+			var startTime = DateTime.UtcNow;
 			double seconds = 0;
 			oldScrollPosition = ScrollPosition;
 			if (scrollTimer == null)
 			{
 				scrollTimer = new UITimer();
 				scrollTimer.Interval = 0.010;
-				scrollTimer.Elapsed += delegate
+				scrollTimer.Elapsed += (sender, e) =>
 				{
 					var pt = ScrollPosition;
+					if (pt.Y != oldScrollPosition.Y)
+					{
+						// user scrolled
+						scrollTimer.Stop();
+						return;
+					}
 					var maxPosition = ScrollSize.Height - ClientSize.Height;
-					var newTime = DateTime.Now;
+					var newTime = DateTime.UtcNow;
 					seconds += (newTime - startTime).TotalSeconds;
-					var count = (int)(seconds / interval);
+					var count = (seconds / interval);
 					seconds -= (count * interval);
 					startTime = newTime;
-					for (int i = 0; i < count; i++)
+					while (count > 0)
 					{
-						//Console.WriteLine("Scroll Size: {0}, Client Size: {1}", this.ScrollSize, this.ClientSize);
-						if (Math.Round(scrollPosition) >= maxPosition)
+						var inc = Math.Min(count, 1);
+
+						if (scrollPosition >= maxPosition)
 						{
-							if (Math.Abs(scrollAmount) <= 2)
-								scrollTimer.Stop();
-							else
+							if (Math.Abs(scrollAmount) <= 1)
 							{
-								scrollAmount = -(scrollAmount * 0.5);
-								scrollIncrement = 0.2;
-								oldScrollPosition = pt;
+								// reached end, stop
+								scrollPosition = maxPosition;
+								scrollTimer.Stop();
+								break;
 							}
+							scrollAmount = -(scrollAmount * 0.5);
 						}
 
-						if (pt.Y == oldScrollPosition.Y)
-						{
-							scrollPosition += scrollAmount;
-							scrollPosition = Math.Min(maxPosition, scrollPosition);
-							if (scrollAmount < max)
-								scrollAmount += scrollIncrement;
-							pt.Y = (int)Math.Round(scrollPosition);
-							oldScrollPosition = pt;
-						}
-						else
-						{
-							scrollTimer.Stop();
-						}
+						scrollPosition = Math.Min(maxPosition, scrollPosition + scrollAmount * inc);
+						scrollAmount = Math.Min(maxSpeed, scrollAmount + scrollIncrement * inc);
+
+						count -= inc;
 					}
+					pt.Y = (int)Math.Round(scrollPosition);
+					oldScrollPosition = pt;
 					ScrollPosition = pt;
 				};
 			}
@@ -256,7 +259,7 @@ namespace Pablo
 				actionZoomFitHeight.Checked = ZoomInfo.FitHeight;
 			if (zoomLevels != null)
 			{
-				RadioAction raction;
+				RadioCommand raction;
 				if (zoomLevels.TryGetValue(ZoomInfo.Zoom, out raction))
 					raction.Checked = true;
 			}
@@ -269,43 +272,38 @@ namespace Pablo
 			Viewer.Focus();
 		}
 
-		public void GenerateActions(GenerateActionArgs args)
+		public void GenerateCommands(GenerateCommandArgs args)
 		{
-			Viewer.GenerateActions(args);
+			Viewer.GenerateCommands(args);
 
-			args.Actions.Add(new Actions.Autoscroll(this));
-			args.Actions.Add(actionZoomFitWidth = new Actions.FitWidth(this));
-			args.Actions.Add(actionZoomFitHeight = new Actions.FitHeight(this));
-			args.Actions.Add(actionAllowGrow = new Actions.AllowGrow(this));
+			var smView = args.Menu.Items.GetSubmenu("&View");
 
-			ActionItemSubMenu smView = args.Menu.GetSubmenu("&View");
+			smView.Items.Add(new Actions.Autoscroll(this), 500);
 
-			smView.Actions.Add(Actions.Autoscroll.ActionID);
+			var smZoom = smView.Items.GetSubmenu("&Zoom", 500);
 
-			ActionItemSubMenu smZoom = smView.Actions.GetSubmenu("&Zoom");
+			smZoom.Items.Add(actionZoomFitWidth = new Actions.FitWidth(this), 500);
+			smZoom.Items.Add(actionZoomFitHeight = new Actions.FitHeight(this), 500);
+			smZoom.Items.Add(actionAllowGrow = new Actions.AllowGrow(this), 500);
 
-			smZoom.Actions.Add(Actions.FitWidth.ActionID);
-			smZoom.Actions.Add(Actions.FitHeight.ActionID);
-			smZoom.Actions.Add(Actions.AllowGrow.ActionID);
-
-			smZoom.Actions.AddSeparator();
+			smZoom.Items.AddSeparator(500);
 
 
-			RadioAction controller = null;
+			RadioCommand controller = null;
 			zoomLevels.Clear();
 			foreach (float zoomLevel in ZOOM_LEVELS)
 			{
-				var raction = args.Actions.AddRadio(controller, "zoom" + zoomLevel, string.Format("{0}%", zoomLevel * 100));
-				raction.Activated += (sender, e) =>
+				var raction = new RadioCommand { Controller = controller, ID = "zoom" + zoomLevel, MenuText = string.Format("{0}%", zoomLevel * 100) };
+				raction.Executed += (sender, e) =>
 				{
-					var action = sender as RadioAction;
+					var action = sender as RadioCommand;
 					ZoomInfo.Zoom = (float)action.Tag;
 					UpdateSizes();
 				};
 				if (controller == null)
 					controller = raction;
 				raction.Tag = zoomLevel;
-				smZoom.Actions.Add(raction.ID);
+				smZoom.Items.Add(raction);
 				zoomLevels.Add(zoomLevel, raction);
 			}
 			UpdateUI();

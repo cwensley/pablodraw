@@ -20,7 +20,7 @@ namespace Pablo.Formats.Character.Types
 
 		public override bool RequiresSauce(CharacterDocument document)
 		{
-			return document.Pages[0].Canvas.Size.Width != DefaultWidth || document.ICEColours;
+			return base.RequiresSauce(document) || document.Pages[0].Canvas.Size.Width != DefaultWidth || document.ICEColours;
 		}
 
 		public static Palette GetCGPalette()
@@ -83,35 +83,34 @@ namespace Pablo.Formats.Character.Types
 
 		public static BitFont GetCGLowerFont()
 		{
-			Stream fontStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Pablo.Formats.Character.Fonts.cg-lower.fnt");
-			BitFont f = null;
-			if (fontStream != null)
+			using (var fontStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Pablo.Formats.Character.Fonts.cg-lower.fnt"))
 			{
+				BitFont f = null;
 				var br = new BinaryReader(fontStream);
 				f = new BitFont(256, 8, 8, BitFont.StandardCodePage);
 				f.Load(br);
 				f.Resize(16, 16, true);
 				fontStream.Close();
+				return f;
 			}
-			return f;
 		}
 
 		public static BitFont GetCGUpperFont()
 		{
-			Stream fontStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Pablo.Formats.Character.Fonts.cg-upper.fnt");
-			BitFont f = null;
-			if (fontStream != null)
+			using (var fontStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Pablo.Formats.Character.Fonts.cg-upper.fnt"))
 			{
+				BitFont f = null;
 				var br = new BinaryReader(fontStream);
 				f = new BitFont(256, 8, 8, BitFont.StandardCodePage);
 				f.Load(br);
 				f.Resize(16, 16, true);
 				fontStream.Close();
+				return f;
 			}
-			return f;
 		}
 
-		static readonly byte[] Pet2Screen = {
+		static readonly byte[] Pet2Screen =
+		{
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 33, 34, 35, 36, 37, 38, 39,
 			40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
@@ -138,8 +137,6 @@ namespace Pablo.Formats.Character.Types
 		public override void Load(Stream fs, CharacterDocument document, CharacterHandler handler)
 		{
 			Page page = document.Pages[0];
-			page.Font = GetCGUpperFont();
-			page.Palette = GetCGPalette();
 
 			var br = new BinaryReader(fs);
 			var canvas = page.Canvas;

@@ -4,18 +4,18 @@ using Eto.Forms;
 namespace Pablo.Formats.Character.Actions
 {
 
-	public class SwitchCharacterSet : ButtonAction
+	public class SwitchCharacterSet : Command
 	{
-		int characterSet;
+		readonly int characterSet;
 		
-		public SwitchCharacterSet(CharacterHandler handler, int characterSet, Key accelerator)
+		public SwitchCharacterSet(CharacterHandler handler, int characterSet, Keys accelerator)
 		{
-			this.Handler = handler;
+			Handler = handler;
 			this.characterSet = characterSet;
 			ID = "character_switchCharSet" + characterSet;
-			Text = "Select Character Set";
-			Description = "Select Character Set";
-			Accelerator = accelerator;
+			MenuText = ToolBarText = "Select Character Set";
+			ToolTip = "Select Character Set";
+			Shortcut = accelerator;
 		}
 
 		public CharacterHandler Handler {
@@ -27,7 +27,7 @@ namespace Pablo.Formats.Character.Actions
 			set { base.Enabled = value; }
 		}
 
-		protected override void OnActivated (EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
 			Handler.CharacterSet = characterSet;
 		}

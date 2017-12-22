@@ -67,7 +67,7 @@ namespace Pablo.Formats.Rip.Tools
 			}
 		}
 		
-		protected virtual void FinishCommand (Key modifiers, IList<Rectangle> updates = null)
+		protected virtual void FinishCommand (Keys modifiers, IList<Rectangle> updates = null)
 		{
 			ApplyStyles ();
 			Handler.AddCommand (Command, updates);

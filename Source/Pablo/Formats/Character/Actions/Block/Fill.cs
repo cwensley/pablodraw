@@ -16,7 +16,7 @@ namespace Pablo.Formats.Character.Actions.Block
 		public Character Character { get; set; }
 	}
 	
-	public class Fill : Command
+	public class Fill : PabloCommand
 	{
 		public FillAttributes Attributes { get; set; }
 		
@@ -26,15 +26,21 @@ namespace Pablo.Formats.Character.Actions.Block
 			: base(handler)
 		{
 			ID = "character_Fill";
-			Text = "&Fill...|Fill|Fill the selected region|Fills the selected region";
+			MenuText = "&Fill...";
+			ToolTip = "Fill the selected region|Fills the selected region";
 			Name = "Fill";
-			Accelerator = Key.F;
+			Shortcut = Keys.F;
 		}
 		
+		public override bool Enabled
+		{
+			get { return base.Enabled && tool.DrawMode == DrawMode.Selecting; }
+			set { base.Enabled = value; }
+		}
+
 		public Fill (Selection tool) : this(tool.Handler)
 		{
 			this.tool = tool;
-			this.Enabled = tool.DrawMode == DrawMode.Selecting;
 		}
 		
 		public override int CommandID { get { return (int)NetCommands.BlockFill; } }
@@ -47,8 +53,8 @@ namespace Pablo.Formats.Character.Actions.Block
 			if (attribs == null) {
 				var handler = this.Handler as CharacterHandler;
 				var dialog = new FillDialog (handler);
-				var result = dialog.ShowDialog ((Control)handler.Viewer);
-				if (result != DialogResult.Ok) return null;
+				var result = dialog.ShowModal((Control)handler.Viewer);
+				if (!result) return null;
 				attribs = new FillAttributes {
 					Mode = dialog.FillMode,
 					Attribute = dialog.Attribute,

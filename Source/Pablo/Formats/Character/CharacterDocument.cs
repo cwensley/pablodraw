@@ -245,7 +245,7 @@ namespace Pablo.Formats.Character
 			Pages[0].Palette = defaultPalette;
 			Pages[0].Load(stream, charFormat, (CharacterHandler)handler, resizeCanvas);
 			
-			UpdateCanvasSize(Pages[0], false);
+			UpdateCanvasSize(Pages[0], Info.AutoResize);
 			Pages[0].Canvas.Update += delegate
 			{
 				IsModified = true;
@@ -318,13 +318,16 @@ namespace Pablo.Formats.Character
 			}
 			else
 				defaultFont = Pages[0].Font;
-			int newWidth = Use9x ? 9 : 8;
-			if (newWidth != defaultFont.Width)
+			if (defaultFont.Width >= 8 && defaultFont.Width <= 9)
 			{
-				defaultFont = new BitFont(defaultFont);
-				defaultFont.Resize(newWidth, defaultFont.Height, false);
+				int newWidth = Use9x ? 9 : 8;
+				if (newWidth != defaultFont.Width)
+				{
+					defaultFont = new BitFont(defaultFont);
+					defaultFont.Resize(newWidth, defaultFont.Height, false, Use9x);
+				}
+				Pages[0].Font = defaultFont;
 			}
-			Pages[0].Font = defaultFont;
 			if (sendEvent)
 				OnSizeChanged(EventArgs.Empty);
 		}

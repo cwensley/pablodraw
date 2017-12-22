@@ -19,7 +19,7 @@ namespace Pablo.Formats.Image
 		public void Load(Stream fs, Document document, Pablo.Handler handler)
 		{
 			ImageDocument doc = (ImageDocument)document;
-			doc.Image = new Bitmap(fs, document.Generator);
+			doc.Image = new Bitmap(fs);
 		}
 		
 		public void Save(Stream stream, Document document)

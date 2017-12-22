@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Pablo.Formats.Character.Controls
 {
-	public class CharacterSetEditor : Dialog
+	public class CharacterSetEditor : Dialog<DialogResult>
 	{
 		FontTextBox lastSet;
 		int selected;
@@ -109,7 +109,7 @@ namespace Pablo.Formats.Character.Controls
 				{
 					e.Handled = true;
 					Save();
-					DialogResult = DialogResult.Ok;
+					Result = DialogResult.Ok;
 					Close();
 				};
 				if (master == null)
@@ -180,7 +180,7 @@ namespace Pablo.Formats.Character.Controls
 			{
 				Save();
 				this.CharacterHandler.TriggerCharacterSetChanged();
-				DialogResult = DialogResult.Ok;
+				Result = DialogResult.Ok;
 				Close();
 			};
 			base.DefaultButton = control;
@@ -195,7 +195,7 @@ namespace Pablo.Formats.Character.Controls
 			};
 			control.Click += delegate
 			{
-				DialogResult = DialogResult.Cancel;
+				Result = DialogResult.Cancel;
 				Close();
 			};
 			base.AbortButton = control;

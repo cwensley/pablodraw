@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 
 namespace PabloDraw
 {
@@ -14,7 +15,7 @@ namespace PabloDraw
 	/// </remarks>
 	/// <copyright>(c) 2012 by Curtis Wensley</copyright>
 	/// <license type="BSD-3">See LICENSE for full terms</license>
-	public class EmbeddedAssemblyLoader
+	class EmbeddedAssemblyLoader
 	{
 		readonly Dictionary<string, Assembly> loadedAssemblies = new Dictionary<string, Assembly>();
 
@@ -63,29 +64,34 @@ namespace PabloDraw
 			domain = domain ?? AppDomain.CurrentDomain;
 			domain.AssemblyResolve += (sender, args) =>
 			{
+				//Thread.Sleep(1000);
 				var assemblyName = new AssemblyName(args.Name);
-				if (assemblyName.Name.EndsWith(".resources", StringComparison.OrdinalIgnoreCase)) return null;
+				if (assemblyName.Name.EndsWith(".resources", StringComparison.OrdinalIgnoreCase))
+					return null;
 
 				string resourceName = ResourceNamespace + "." + assemblyName.Name + ".dll";
 				Assembly loadedAssembly;
 				lock (loadedAssemblies)
 				{
-					if (!loadedAssemblies.TryGetValue(resourceName, out loadedAssembly))
+					if (loadedAssemblies.TryGetValue(resourceName, out loadedAssembly))
+						return loadedAssembly;
+				}
+
+				using (var stream = Assembly.GetManifestResourceStream(resourceName))
+				{
+					if (stream != null)
 					{
-						using (var stream = Assembly.GetManifestResourceStream(resourceName))
+						var data = new byte[stream.Length];
+						stream.Read(data, 0, data.Length);
+						loadedAssembly = Assembly.Load(data);
+						lock (loadedAssemblies)
 						{
-							if (stream != null)
-							{
-								using (var binaryReader = new BinaryReader(stream))
-								{
-									loadedAssembly = Assembly.Load(binaryReader.ReadBytes((int)stream.Length));
-									loadedAssemblies.Add(resourceName, loadedAssembly);
-								}
-							}
+							loadedAssemblies.Add(resourceName, loadedAssembly);
 						}
+						return loadedAssembly;
 					}
 				}
-				return loadedAssembly;
+				return null;
 			};
 		}
 	}

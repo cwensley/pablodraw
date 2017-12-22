@@ -3,7 +3,7 @@ using Eto.Forms;
 
 namespace Pablo.Actions
 {
-	public class Autoscroll : CheckAction
+	public class Autoscroll : CheckCommand
 	{
 		public const string ActionID = "autoscroll";
 		public ViewerPane ViewerPane { get; private set; }
@@ -12,14 +12,14 @@ namespace Pablo.Actions
 		{
 			this.ViewerPane = viewerPane;
 			base.ID = ActionID;
-			this.Text = "Auto&scroll|Autoscroll|Automaticaly scroll when viewing";
+			this.MenuText = "Auto&scroll";
+			this.ToolTip = "Automaticaly scroll when viewing";
 			this.Checked = ViewerPane.ViewHandler.Document.Info.AutoScroll;
 		}
 
-		protected override void OnActivated (EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated (e);
-			this.Checked = !this.Checked;
+			base.OnExecuted(e);
 			ViewerPane.ViewHandler.Document.Info.AutoScroll = this.Checked;
 		}
 	}

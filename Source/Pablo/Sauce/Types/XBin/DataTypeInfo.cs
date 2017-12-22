@@ -1,6 +1,6 @@
 using System;
 
-namespace Pablo.Sauce
+namespace Pablo.Sauce.Types.XBin
 {
 	public enum XBinFileType
 	{
@@ -14,8 +14,18 @@ namespace Pablo.Sauce
 	/// <summary>
 	/// Summary description for XBinDataTypeInfo.
 	/// </summary>
-	public class XBinDataTypeInfo : SauceDataTypeInfo
+	public class DataTypeInfo : BaseText.DataTypeInfo
 	{
+		public override bool HasFileType { get { return false; } }
+
+		public override bool HasFontName { get { return false; } }
+
+		public override bool HasICEColors { get { return false; } }
+
+		public override bool HasAspectRatio { get { return true; } }
+
+		public override bool HasLetterSpacing { get { return true; } }
+
 		public XBinFileType Type
 		{
 			get { return (XBinFileType)Sauce.ByteFileType; }

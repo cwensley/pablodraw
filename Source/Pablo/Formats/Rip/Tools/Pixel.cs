@@ -15,9 +15,9 @@ namespace Pablo.Formats.Rip.Tools
 			get { return "Draws a pixel (P)"; }
 		}
 
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.P;
+				return Keys.P;
 			}
 		}
 		
@@ -35,23 +35,23 @@ namespace Pablo.Formats.Rip.Tools
 			}
 		}
 		
-		bool EnableMulti (Key modifiers)
+		bool EnableMulti (Keys modifiers)
 		{
-			return enableMulti ^ (modifiers == Key.Shift);
+			return enableMulti ^ (modifiers == Keys.Shift);
 		}
 		
 		public override Eto.Drawing.Image Image {
-			get { return Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Pixel.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Pixel.png"); }
 		}
 		
-		protected override void SetStartLocation (Point start, Key modifiers, Point location)
+		protected override void SetStartLocation (Point start, Keys modifiers, Point location)
 		{
 			this.Command.Point = start;
 			if (!EnableMulti (modifiers))
 				FinishCommand (modifiers);
 		}
 		
-		protected override void SetEndLocation (Point end, Key modifiers, Point location)
+		protected override void SetEndLocation (Point end, Keys modifiers, Point location)
 		{
 			this.Command.Point = end;
 		}
@@ -65,14 +65,14 @@ namespace Pablo.Formats.Rip.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout (Padding.Empty, Size.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty, Spacing = Size.Empty };
 
 			layout.Add(TopSeparator());
 			layout.BeginVertical (Padding.Empty);
 			layout.BeginHorizontal ();
 			
 			var b = new ImageButton{
-				Image = Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Pixel-Multi.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Pixel-Multi.png"),
 				Toggle = true,
 				Pressed = enableMulti
 			};

@@ -30,7 +30,7 @@ namespace Pablo.Formats.Character.Controls
 			}).MakeWeak(e => handler.CurrentPage.FontChanged -= e);
 			
 			
-			var layout = new DynamicLayout(new Padding(0, 5));
+			var layout = new DynamicLayout { Padding = new Padding(0, 5) };
 			
 			layout.AddRow(FontLabel(), InsertLabel());
 
@@ -61,9 +61,8 @@ namespace Pablo.Formats.Character.Controls
 #if DESKTOP
 			fontLabel.MouseDown += delegate
 			{
-				var fontMenu = Handler.Info.GetFontMenu(Handler);
 				var menu = new ContextMenu();
-				fontMenu.Actions.Generate(menu);
+				Handler.Info.GetFontMenu(Handler, subMenu: menu);
 				menu.Show(fontLabel);
 			};
 #endif

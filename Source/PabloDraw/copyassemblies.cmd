@@ -5,7 +5,7 @@ set SOLUTIONDIR=..
 
 echo Destination: %2
 
-call :CopyBase "%~1" "%~2" Libraries\Eto BuildOutput Eto*.*
+call :CopyBase "%~1" "%~2" Libraries\Eto BuildOutput\net45 Eto*.*
 
 call :CopyBase "%~1" "%~2" Libraries\lidgren Lidgren.Network\bin Lidgren.Network.*
 call :CopyBase "%~1" "%~2" Libraries\Mono.Nat\src Mono.Nat\bin Mono.Nat.*

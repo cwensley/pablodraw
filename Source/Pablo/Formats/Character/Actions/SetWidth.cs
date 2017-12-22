@@ -6,15 +6,17 @@ using Pablo.Network;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class SetWidth : Command
+	public class SetWidth : PabloCommand
 	{
 		public const string ActionID = "setWidth";
 
 		public SetWidth (CharacterHandler handler) : base(handler)
 		{
 			ID = ActionID;
-			Text = "Set Canvas &Width...|Set Width|Set Canvas Width|Sets the canvas width";
-			Image = Icon.FromResource ("Pablo.Icons.setwidth.ico");
+			MenuText = "Set Canvas &Width...";
+			ToolBarText = "Set Width";
+			ToolTip = "Sets the canvas width";
+			Image = ImageCache.IconFromResource("Pablo.Icons.setwidth.ico");
 		}
 		
 		public override int CommandID {
@@ -29,7 +31,7 @@ namespace Pablo.Formats.Character.Actions
 			var size = handler.CurrentPage.Canvas.Size;
 			var dialog = new WidthDialog ();
 			dialog.Width = size.Width;
-			var result = dialog.ShowDialog (handler.Viewer as Control);
+			var result = dialog.ShowModal (handler.Viewer as Control);
 			if (result == DialogResult.Ok) {
 				DoResize (dialog.Width);
 			}
@@ -41,9 +43,7 @@ namespace Pablo.Formats.Character.Actions
 			var size = handler.CurrentPage.Canvas.Size;
 			size.Width = width;
 			
-			var old = handler.CurrentPage.Canvas.Copy ();
-			handler.CurrentPage.Canvas.ResizeCanvas (size, true);
-			handler.CurrentPage.Canvas.Set (Point.Empty, old);
+			handler.CurrentPage.Canvas.ResizeCanvas (size, true, true);
 			var pos = handler.CursorPosition;
 			pos.Restrict (new Rectangle (handler.CurrentPage.Canvas.Size));
 			handler.CursorPosition = pos;
@@ -58,7 +58,7 @@ namespace Pablo.Formats.Character.Actions
 			var size = handler.CurrentPage.Canvas.Size;
 			var dialog = new WidthDialog ();
 			dialog.Width = size.Width;
-			var result = dialog.ShowDialog (handler.Viewer as Control);
+			var result = dialog.ShowModal(handler.Viewer as Control);
 			if (result == DialogResult.Ok) {
 				args.Message.WriteVariableInt32 (dialog.Width);
 				return true;

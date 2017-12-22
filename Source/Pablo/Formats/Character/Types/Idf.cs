@@ -74,7 +74,7 @@ namespace Pablo.Formats.Character.Types
 			}
 		}
 
-		protected override int GetWidth(Stream stream, CharacterDocument document, object state = null)
+		protected override int? GetWidth(Stream stream, CharacterDocument document, object state = null)
 		{
 			var header = state as IdfHeader;
 			if (header != null)

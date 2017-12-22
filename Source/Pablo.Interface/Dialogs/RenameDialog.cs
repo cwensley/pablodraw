@@ -5,7 +5,7 @@ using Eto.Drawing;
 
 namespace Pablo.Interface.Dialogs
 {
-	public class RenameDialog : Dialog
+	public class RenameDialog : Dialog<DialogResult>
 	{
 		string name;
 		string path;
@@ -20,7 +20,7 @@ namespace Pablo.Interface.Dialogs
 				Text = name
 			};
 			control.KeyDown += (sender, e) => {
-				if (e.Key == Key.Escape)
+				if (e.Key == Keys.Escape)
 					Close ();
 			};
 			control.TextChanged += delegate {
@@ -35,7 +35,7 @@ namespace Pablo.Interface.Dialogs
 				Text = "Rename"
 			};
 			control.Click += delegate {
-				DialogResult = DialogResult.Ok;
+				Result = DialogResult.Ok;
 				Close ();
 			};
 			this.DefaultButton = control;
@@ -48,7 +48,7 @@ namespace Pablo.Interface.Dialogs
 				Text = "Cancel"
 			};
 			control.Click += delegate {
-				DialogResult = DialogResult.Cancel;
+				Result = DialogResult.Cancel;
 				Close ();
 			};
 			this.AbortButton = control;
@@ -57,13 +57,14 @@ namespace Pablo.Interface.Dialogs
 		
 		public RenameDialog (string fileName)
 		{
+			this.DisplayMode = DialogDisplayMode.Attached;
 			this.Title = "Rename File / Directory";
 			this.MinimumSize = new Size(320, 10);
 			this.Resizable = true;
 			this.name = Path.GetFileName (fileName);
 			this.path = Path.GetDirectoryName (fileName);
 			
-			var layout = new DynamicLayout (new Padding(20, 10));
+			var layout = new DynamicLayout { Padding = new Padding(20, 10) };
 			
 			layout.BeginVertical (Padding.Empty, Size.Empty);
 			layout.BeginHorizontal ();

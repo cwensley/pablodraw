@@ -5,26 +5,34 @@ using Pablo.Formats.Character.Tools;
 
 namespace Pablo.Formats.Character.Actions.Block
 {
-	public class Transparent : ButtonAction
+	public class Transparent : Command
 	{
 		Selection tool;
 		public const string ActionID = "character_block_transparent";
-		
+
 		public Transparent(Selection tool)
 		{
 			this.tool = tool;
 			ID = ActionID;
-			Text = "&Transparent|Transparent|Toggle transparent mode|Make the block transparent when pasting";
-			Accelerator = Key.T;
+			MenuText = "&Transparent";
+			ToolBarText = "Transparent";
+			ToolTip = "Make the block transparent when pasting";
+			Shortcut = Keys.T;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		public override bool Enabled
+		{
+			get { return base.Enabled && tool.DrawMode == DrawMode.Paste; }
+			set { base.Enabled = value; }
+		}
+
+		protected override void OnExecuted(EventArgs e)
 		{
 			// Stamp the selected region
 			
 			if (tool.PasteMode == PasteMode.Transparent)
 				tool.PasteMode = PasteMode.Normal;
-			else 
+			else
 				tool.PasteMode = PasteMode.Transparent;
 		}
 	}

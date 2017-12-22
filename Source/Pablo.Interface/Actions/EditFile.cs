@@ -12,7 +12,7 @@ using Lidgren.Network;
 
 namespace Pablo.Interface.Actions
 {
-	public class EditFile : CheckAction, ICommand
+	public class EditFile : CheckCommand, ICommand, IDisposable
 	{
 		Main main;
 		public const string ActionID = "editFile";
@@ -21,12 +21,19 @@ namespace Pablo.Interface.Actions
 		{
 			this.main = main;
 			base.ID = ActionID;
-			this.Text = "&Edit|Edit|Toggles editing of this file";
-			this.Image = Icon.FromResource ("Pablo.Interface.Icons.edit.ico");
+			this.MenuText = "&Edit";
+			this.ToolBarText = "Edit";
+			this.ToolTip = "Toggles editing of this file";
+			this.Image = ImageCache.IconFromResource("Pablo.Interface.Icons.edit.ico");
 			this.Checked = main.EditMode;
-			this.Accelerator = Command.CommonModifier | Key.E;
+			this.Shortcut = PabloCommand.CommonModifier | Keys.E;
 			main.EditModeChanged += editModeChanged;
 			this.Enabled = main.ViewHandler != null && main.ViewHandler.CanEdit && (main.Client == null || main.Client.CurrentUser.Level >= Level);
+		}
+
+		public void Dispose()
+		{
+			main.EditModeChanged -= editModeChanged;
 		}
 		
 		public UserLevel Level {
@@ -36,20 +43,15 @@ namespace Pablo.Interface.Actions
 		public Lidgren.Network.NetDeliveryMethod DeliveryMethod {
 			get { return Lidgren.Network.NetDeliveryMethod.ReliableOrdered; }
 		}
-		
-		protected override void OnRemoved (EventArgs e)
-		{
-			base.OnRemoved (e);
-			main.EditModeChanged -= editModeChanged;
-		}
-		
+
 		void editModeChanged (object sender, EventArgs e)
 		{
 			this.Checked = main.EditMode;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
+			base.OnExecuted(e);
 			if (!main.EditMode || FileModifiedDialog.Show (main) == DialogResult.Ok) {
 				if (main.Client != null) {
 					main.Client.SendCommand (this);

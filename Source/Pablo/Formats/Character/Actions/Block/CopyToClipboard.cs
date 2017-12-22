@@ -6,7 +6,7 @@ using Pablo.Formats.Character.Tools;
 
 namespace Pablo.Formats.Character.Actions.Block
 {
-	public class CopyToClipboard : ButtonAction
+	public class CopyToClipboard : Command
 	{
 		public const string ActionID = "character_copyToClipboard";
 		
@@ -16,15 +16,23 @@ namespace Pablo.Formats.Character.Actions.Block
 		{
 			this.tool = tool;
 			this.ID = ActionID;
-			this.Text = "&Copy|Copy|Copy the selected region to the clipboard";
-			this.Accelerator = Command.CommonModifier | Key.C;
+			MenuText = "&Copy";
+			ToolBarText = "Copy";
+			ToolTip = "Copy the selected region to the clipboard";
+			Shortcut = PabloCommand.CommonModifier | Keys.C;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		public override bool Enabled
 		{
-			base.OnActivated (e);
-			
-			
+			get { return base.Enabled && tool.DrawMode == DrawMode.Selecting; }
+			set { base.Enabled = value; }
+		}
+
+		protected override void OnExecuted(EventArgs e)
+		{
+			base.OnExecuted(e);
+			if (tool.SelectedRegion == null)
+				return;
 			var handler = tool.Handler;
 			var rect = tool.SelectedRegion.Value;
 			// copy the selected region

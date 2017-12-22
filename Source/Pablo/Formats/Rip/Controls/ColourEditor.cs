@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Pablo.Formats.Rip.Controls
 {
-	public class ColourEditor : Dialog
+	public class ColourEditor : Dialog<DialogResult>
 	{
 		RipHandler handler;
 		int selectedColor;
@@ -230,7 +230,7 @@ namespace Pablo.Formats.Rip.Controls
 			};
 			
 			control.Click += delegate {
-				DialogResult = DialogResult.Cancel;
+				Result = DialogResult.Cancel;
 				Close ();
 			};
 			base.AbortButton = control;
@@ -245,7 +245,7 @@ namespace Pablo.Formats.Rip.Controls
 			};
 			
 			control.Click += delegate {
-				DialogResult = DialogResult.Ok;
+				Result = DialogResult.Ok;
 				
 				var command = handler.RipDocument.Create<Commands.SetPalette>();
 				command.Palette = this.colors;

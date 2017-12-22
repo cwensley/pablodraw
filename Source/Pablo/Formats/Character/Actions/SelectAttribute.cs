@@ -5,7 +5,7 @@ using Pablo.Formats.Character.Controls;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class SelectAttribute : ButtonAction
+	public class SelectAttribute : Command
 	{
 		CharacterHandler handler;
 		
@@ -13,20 +13,20 @@ namespace Pablo.Formats.Character.Actions
 		{
 			this.handler = handler;
 			ID = "character_selectAttribute";
-			Text = "Attribute|Attribute|Select Attribute|Shows a dialog to select the current attribute";
-			Accelerators = new Key[] { Key.Escape, Key.Alt | Key.A };
+			MenuText = ToolBarText = "Attribute";
+			ToolTip = "Shows a dialog to select the current attribute";
+			Shortcut = Keys.Alt | Keys.A; // TODO: new [] { Keys.Escape, Keys.Alt | Keys.A };
 		}
 		
 		public override bool Enabled {
 			get { return handler.AllowKeyboardEditing; }
 			set { base.Enabled = value; }
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
 			var dialog = new AttributeDialog(handler, handler.CurrentPage.Palette, handler.DrawAttribute, handler.CharacterDocument.ICEColours);
-			var result = dialog.ShowDialog(handler.Viewer as Control);
-			if (result == DialogResult.Ok)
+			if (dialog.ShowModal(handler.Viewer as Control))
 			{
 				handler.DrawAttribute = dialog.Attribute;
 			}

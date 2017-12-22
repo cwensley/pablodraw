@@ -37,7 +37,7 @@ namespace Pablo.Controls
 			this.Size = this.GridSize * 16;
 		}
 		
-		public override void OnPaint (PaintEventArgs pe)
+		protected override void OnPaint (PaintEventArgs pe)
 		{
 			base.OnPaint (pe);
 			pe.Graphics.FillRectangle (Color.FromGrayscale (0.8f), pe.ClipRectangle);
@@ -54,12 +54,12 @@ namespace Pablo.Controls
 			}
 		}
 		
-		public override void OnMouseDown (MouseEventArgs e)
+		protected override void OnMouseDown (MouseEventArgs e)
 		{
 			base.OnMouseDown (e);
 		}
 		
-		public override void OnMouseUp (MouseEventArgs e)
+		protected override void OnMouseUp (MouseEventArgs e)
 		{
 			if (e.Buttons == MouseButtons.Primary) {
 				var item = (Point)e.Location / (this.Size / this.GridSize);

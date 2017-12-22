@@ -15,14 +15,14 @@ namespace Pablo.Formats.Character.Tools
 			get { return "Ink Dropper - Selects the foreground (left click) or background (right click) color from under the mouse"; }
 		}
 
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.I | (Handler.Generator.IsMac ? Key.Control : Key.Alt);
+				return Keys.I | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
 			}
 		}
 		
 		public override Eto.Drawing.Image Image {
-			get { return Eto.Drawing.Bitmap.FromResource ("Pablo.Formats.Rip.Icons.InkDropper.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.InkDropper.png"); }
 		}
 
 		public override void Selecting ()
@@ -36,9 +36,9 @@ namespace Pablo.Formats.Character.Tools
 		}
 		
 		
-		void SetOldTool (Key modifiers)
+		void SetOldTool (Keys modifiers)
 		{
-			if (oldTool != null && !modifiers.HasFlag (Key.Shift)) {
+			if (oldTool != null && !modifiers.HasFlag (Keys.Shift)) {
 				Handler.SelectedTool = oldTool;
 				oldTool = null;
 			}

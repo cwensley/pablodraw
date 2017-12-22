@@ -5,14 +5,14 @@ using Eto.Drawing;
 
 namespace Pablo.Interface.Dialogs
 {
-	public class ServerDialog : Dialog
+	public class ServerDialog : Dialog<DialogResult>
 	{
 		TextBox passwordTextBox;
 		TextBox operatorPassword;
 		TextBox aliasTextBox;
 		CheckBox useNat;
 		TextBox serverPortTextBox;
-		EnumComboBox<UserLevel> userLevel;
+		EnumDropDown<UserLevel> userLevel;
 
 		public string Password
 		{
@@ -185,7 +185,7 @@ namespace Pablo.Interface.Dialogs
 			{
 				if (Validate())
 				{
-					DialogResult = DialogResult.Ok;
+					Result = DialogResult.Ok;
 					Close();
 				}
 			};
@@ -201,7 +201,7 @@ namespace Pablo.Interface.Dialogs
 			AbortButton = control;
 			control.Click += delegate
 			{
-				DialogResult = DialogResult.Cancel;
+				Result = DialogResult.Cancel;
 				Close();
 			};
 			return control;
@@ -209,7 +209,7 @@ namespace Pablo.Interface.Dialogs
 
 		Control UserLevelControl()
 		{
-			var control = userLevel = new EnumComboBox<UserLevel>
+			var control = userLevel = new EnumDropDown<UserLevel>
 			{
 			};
 			

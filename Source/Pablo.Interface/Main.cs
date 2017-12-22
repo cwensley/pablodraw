@@ -11,6 +11,7 @@ using Pablo.Network;
 using Pablo.Interface.Dialogs;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Pablo.Interface
 {
@@ -18,9 +19,7 @@ namespace Pablo.Interface
 	{
 		const string TITLE = "PabloDraw";
 		Handler handler;
-		ToolBar toolBar;
 		readonly FileList fileList;
-		readonly GenerateActionArgs args;
 		readonly Settings settings = new Settings();
 		Server server;
 		Client client;
@@ -30,6 +29,7 @@ namespace Pablo.Interface
 		readonly PadPanel padpanel;
 		bool shouldReload = true;
 		bool lastEditMode;
+		GenerateCommandArgs args;
 
 		#region Events
 
@@ -122,11 +122,6 @@ namespace Pablo.Interface
 		public Handler ViewHandler
 		{
 			get { return handler; }
-		}
-
-		public GenerateActionArgs ActionArgs
-		{
-			get { return args; }
 		}
 
 		public FileList FileList
@@ -346,7 +341,7 @@ namespace Pablo.Interface
 
 			public void WriteXml(XmlElement element)
 			{
-				var restoreBounds = Window.RestoreBounds ?? Window.Bounds;
+				var restoreBounds = Window.RestoreBounds;
 				element.SetAttribute("width", restoreBounds.Width);
 				element.SetAttribute("height", restoreBounds.Height);
 				if (LoadPosition || Window.WindowState != WindowState.Normal)
@@ -385,12 +380,11 @@ namespace Pablo.Interface
 
 		public Main()
 		{
-			args = new GenerateActionArgs(this);
 			Title = TITLE;
 			Size = new Size(950, 650);
 			this.Style = "main";
 
-			this.Icon = Icon.FromResource("Pablo.Interface.Icons.PabloDraw.ico");
+			this.Icon = ImageCache.IconFromResource("Pablo.Interface.Icons.PabloDraw.ico");
 
 			padpanel = new PadPanel();
 
@@ -433,150 +427,148 @@ namespace Pablo.Interface
 			fileList.Focus();
 		}
 
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			if (args != null)
+			{
+				var cmd = args.KeyboardCommands.FirstOrDefault(r => r.Shortcut == e.KeyData && r.Enabled);
+				if (cmd != null)
+				{
+					cmd.Execute();
+					e.Handled = true;
+				}
+			}
+			base.OnKeyDown(e);
+		}
+
+		IEnumerable<MenuItem> AllItems(MenuItem item)
+		{
+			yield return item;
+			var submenu = item as ISubmenu;
+			if (submenu != null)
+			{
+				foreach (var child in submenu.Items.SelectMany(r => AllItems(r)))
+				{
+					yield return child;
+				}
+			}
+		}
+
 		public void GenerateActions()
 		{
 			bool canEdit = (handler != null && handler.CanEdit);
 
-			args.Clear();
+			if (args != null)
+			{
+				var disposableMenuItems = args.Menu.Items.SelectMany(r => AllItems(r)).Select(r => r.Command).OfType<IDisposable>().ToList();
+				disposableMenuItems.AddRange(args.KeyboardCommands.OfType<IDisposable>());
+				foreach (var item in disposableMenuItems)
+					item.Dispose();
+				var disposableToolbarItems = args.ToolBar.Items.Select(r => r.Command).OfType<IDisposable>().Where(r => !disposableMenuItems.Contains(r));
+				foreach (var item in disposableToolbarItems)
+					item.Dispose();
+			}
+
+			args = new GenerateCommandArgs { EditMode = EditMode, Area = "main" };
 
 			//GC.Collect ();
 
-			Application.Instance.GetSystemActions(args, true);
+			args.KeyboardCommands.Add(new Actions.FocusChatView(this));
 
-			args.Arguments["editMode"] = EditMode;
-			args.Arguments["area"] = "main";
-			args.Actions.Add(new Actions.Exit(this));
-			args.Actions.Add(new Actions.OpenFile(this));
-			args.Actions.Add(new Actions.NewFile(this));
-			args.Actions.Add(new Actions.DeleteFile(this));
-			args.Actions.Add(new Actions.RenameFile(this));
-			args.Actions.Add(new Actions.MoveFile(this));
-			args.Actions.Add(new Actions.EditFile(this));
-			args.Actions.Add(new Actions.FocusChatView(this));
-			args.Actions.Add(new Actions.EnableBackups(this));
+			var prevCommand = new Command { ID = "prev", MenuText = "Open &Previous", ToolTip = "Opens the previous file in the list", Shortcut = Keys.Alt | Keys.Up };
+			prevCommand.Executed += (sender, e) => fileList.GoToPrevious();;
+			var nextCommand = new Command { ID = "next", MenuText = "Open &Next", ToolTip = "Opens the next file in the list", Shortcut = Keys.Alt | Keys.Down };
+			nextCommand.Executed += (sender, e) => fileList.GoToNext();;
 
-			args.Actions.Add(new Actions.EnclosingFolder(this));
+			var aiFile = args.Menu.Items.GetSubmenu("&File", 100);
+			args.Menu.Items.GetSubmenu("&View", 300);
+			args.Menu.Items.GetSubmenu("Options", 500);
+			var aiNetwork = args.Menu.Items.GetSubmenu("&Network", 600);
+			var aiHelp = args.Menu.Items.GetSubmenu("&Help", 1000);
 
-			if (!EditMode)
+
+			args.Menu.AboutItem = new Actions.About(this);
+
+			if (Platform.IsMac)
 			{
-				args.Actions.AddButton("prev", "Open &Previous|Prev|Opens the previous file in the file list", delegate
-				{
-					fileList.GoToPrevious();
-				}, Key.Alt | Key.Up);
-				args.Actions.AddButton("next", "Open &Next|Next|Opens the next file in the file list", delegate
-				{
-					fileList.GoToNext();
-				}, Key.Alt | Key.Down);
-			}
-			args.Actions.Add(new Actions.ServerStart(this));
-			args.Actions.Add(new Actions.ClientConnect(this));
-			args.Actions.Add(new Actions.ServerStop(this));
-
-			args.Actions.Add(new Actions.Homepage());
-			args.Actions.Add(new Actions.EditSauce(this));
-			args.Actions.Add(new Actions.About(this));
-
-			var aiFile = args.Menu.GetSubmenu("&File", 100);
-			args.Menu.GetSubmenu("&View", 300);
-			args.Menu.GetSubmenu("Options", 500);
-			var aiNetwork = args.Menu.GetSubmenu("&Network", 600);
-			var aiHelp = args.Menu.GetSubmenu("&Help", 900);
-
-
-			if (Generator.IsMac)
-			{
-				args.Actions.Add(new Actions.ViewFile(this));
-				// have a nice mac menu
-				args.Actions.AddButton("quit", "Quit|Quit|Close the application", delegate { ExitApplication(); }, Key.Q | Key.Application);
-				var main = args.Menu.GetSubmenu(Application.Instance.Name, 0);
-
-				main.Actions.Add(Actions.About.ActionID, 0);
-				main.Actions.AddSeparator(0);
-				main.Actions.AddSeparator(1000);
-				main.Actions.Add("quit", 1000);
-
-				aiFile.Actions.AddSeparator(900);
+				var quitCommand = new Command { MenuText = "Quit", ToolTip = "Close the application", Shortcut = Keys.Q | Keys.Application };
+				quitCommand.Executed += (sender, e) => ExitApplication();
+				args.Menu.QuitItem = quitCommand;
 			}
 			else
 			{
-				aiFile.Actions.AddSeparator(1000);
-				aiFile.Actions.Add(Actions.Exit.ActionID, 1000);
-
-				aiHelp.Actions.AddSeparator(0);
-				aiHelp.Actions.Add(Actions.About.ActionID, 0);
+				args.Menu.QuitItem = new Actions.Exit(this);
 			}
 
 
-			aiFile.Actions.Add(Actions.NewFile.ActionID, 100);
-			aiFile.Actions.Add(Actions.OpenFile.ActionID, 100);
-			aiFile.Actions.Add(Actions.EnclosingFolder.ActionID, 100);
+			aiFile.Items.Add(new Actions.NewFile(this), 100);
+			aiFile.Items.Add(new Actions.OpenFile(this), 100);
+			aiFile.Items.Add(new Actions.EnclosingFolder(this), 100);
 			if (!EditMode)
 			{
-				aiFile.Actions.Add("next", 100);
-				aiFile.Actions.Add("prev", 100);
+				aiFile.Items.Add(nextCommand, 100);
+				aiFile.Items.Add(prevCommand, 100);
 
-				aiFile.Actions.AddSeparator(300);
-				aiFile.Actions.Add(Actions.DeleteFile.ActionID, 300);
-				aiFile.Actions.Add(Actions.RenameFile.ActionID, 300);
-				aiFile.Actions.Add(Actions.MoveFile.ActionID, 300);
+				aiFile.Items.AddSeparator(300);
+				aiFile.Items.Add(new Actions.DeleteFile(this), 300);
+				aiFile.Items.Add(new Actions.RenameFile(this), 300);
+				aiFile.Items.Add(new Actions.MoveFile(this), 300);
 			}
-			aiFile.Actions.AddSeparator(400);
-			aiFile.Actions.Add(Actions.EditSauce.ActionID);
+			aiFile.Items.AddSeparator(400);
+			aiFile.Items.Add(new Actions.EditSauce(this), 500);
 
 			if (canEdit)
-				aiFile.Actions.Add(Actions.EditFile.ActionID);
+				aiFile.Items.Add(new Actions.EditFile(this), 500);
 
-			aiFile.Actions.Add(Actions.EnableBackups.ActionID, 500);
+			aiFile.Items.Add(new Actions.EnableBackups(this), 500);
 
 			// network
 			//#if DEBUG
-			aiNetwork.Actions.Add(Actions.ServerStart.ActionID);
-			aiNetwork.Actions.Add(Actions.ClientConnect.ActionID);
-			aiNetwork.Actions.Add(Actions.ServerStop.ActionID);
+			aiNetwork.Items.Add(new Actions.ServerStart(this), 500);
+			aiNetwork.Items.Add(new Actions.ClientConnect(this), 500);
+			aiNetwork.Items.Add(new Actions.ServerStop(this), 500);
 			//#endif
 
 			// help
-			aiHelp.Actions.Add(Actions.Homepage.ActionID);
+			aiHelp.Items.Add(new Actions.Homepage(), 500);
 
-			args.ToolBar.Add(Actions.NewFile.ActionID, false, 100);
-			args.ToolBar.Add(Actions.OpenFile.ActionID, false, 100);
-			args.ToolBar.Add(Actions.EditSauce.ActionID, false, 100);
+			args.ToolBar.Items.Add(new Actions.NewFile(this), 100);
+			args.ToolBar.Items.Add(new Actions.OpenFile(this), 100);
+			args.ToolBar.Items.Add(new Actions.EditSauce(this), 100);
 
-			if (Generator.IsMac)
+			if (Platform.IsMac)
 			{
-				args.ToolBar.AddFlexibleSpace(800);
-				args.ToolBar.Add(Actions.ViewFile.ActionID, true, 900);
-				args.ToolBar.Add(Actions.EditFile.ActionID, true, 900);
+				args.ToolBar.Items.AddSeparator(800, SeparatorToolItemType.FlexibleSpace);
+				args.ToolBar.Items.Add(new Actions.ViewFile(this), 900);
+				args.ToolBar.Items.Add(new Actions.EditFileRadio(this), 900);
 			}
 			else
 			{
-				args.ToolBar.AddSeparator(200);
-				args.ToolBar.Add(Actions.EditFile.ActionID, true, 200);
+				args.ToolBar.Items.AddSeparator(200);
+				args.ToolBar.Items.Add(new Actions.EditFile(this), 200);
 			}
 
 			if (handler != null)
-				handler.GenerateActions(args);
+				handler.GenerateCommands(args);
 
-			MenuBar oldmenu = Menu;
-
-			var menuBar = new MenuBar(Generator);
-			args.Menu.Generate(menuBar);
-			Menu = menuBar;
-
+			var oldmenu = Menu;
 			var oldtoolbar = ToolBar;
-			toolBar = new ToolBar(Generator);
-			args.ToolBar.Generate(toolBar);
-			ToolBar = toolBar;
 
-			if (oldtoolbar != null)
-				oldtoolbar.Dispose();
+			Menu = args.Menu;
+			ToolBar = args.ToolBar;
 
-			if (oldmenu != null)
-				oldmenu.Dispose();
+			Application.Instance.AsyncInvoke(() =>
+			{
+				/*if (oldtoolbar != null)
+					oldtoolbar.Dispose();
+
+				if (oldmenu != null)
+					oldmenu.Dispose();*/
 #if DEBUG
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
 #endif
+			});
 		}
 
 		public void ExitApplication()
@@ -641,7 +633,11 @@ namespace Pablo.Interface
 				handler.Client = Client;
 				handler.ActionsChanged += handler_ActionsChanged;
 
-				padpanel.Content = handler.ViewerControl;
+				handler.PreLoad(stream, format);
+
+				// TODO: RIP needs this PreLoad, WPF/ansi animation needs post pre-load
+				var viewerControl = handler.ViewerControl;
+				padpanel.Content = viewerControl;
 
 				if (Client != null)
 					Client.SetCommands(Commands);
@@ -649,7 +645,6 @@ namespace Pablo.Interface
 				if (Server != null)
 					Server.SetCommands(ServerCommands);
 
-				handler.PreLoad(stream, format);
 				if (postLoad)
 				{
 					handler.Loaded();
@@ -706,7 +701,7 @@ namespace Pablo.Interface
 		{
 			if (Client != null)
 			{
-				var doc = format.Info.Create(Generator);
+				var doc = format.Info.Create(Platform);
 				if (editMode && doc.Info.CanEdit)
 				{
 					doc.EditMode = editMode;
@@ -733,7 +728,7 @@ namespace Pablo.Interface
 		{
 			try
 			{
-				var doc = format.Info.Create(Generator);
+				var doc = format.Info.Create(Platform);
 				if (doc.Info.CanEdit)
 					doc.EditMode = editMode;
 				doc.HasSavePermission = hasSavePermission;
@@ -762,7 +757,7 @@ namespace Pablo.Interface
 			catch (Exception e)
 			{
 				SetDocument(null);
-				MessageBox.Show(Generator, this, string.Format("Unable to load the selected file ({0})", e));
+				MessageBox.Show(this, string.Format("Unable to load the selected file ({0})", e));
 #if DEBUG
 				Debug.Print("Error loading: {0}", e);
 				throw;
@@ -781,7 +776,7 @@ namespace Pablo.Interface
 			{
 				loadingStream.Dispose();
 				loadingStream = null;
-				Application.Instance.Invoke(delegate
+				PabloApplication.Instance.Invoke(delegate
 				{
 					GenerateActions();
 				});
@@ -844,7 +839,7 @@ namespace Pablo.Interface
 					catch (Exception ex)
 					{
 						SetDocument(null);
-						MessageBox.Show(Generator, this, string.Format("Error loading file '{0}'.  {1}", file.FullName, ex.Message));
+						MessageBox.Show(this, string.Format("Error loading file '{0}'.  {1}", file.FullName, ex.Message));
 #if DEBUG
 						Debug.Print("Error loading: {0}", ex);
 						throw;

@@ -28,7 +28,7 @@ namespace Pablo.Formats.Image
 			get { return Formats["png"]; }
 		}
 
-		public override Document Create(Generator generator)
+		public override Document Create(Platform generator)
 		{
 			Document doc = new ImageDocument(this);
 			doc.Generator = generator;

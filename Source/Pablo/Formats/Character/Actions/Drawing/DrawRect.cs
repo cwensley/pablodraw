@@ -8,7 +8,7 @@ using Eto.Forms;
 
 namespace Pablo.Formats.Character.Actions.Drawing
 {
-	public class DrawRect : Command
+	public class DrawRect : PabloCommand
 	{
 		public Rectangle Rectangle { get; set; }
 		

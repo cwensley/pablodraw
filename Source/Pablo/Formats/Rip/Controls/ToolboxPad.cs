@@ -21,12 +21,12 @@ namespace Pablo.Formats.Rip.Controls
 			
 			this.Handler.ToolChanged += new EventHandler<EventArgs> (HandleToolChanged).MakeWeak (e => this.Handler.ToolChanged -= HandleToolChanged);
 
-			var layout = new DynamicLayout(Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			layout.DefaultPadding = Padding.Empty;
 			layout.DefaultSpacing = new Size(5, 5);
 			
 			
-			layout.BeginVertical (Size.Empty);
+			layout.BeginVertical (spacing: Size.Empty);
 			layout.BeginHorizontal ();
 			layout.Add (null, true);
 			var tools = Handler.Tools.ToList ();
@@ -65,7 +65,7 @@ namespace Pablo.Formats.Rip.Controls
 			
 		}
 		
-		public override void OnLoadComplete (EventArgs e)
+		protected override void OnLoadComplete (EventArgs e)
 		{
 			base.OnLoadComplete (e);
 			if (Handler.SelectedTool != null) {

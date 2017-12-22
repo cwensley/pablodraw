@@ -38,7 +38,7 @@ namespace Pablo.Formats.Character.Controls
 			CreateControls ();
 		}
 		
-		public override void OnSizeChanged (EventArgs e)
+		protected override void OnSizeChanged (EventArgs e)
 		{
 			base.OnSizeChanged (e);
 			Invalidate ();
@@ -64,7 +64,7 @@ namespace Pablo.Formats.Character.Controls
 			//int height = charHeight * characterSet.Count + 18 + 17;
 			//this.MinimumSize = new Size (width, height);
 			
-			var layout = new DynamicLayout(new Padding(10, 0));
+			var layout = new DynamicLayout { Padding = new Padding(10, 0) };
 			
 			layout.BeginHorizontal ();
 			//var layout = this.Layout as PixelLayout ?? new PixelLayout (this);
@@ -118,7 +118,8 @@ namespace Pablo.Formats.Character.Controls
 
 			button.Click += delegate {
 				var dlg = new CharacterSetEditor (this.Handler);
-				dlg.ShowDialog (this);
+				dlg.Owner = ParentWindow;
+				dlg.ShowModal();
 			};
 			
 			return button;

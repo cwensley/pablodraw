@@ -4,25 +4,24 @@ using System;
 namespace Pablo.Formats.Character.Actions
 {
 
-	public class SwitchColour : ButtonAction
+	public class SwitchColour : Command
 	{
 		int foregroundIncrement;
 		int backgroundIncrement;
 		CharacterHandler handler;
 		
-		public SwitchColour(CharacterHandler handler, int foregroundIncrement, int backgroundIncrement, Key accelerator)
+		public SwitchColour(CharacterHandler handler, int foregroundIncrement, int backgroundIncrement, Keys accelerator)
 		{
 			this.handler = handler;
 			this.foregroundIncrement = foregroundIncrement;
 			this.backgroundIncrement = backgroundIncrement;
 			ID = string.Format("character_switchColour:{0}:{1}", foregroundIncrement, backgroundIncrement);
-			Text = "Change Colour";
-			Description = "Change Colour";
-			Accelerator = accelerator;
+			MenuText = ToolBarText = ToolTip = "Change Colour";
+			Shortcut = accelerator;
 		}
 
 
-		protected override void OnActivated (EventArgs e)
+		protected override void OnExecuted(EventArgs e)
 		{
 			Attribute attr = handler.DrawAttribute;
 			

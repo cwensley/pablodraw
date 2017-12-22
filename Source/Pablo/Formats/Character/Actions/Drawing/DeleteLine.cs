@@ -7,15 +7,15 @@ using Pablo.Network;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class DeleteLine : Command
+	public class DeleteLine : PabloCommand
 	{
 		public DeleteLine (CharacterHandler handler)
 			: base(handler)
 		{
 			ID = "character_deleteLine";
-			Text = "Delete Line";
-			Description = "Removes the line at the cursor position";
-			Accelerators = new Key[] { Key.Up | Key.Alt, Key.Alt | Key.Y };
+			MenuText = "Delete Line";
+			ToolTip = "Removes the line at the cursor position";
+			Shortcut = Keys.Up | Keys.Alt; // TODO: Shortcut new [] { Keys.Up | Keys.Alt, Keys.Alt | Keys.Y };
 		}
 		
 		public new CharacterHandler Handler {

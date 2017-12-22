@@ -29,7 +29,7 @@ namespace Pablo.Formats.Character.Controls
 		{
 			public abstract Color Color { get; set; }
 
-			public override void OnPaint (PaintEventArgs pe)
+			protected override void OnPaint (PaintEventArgs pe)
 			{
 				base.OnPaint (pe);
 				var rect = new Rectangle (Point.Empty, this.Size);
@@ -48,14 +48,13 @@ namespace Pablo.Formats.Character.Controls
 				set;
 			}
 
-			public override void OnMouseDown (MouseEventArgs e)
+			protected override void OnMouseDown (MouseEventArgs e)
 			{
 				base.OnMouseDown (e);
 				
 				if (e.Buttons == MouseButtons.Primary) {
 					var dialog = new AttributeDialog (Pad.Handler, Pad.Palette, Pad.Attribute, Pad.Handler.CharacterDocument.ICEColours);
-					DialogResult dr = dialog.ShowDialog (this);
-					if (dr == DialogResult.Ok)
+					if (dialog.ShowModal(this))
 						Pad.Attribute = dialog.Attribute;
 					e.Handled = true;
 				}
@@ -91,7 +90,7 @@ namespace Pablo.Formats.Character.Controls
 				font = Fonts.Sans(8);
 			}
 			
-			public override void OnPaint (PaintEventArgs pe)
+			protected override void OnPaint (PaintEventArgs pe)
 			{
 				if (Enabled) {
 					base.OnPaint (pe);
@@ -113,7 +112,7 @@ namespace Pablo.Formats.Character.Controls
 				}
 			}
 			
-			public override void OnMouseDown (MouseEventArgs e)
+			protected override void OnMouseDown (MouseEventArgs e)
 			{
 				if (!Enabled) return;
 				base.OnMouseDown (e);
@@ -132,7 +131,7 @@ namespace Pablo.Formats.Character.Controls
 				Pad.HandleColourChanged (this, EventArgs.Empty);
 			}
 			
-			public override void OnMouseDoubleClick (MouseEventArgs e)
+			protected override void OnMouseDoubleClick (MouseEventArgs e)
 			{
 				base.OnMouseDoubleClick (e);
 				e.Handled = true;
@@ -280,7 +279,7 @@ namespace Pablo.Formats.Character.Controls
 
 			button.Click += delegate {
 				var dlg = new ColourEditor (this.Handler);
-				dlg.ShowDialog (this);
+				dlg.ShowModal(this);
 			};
 			return button;
 		}

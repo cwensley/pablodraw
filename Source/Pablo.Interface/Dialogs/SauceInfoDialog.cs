@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Pablo.Interface.Dialogs
 {
-	public class SauceInfoDialog : Dialog
+	public class SauceInfoDialog : Dialog<DialogResult>
 	{
 		Panel fileTypeHolder;
 		SauceInfo sauce;
@@ -30,7 +30,7 @@ namespace Pablo.Interface.Dialogs
 			this.file = file;
 			this.document = document;
 			//DisplayMode = DialogDisplayMode.Attached;
-			MinimumSize = new Size(500, 200);
+			MinimumSize = new Size(400, 500);
 			if (file == null && document == null)
 				throw new ArgumentException("Must specify either file or document argument");
 			Resizable = true;
@@ -149,7 +149,7 @@ namespace Pablo.Interface.Dialogs
 
 		Control TypeComboBox()
 		{
-			var combo = new EnumComboBox<SauceDataType>();
+			var combo = new EnumDropDown<SauceDataType>();
 			
 			combo.SelectedValue = sauce.DataType;
 			
@@ -328,7 +328,7 @@ namespace Pablo.Interface.Dialogs
 			control.Click += delegate
 			{
 				RemoveSauce();
-				DialogResult = DialogResult.Ok;
+				Result = DialogResult.Ok;
 				Close();
 			};
 			return control;
@@ -359,7 +359,7 @@ namespace Pablo.Interface.Dialogs
 			control.Click += delegate
 			{
 				Save();
-				DialogResult = DialogResult.Ok;
+				Result = DialogResult.Ok;
 				Close();
 			};
 			DefaultButton = control;

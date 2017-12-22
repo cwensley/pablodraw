@@ -3,7 +3,7 @@ using System;
 
 namespace Pablo.Formats.Character.Actions
 {
-	public class DefaultColour : ButtonAction
+	public class DefaultColour : Command
 	{
 		CharacterHandler handler;
 		public const string ActionID = "character_defaultColour";
@@ -12,11 +12,12 @@ namespace Pablo.Formats.Character.Actions
 		{
 			this.handler = handler;
 			ID = ActionID;
-			Text = "Default Colour|Default Colour|Set the foreground and background to the default colours";
-			Accelerator = Command.CommonModifier | Key.D;
+			MenuText = ToolBarText = "Default Colour";
+			ToolTip = "Set the foreground and background to the default colours";
+			Shortcut = PabloCommand.CommonModifier | Keys.D;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
 			handler.DrawAttribute = new Attribute(7, 0);
 		}

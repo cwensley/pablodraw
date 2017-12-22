@@ -4,10 +4,10 @@ using System.Linq;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using Eto.Forms;
-using Eto.Platform.iOS.Forms;
+using Eto.iOS.Forms;
 using System.IO;
 using Eto;
-using Eto.Platform.iOS.Forms.Controls;
+using Eto.iOS.Forms.Controls;
 
 namespace PabloDraw.iOS
 {
@@ -16,14 +16,17 @@ namespace PabloDraw.iOS
 		static void Main (string[] args)
 		{
 			CopyDb();
-			Style.Add<ScrollableHandler> ("viewerPane", handler => handler.Control.IndicatorStyle = UIScrollViewIndicatorStyle.White);
+			Style.Add<ScrollableHandler> ("viewerPane", handler => {
+				handler.Control.IndicatorStyle = UIScrollViewIndicatorStyle.White;
+				handler.ShouldCenterContent = true;
+			});
 			Style.Add<ApplicationHandler> ("pablo", handler => {
 				//handler.DelegateClassName = "AppDelegate";
 			});
 
 			//UIApplication.CheckForIllegalCrossThreadCalls = false;
 
-			var app = new Pablo.Mobile.PabloApplication ();
+			var app = new Pablo.Mobile.PabloApplication (new Eto.iOS.Platform());
 
 			app.Initialized += HandleAppInitialized;
 			app.Run();
@@ -31,7 +34,7 @@ namespace PabloDraw.iOS
 
 		static void HandleAppInitialized (object sender, EventArgs e)
 		{
-			UINavigationBar.Appearance.TintColor = UIColor.Black;
+			//UINavigationBar.Appearance.TintColor = UIColor.Black;
 		}
 		
 		static void CopyDb ()

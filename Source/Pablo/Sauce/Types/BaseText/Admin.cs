@@ -8,8 +8,8 @@ namespace Pablo.Sauce.Types.BaseText
 	public class Admin<T> : BaseFileType.Admin<T>
 		where T: DataTypeInfo
 	{
-		public Admin(T dataType, bool includeFileType)
-			: base(dataType, includeFileType)
+		public Admin(T dataType)
+			: base(dataType)
 		{
 		}
 
@@ -38,16 +38,18 @@ namespace Pablo.Sauce.Types.BaseText
 				var doc = del.DocumentInfos[Formats.Character.CharacterDocumentInfo.DocumentID] as Formats.Character.CharacterDocumentInfo;
 				if (doc != null)
 				{
-					var menu = doc.GetFontMenu(null, 
-						           selectFont: font => control.Text = font.SauceID, 
-						           fontSelected: f => string.Equals(f.SauceID, control.Text, StringComparison.InvariantCultureIgnoreCase)
-					           );
+					#if DESKTOP
 					var subMenu = new ContextMenu();
-					menu.Actions.Generate(subMenu);
+					doc.GetFontMenu(null, 
+						selectFont: font => control.Text = font.SauceID, 
+						fontSelected: f => string.Equals(f.SauceID, control.Text, StringComparison.InvariantCultureIgnoreCase),
+						subMenu: subMenu
+					);
 					subMenu.Show(selection);
+					#endif
 				}
 			};
-			var layout = new DynamicLayout(Padding.Empty) { DefaultPadding = Padding.Empty };
+			var layout = new DynamicLayout { Padding = Padding.Empty, DefaultPadding = Padding.Empty };
 			layout.BeginHorizontal();
 			layout.AddCentered(control, xscale: true, horizontalCenter: false);
 			layout.Add(selection);

@@ -7,7 +7,7 @@ using Pablo.Formats.Character.Tools;
 
 namespace Pablo.Formats.Character.Actions.Block
 {
-	public class CutToClipboard : Command
+	public class CutToClipboard : PabloCommand
 	{
 		public const string ActionID = "character_cutToClipboard";
 		
@@ -19,11 +19,18 @@ namespace Pablo.Formats.Character.Actions.Block
 		{
 			this.tool = tool;
 			this.ID = ActionID;
-			this.Text = "&Cut|Cut|Cut the selected region to the clipboard";
-			this.Accelerator = CommonModifier | Key.X;
+			this.MenuText = "&Cut";
+			this.ToolTip = "Cut the selected region to the clipboard";
+			this.Shortcut = CommonModifier | Keys.X;
 			this.Enabled = Handler.Client == null;
 		}
-		
+
+		public override bool Enabled
+		{
+			get { return base.Enabled && tool.DrawMode == DrawMode.Selecting; }
+			set { base.Enabled = value; }
+		}
+
 		public override int CommandID { get { return (int)NetCommands.CutToClipboard; } }
 		
 		public override UserLevel Level { get { return UserLevel.Editor; } }
@@ -31,6 +38,8 @@ namespace Pablo.Formats.Character.Actions.Block
 		protected override void Execute (CommandExecuteArgs args)
 		{
 			var handler = tool.Handler;
+			if (tool.SelectedRegion == null)
+				return;
 			var rect = tool.SelectedRegion.Value;
 			// copy the selected region
 			

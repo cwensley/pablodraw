@@ -17,14 +17,14 @@ namespace Pablo.Formats.Rip.Tools
 			get { return "Pastes the contents of the clipboard (S)"; }
 		}
 		
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.S;
+				return Keys.S;
 			}
 		}
 		
 		public override Eto.Drawing.Image Image {
-			get { return Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Paste.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Paste.png"); }
 		}
 		
 		public override void OnMouseMove (MouseEventArgs e)

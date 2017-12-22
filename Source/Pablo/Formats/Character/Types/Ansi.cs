@@ -7,8 +7,6 @@ namespace Pablo.Formats.Character.Types
 {
 	public partial class Ansi : CharacterFormat
 	{
-		bool animateView;
-
 		protected override void FillSauce(Sauce.SauceInfo sauce, CharacterDocument document)
 		{
 			base.FillSauce(sauce, document);
@@ -17,14 +15,13 @@ namespace Pablo.Formats.Character.Types
 			FillFlags(sauce, document);
 		}
 
-		public Ansi (DocumentInfo info) : base(info, "ansi", "Ansi", "ans", "diz", "mem", "cia", "drk", "ice")
+		public Ansi (DocumentInfo info) : base(info, "ansi", "Ansi", "ans", "diz", "mem", "cia", "drk", "ice", "tri", "tas", "tag", "lit", "vor", "uni", "vnt", "bad", "crp", "cma", "rel", "sca", "sui", "wbl", "srg", "lgo", "vib", "sap", "pur", "nat", "jus", "itr", "imp", "ali", "grp", "fwk", "mft", "min", "nwa", "nit", "axe", "ace", "ete", "evl", "sik", "tly", "tsd", "wkd", "---", "___", "···")
 		{
-			LineWrap = true;
 		}
 
 		public override bool RequiresSauce(CharacterDocument document)
 		{
-			return document.Pages[0].Canvas.Size.Width != DefaultWidth || document.ICEColours || !document.IsUsingStandard8x16Font;
+			return base.RequiresSauce(document) || document.Pages[0].Canvas.Size.Width != DefaultWidth || document.ICEColours || !document.IsUsingStandard8x16Font;
 		}
 
 		public override bool CanSave {
@@ -34,7 +31,6 @@ namespace Pablo.Formats.Character.Types
 		protected Ansi (DocumentInfo info, string id, string name, params string[] extensions)
 		: base(info, id, name, extensions)
 		{
-			LineWrap = true;
 		}
 
 		public override bool DetectAnimation (Stream stream)
@@ -185,16 +181,20 @@ namespace Pablo.Formats.Character.Types
 				if (force || lastRgbAttr.Background != attr.Background) {
 					var col = palette [attr.Background];
 					var standardCol = standardPalette [standardAttr.Background];
-					if (col != standardCol)
-						sb.AppendFormat ("\x1b[0;{0};{1};{2}t", (byte)(col.R * 255), (byte)(col.G * 255), (byte)(col.B * 255));
-					lastRgbAttr.Background = attr.Background;
+					if (col != standardCol || lastRgbAttr.Background != -1)
+					{
+						sb.AppendFormat("\x1b[0;{0};{1};{2}t", (byte)(col.R * 255), (byte)(col.G * 255), (byte)(col.B * 255));
+						lastRgbAttr.Background = attr.Background;
+					}
 				}
 				if (force || lastRgbAttr.Foreground != attr.Foreground) {
 					var col = palette [attr.Foreground];
 					var standardCol = standardPalette [standardAttr.Foreground];
-					if (col != standardCol)
-						sb.AppendFormat ("\x1b[1;{0};{1};{2}t", (byte)(col.R * 255), (byte)(col.G * 255), (byte)(col.B * 255));
-					lastRgbAttr.Foreground = attr.Foreground;
+					if (col != standardCol || lastRgbAttr.Foreground != -1)
+					{
+						sb.AppendFormat("\x1b[1;{0};{1};{2}t", (byte)(col.R * 255), (byte)(col.G * 255), (byte)(col.B * 255));
+						lastRgbAttr.Foreground = attr.Foreground;
+					}
 				}
 			}
 			

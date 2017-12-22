@@ -13,14 +13,14 @@ namespace Pablo.Formats.Rip.Tools
 			get { return "Draws a line between two points (L)"; }
 		}
 		
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.L;
+				return Keys.L;
 			}
 		}
 
 		public override Eto.Drawing.Image Image {
-			get { return Bitmap.FromResource ("Pablo.Formats.Rip.Icons.Line.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Line.png"); }
 		}
 		
 		public override IEnumerable<RipOptionalCommand> Styles {
@@ -32,12 +32,12 @@ namespace Pablo.Formats.Rip.Tools
 			}
 		}
 		
-		protected override void SetStartLocation (Point start, Key modifiers, Point location)
+		protected override void SetStartLocation (Point start, Keys modifiers, Point location)
 		{
 			this.Command.Start = Point.Max (Point.Empty, start);
 		}
 		
-		protected override void SetEndLocation (Point end, Key modifiers, Point location)
+		protected override void SetEndLocation (Point end, Keys modifiers, Point location)
 		{
 			
 			this.Command.End = Point.Max (Point.Empty, end);
@@ -45,7 +45,7 @@ namespace Pablo.Formats.Rip.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout (Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 
 			layout.Add(Separator());
 			layout.Add (new Controls.LineStylePad (Handler, true));

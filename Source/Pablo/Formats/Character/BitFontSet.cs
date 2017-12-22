@@ -12,6 +12,7 @@ namespace Pablo.Formats.Character
 	{
 		readonly List<BitFont> fonts = new List<BitFont>();
 		Encoding encoding;
+
 		public int[] FallbackCodePages { get; set; }
 
 		public int CodePage { get; set; }
@@ -50,48 +51,49 @@ namespace Pablo.Formats.Character
 			}
 		}
 
+		static string GetSauceID(int height, int codePage)
+		{
+			string sauceID;
+			switch (height)
+			{
+				case 8:
+					sauceID = "IBM VGA50";
+					break;
+				case 14:
+					sauceID = "IBM EGA";
+					break;
+				case 16:
+					sauceID = "IBM VGA";
+					break;
+				case 19:
+					sauceID = "IBM VGA25G";
+					break;
+				default:
+					throw new NotSupportedException("Font height is not supported using this method");
+			}
+			if (codePage != 437)
+				sauceID += " " + codePage;
+			return sauceID;
+		}
+
 		public static BitFontSet FromResource(string resource, string name, int[] forceCodePage = null, bool isSystemFont = true, Assembly asm = null)
 		{
 			asm = asm ?? Assembly.GetExecutingAssembly();
 			return FromStream(asm.GetManifestResourceStream(resource), name, forceCodePage, isSystemFont);
 		}
+
 		public static BitFontSet FromFontResources(string resource, string name, int codePage, int[] heights, bool isSystemFont = true, int[] fallbackCodePages = null, int numChars = 256, Assembly asm = null)
 		{
 			asm = asm ?? Assembly.GetExecutingAssembly();
 			var fontSet = new BitFontSet { Name = name };
 			foreach (var height in heights)
 			{
-				var id = string.Format("CP {0} {1}x{2}", codePage, 8, height);
-				string sauceID;
-				float ratio;
 				const int width = 8;
-				switch (height)
-				{
-					case 8:
-						sauceID = "IBM VGA50";
-						ratio = 480f / 400f;
-						break;
-					case 14:
-						sauceID = "IBM EGA";
-						ratio = 480f / 350f;
-						break;
-					case 16:
-						sauceID = "IBM VGA";
-						ratio = 480f / 400f;
-						break;
-					case 19:
-						sauceID = "IBM VGA25G";
-						ratio = 1f;
-						break;
-					default:
-						throw new NotSupportedException("Font height is not supported using this method");
-				}
-				if (codePage != 437)
-					sauceID += " " + codePage;
 				var resourceName = string.Format("{0}.F{1:00}", resource, height);
+				var id = string.Format("CP {0} {1}x{2}", codePage, width, height);
 				var bitFont = BitFont.FromResource(resourceName, numChars, codePage, width, height, id, id, fontSet, isSystemFont);
-				bitFont.SauceID = sauceID;
-				bitFont.LegacyRatio = ratio;
+				bitFont.FallbackCodePages = fallbackCodePages;
+				bitFont.SauceID = GetSauceID(height, codePage);
 				fontSet.Fonts.Add(bitFont);
 			}
 

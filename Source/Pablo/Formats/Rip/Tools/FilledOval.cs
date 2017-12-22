@@ -13,14 +13,14 @@ namespace Pablo.Formats.Rip.Tools
 			get { return "Draws a filled ellipse or circle (E)"; }
 		}
 		
-		public override Key Accelerator {
+		public override Keys Accelerator {
 			get {
-				return Key.E;
+				return Keys.E;
 			}
 		}
 		
 		public override Eto.Drawing.Image Image {
-			get { return Bitmap.FromResource ("Pablo.Formats.Rip.Icons.FilledOval.png"); }
+			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.FilledOval.png"); }
 		}
 		
 		public override IEnumerable<RipOptionalCommand> Styles {
@@ -48,7 +48,7 @@ namespace Pablo.Formats.Rip.Tools
 		
 		public override Control GeneratePad ()
 		{
-			var layout = new DynamicLayout(Padding.Empty);
+			var layout = new DynamicLayout { Padding = Padding.Empty };
 			layout.Add(Separator());
 			layout.Add (new Controls.LineStylePad(Handler, false));
 			layout.Add(Separator());

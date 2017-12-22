@@ -10,10 +10,6 @@
     <RootNamespace>PabloDraw.Console</RootNamespace>
     <AssemblyName>PabloDraw.Console</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <ReleaseVersion>
-    </ReleaseVersion>
-    <ProductVersion>12.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <StartupObject>PabloDraw.Console.Startup</StartupObject>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -30,7 +26,10 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <UseMSBuildEngine>False</UseMSBuildEngine>
+    <ReleaseVersion>
+    </ReleaseVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,9 +42,15 @@
     <Externalconsole>true</Externalconsole>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="./copyassemblies.sh ${ProjectConfigName} ${ProjectDir}/Assemblies" workingdir="${ProjectDir}" />
+        <Command>
+          <type>BeforeBuild</type>
+          <command>./copyassemblies.sh ${ProjectConfigName} ${ProjectDir}/Assemblies</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
       </CustomCommands>
     </CustomCommands>
+    <Commandlineparameters>--convert /Users/curtis/Downloads/mirage/VD-FLIP.ans --out /Users/curtis/Downloads/mirage/VD-FLIP.txt</Commandlineparameters>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -57,10 +62,19 @@
     <Commandlineparameters>--platform mac --server --adminpw hello</Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="./copyassemblies.sh ${ProjectConfigName} ${ProjectDir}/Assemblies" workingdir="${ProjectDir}" />
+        <Command>
+          <type>BeforeBuild</type>
+          <command>./copyassemblies.sh ${ProjectConfigName} ${ProjectDir}/Assemblies</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+        <Command>
+          <type>AfterBuild</type>
+          <command>cp ${TargetFile} /Users/curtis/Projects/Pablo/Pablo.Gallery/src/Pablo.Gallery/Util/PabloDraw.Console.exe</command>
+        </Command>
       </CustomCommands>
     </CustomCommands>
     <DebugType>none</DebugType>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -88,6 +102,9 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="PabloEngine.cs" />
+    <Compile Include="EngineInternal.cs" />
+    <Compile Include="PabloException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -95,23 +112,12 @@
     <None Include="copyassemblies.sh" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Platform.Gtk\Eto.Platform.Gtk.csproj">
-      <Project>{1FF7BE58-A6A2-4132-8CAF-AA2EF18122A1}</Project>
-      <Name>Eto.Platform.Gtk</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Platform.Windows\Eto.Platform.Windows.csproj">
-      <Project>{69D38C57-AD4B-4A16-A7B1-49BCFBE71491}</Project>
-      <Name>Eto.Platform.Windows</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto.csproj">
-      <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
-      <Name>Eto</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto - pcl.csproj">
+      <Project>{35EF0A4E-2A1A-492C-8BED-106774EA09F2}</Project>
+      <Name>Eto - pcl</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\lidgren\Lidgren.Network\Lidgren.Network.csproj">
-      <Project>{AE483C29-042E-4226-BA52-D247CE7676DA}</Project>
+      <Project>{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}</Project>
       <Name>Lidgren.Network</Name>
       <Private>False</Private>
     </ProjectReference>
@@ -123,11 +129,6 @@
     <ProjectReference Include="..\Pablo\Pablo.csproj">
       <Project>{35DBE6BB-B46D-4AE9-8156-FBFC6EC2BB69}</Project>
       <Name>Pablo</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Platform.Mac\Eto.Platform.Mac.csproj">
-      <Project>{9DD10DFF-5AB3-4E66-B798-CA17911A61E4}</Project>
-      <Name>Eto.Platform.Mac</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
@@ -162,14 +163,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assemblies\Eto.Platform.Mac.dll" />
     <EmbeddedResource Include="Assemblies\Eto.dll" />
-    <EmbeddedResource Include="Assemblies\Eto.Platform.Gtk.dll" />
-    <EmbeddedResource Include="Assemblies\Eto.Platform.Windows.dll" />
     <EmbeddedResource Include="Assemblies\Pablo.dll" />
     <EmbeddedResource Include="Assemblies\Lidgren.Network.dll" />
     <EmbeddedResource Include="Assemblies\Mono.Nat.dll" />
-    <EmbeddedResource Include="Assemblies\Eto.Platform.Wpf.dll" />
     <EmbeddedResource Include="..\..\Libraries\Eto\Libraries\MonoMac\MonoMac.dll">
       <Link>Assemblies\MonoMac.dll</Link>
     </EmbeddedResource>
@@ -179,6 +176,9 @@
     <EmbeddedResource Include="..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll">
       <Link>Assemblies\Newtonsoft.Json.dll</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="Assemblies\Eto.Gtk2.dll" />
+    <EmbeddedResource Include="Assemblies\Eto.Mac.dll" />
+    <EmbeddedResource Include="Assemblies\Eto.WinForms.dll" />
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">cd $(ProjectDir)

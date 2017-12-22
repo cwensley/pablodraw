@@ -26,7 +26,7 @@ namespace Pablo.Formats.Character.Controls
 				VerticalAlign = VerticalAlign.Middle
 			};
 
-			var layout = new DynamicLayout(new Padding(0, 5, 5, 5));
+			var layout = new DynamicLayout { Padding = new Padding(0, 5, 5, 5) };
 			layout.AddRow(label);
 			this.Content = layout;
 			

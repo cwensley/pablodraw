@@ -4,7 +4,7 @@ using Eto;
 
 namespace Pablo.Interface.Actions
 {
-	public class FocusChatView : ButtonAction
+	public class FocusChatView : Command
 	{
 		Main main;
 		public const string ActionID = "focusChatView";
@@ -13,16 +13,16 @@ namespace Pablo.Interface.Actions
 		{
 			this.main = main;
 			base.ID = ActionID;
-			if (main.Generator.IsMac)
-				this.Accelerator = Key.Control | Key.C;
+			if (main.Platform.IsMac)
+				this.Shortcut = Keys.Control | Keys.C;
 			else
-				this.Accelerator = Key.Alt | Key.C;
+				this.Shortcut = Keys.Alt | Keys.C;
 		}
-		
-		protected override void OnActivated (EventArgs e)
+
+		protected override void OnExecuted(EventArgs e)
 		{
-			base.OnActivated (e);
-			
+			base.OnExecuted(e);
+
 			if (main.ChatPanel != null)
 			{
 				if (!main.ChatPanel.SetChatFocus ())
