@@ -1,0 +1,71 @@
+#!/bin/bash
+
+DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+APP_NAME=PabloDraw
+CONFIG=Release-MAS
+INPUT_DIR=$DIR/PabloDraw.Mac/bin/$CONFIG
+INPUT_APP_DIR=$INPUT_DIR/$APP_NAME.app
+OUT_DIR=$DIR/deploy
+APP_DIR=$OUT_DIR/$APP_NAME.app
+APP_EXE=$APP_NAME.exe
+APP_PKG=$OUT_DIR/$APP_NAME.pkg
+SRC_DIR=$DIR
+LIB_DIR=$DIR/../Libraries
+FW_DIR=/Library/Frameworks/Mono.framework/Versions/Current
+FWLIB_DIR=$FW_DIR/lib/mono/4.0
+MD_DIR=/Applications/Programs/MonoDevelop.app/Contents/MacOS
+MM_DIR=$MD_DIR/lib/monodevelop/AddIns/MonoDevelop.MonoMac
+APP_CERT="3rd Party Mac Developer Application: Curtis Wensley"
+INSTALLER_CERT="3rd Party Mac Developer Installer: Curtis Wensley"
+ENTITLEMENTS_FILE=$DIR/PabloDraw.Mac/PabloDraw.entitlements
+
+PATH=$MM_DIR:$PATH
+
+mkdir -p "$OUT_DIR"
+rm -rf "$APP_DIR"
+rm -rf "$APP_PKG"
+mkdir -p "$APP_DIR"
+mkdir -p "$APP_DIR/Contents"
+mkdir -p "$APP_DIR/Contents/Resources"
+cp $INPUT_APP_DIR/Contents/Info.plist $APP_DIR/Contents/Info.plist
+cp $INPUT_APP_DIR/Contents/PkgInfo $APP_DIR/Contents/PkgInfo
+cp $INPUT_APP_DIR/Contents/Resources/MainMenu.nib $APP_DIR/Contents/Resources/MainMenu.nib
+cp $INPUT_APP_DIR/Contents/Resources/PabloDraw-Document.icns $APP_DIR/Contents/Resources/PabloDraw-Document.icns
+cp $INPUT_APP_DIR/Contents/Resources/PabloDraw.icns $APP_DIR/Contents/Resources/PabloDraw.icns
+
+/usr/libexec/PlistBuddy $APP_DIR/Contents/Info.plist -c "Add MonoBundleExecutable string $APP_EXE"
+
+#--linksdkonly \
+mmp \
+--nolink \
+-o "$OUT_DIR" \
+-n "$APP_NAME" \
+-a "$INPUT_DIR/Pablo.Interface.dll" \
+-a "$INPUT_DIR/Pablo.dll" \
+-a "$INPUT_DIR/Eto.dll" \
+-a "$INPUT_DIR/Eto.Platform.Mac.dll" \
+-a "$INPUT_DIR/Lidgren.Network.dll" \
+-a "$INPUT_DIR/Mono.Nat.dll" \
+-a "$INPUT_DIR/MonoMac.dll" \
+-a "$INPUT_DIR/Newtonsoft.Json.dll" \
+-a "$INPUT_DIR/SharpCompress.dll" \
+-a "$FWLIB_DIR/i18N.dll" \
+-a "$FWLIB_DIR/i18N.Rare.dll" \
+-a "$FWLIB_DIR/i18N.West.dll" \
+-a "$FWLIB_DIR/System.dll" \
+-a "$FWLIB_DIR/System.Xml.dll" \
+-a "$FWLIB_DIR/System.Core.dll" \
+--i18n rare,west \
+"$INPUT_DIR/$APP_EXE"
+
+echo Signing app bundle
+codesign -v -f -s "$APP_CERT" "$APP_DIR/Contents/Resources/libMonoPosixHelper.dylib"
+codesign -v -f -s "$APP_CERT" --entitlements "$ENTITLEMENTS_FILE" "$APP_DIR"
+
+echo Creating installer
+productbuild \
+--component "$APP_DIR" \
+/Applications \
+--sign "$INSTALLER_CERT" \
+"$APP_PKG"

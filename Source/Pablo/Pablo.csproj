@@ -1,0 +1,740 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{35DBE6BB-B46D-4AE9-8156-FBFC6EC2BB69}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Pablo</AssemblyName>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>
+    </AppDesignerFolder>
+    <RootNamespace>Pablo</RootNamespace>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <ReleaseVersion>
+    </ReleaseVersion>
+    <UseMSBuildEngine>False</UseMSBuildEngine>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;DESKTOP</DefineConstants>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE;DESKTOP</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress">
+      <HintPath>..\packages\sharpcompress.0.10.1.3\lib\net40\SharpCompress.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Command.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CommandLine.cs" />
+    <Compile Include="Document.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DocumentInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Format.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FormatParameter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Handler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IViewer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PropertyCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ZoomInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\SaveAs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\SaveFile.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BGI\BGICanvas.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BGI\BGICharacter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BGI\BGIFont.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BGI\IBGIFont.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Animated\AnimatedDocument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Animated\AnimatedDocumentInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Animated\AnimatedFormat.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Animated\BaudRateMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Animated\BaudStream.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Attribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\BitFont.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Canvas.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\CanvasElement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Character.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\CharacterCommandExecuteArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\CharacterDocument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\CharacterDocumentInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\CharacterFormat.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\CharacterHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Page.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Move.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\MoveSelect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\NewLine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\SelectAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\SwitchCharacterSet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\SwitchColour.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\ToggleInsertMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\UseColour.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Block\BlockSelect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Block\Copy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Block\Delete.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Block\Deselect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Block\Move.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Block\Paste.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Block\Stamp.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Controls\AttributeDialog.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Controls\ColourSelection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Controls\FillDialog.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Controls\FontTextBox.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Types\Adf.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Types\Ansi.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Types\Ascii.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Types\Avatar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Types\Binary.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Types\CG.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Types\Idf.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Types\XBin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Image\FormatImage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Image\Handler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Image\ImageDocument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Image\ImageDocumentInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Rip\FormatRip.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Rip\RipDocument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Rip\RipDocumentInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Rip\RipHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Network\Client.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Network\Server.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sauce\SauceDataTypeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sauce\SauceInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sauce\SauceStream.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Include="BGI\Fonts\BOLD.CHR" />
+    <EmbeddedResource Include="BGI\Fonts\EURO.CHR" />
+    <EmbeddedResource Include="BGI\Fonts\GOTH.CHR" />
+    <EmbeddedResource Include="BGI\Fonts\LCOM.CHR" />
+    <EmbeddedResource Include="BGI\Fonts\LITT.CHR" />
+    <EmbeddedResource Include="BGI\Fonts\SANS.CHR" />
+    <EmbeddedResource Include="BGI\Fonts\SCRI.CHR" />
+    <EmbeddedResource Include="BGI\Fonts\SIMP.CHR" />
+    <EmbeddedResource Include="BGI\Fonts\TRIP.CHR" />
+    <EmbeddedResource Include="BGI\Fonts\TSCR.CHR" />
+    <EmbeddedResource Include="Formats\Character\Fonts\cg-lower.fnt" />
+    <EmbeddedResource Include="Formats\Character\Fonts\cg-upper.fnt" />
+    <EmbeddedResource Include="Icons\save.ico" />
+    <Compile Include="Formats\Character\Actions\Block\Rotate.cs" />
+    <Compile Include="Formats\Character\MemoryCanvas.cs" />
+    <Compile Include="Formats\Character\Actions\Block\FlipY.cs" />
+    <Compile Include="Formats\Character\Actions\Block\FlipX.cs" />
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="GeneratePadArgs.cs" />
+    <Compile Include="Formats\Character\Controls\ColourPad.cs" />
+    <Compile Include="Formats\Character\Actions\ChangeFont.cs" />
+    <Compile Include="Formats\Character\Controls\CharacterPad.cs" />
+    <Compile Include="Formats\Character\Controls\PositionPad.cs" />
+    <Compile Include="Sauce\Types\Binary\DataTypeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sauce\Types\Character\DataTypeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sauce\Types\XBin\DataTypeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sauce\Types\BaseFileType\DataTypeInfo.cs" />
+    <Compile Include="Sauce\Types\BaseFileType\Admin.cs" />
+    <Compile Include="Sauce\Types\Character\Admin.cs" />
+    <Compile Include="Sixteencolors\GenericDirectory.cs" />
+    <Compile Include="Formats\Character\Actions\SetWidth.cs" />
+    <Compile Include="Formats\Character\Controls\WidthDialog.cs" />
+    <EmbeddedResource Include="Icons\setwidth.ico" />
+    <Compile Include="Formats\Character\Actions\Block\Transparent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Block\Under.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Undo.cs" />
+    <Compile Include="Formats\Character\Actions\Redo.cs" />
+    <Compile Include="Formats\Character\Undo\UndoBuffer.cs" />
+    <Compile Include="Formats\Character\Undo\UndoManager.cs" />
+    <Compile Include="Formats\Character\Undo\UndoInsertColumn.cs" />
+    <Compile Include="Formats\Character\Undo\UndoDeleteColumn.cs" />
+    <Compile Include="Formats\Character\Undo\UndoInsertLine.cs" />
+    <Compile Include="Formats\Character\Undo\UndoDeleteLine.cs" />
+    <Compile Include="Formats\Character\Undo\UndoRect.cs" />
+    <Compile Include="Formats\Character\Undo\UndoInsertCharacter.cs" />
+    <Compile Include="Formats\Character\Undo\UndoDeleteCharacter.cs" />
+    <Compile Include="Formats\Character\Actions\Drawing\Backspace.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Drawing\Delete.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Drawing\DeleteColumn.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Drawing\DeleteLine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Drawing\InsertColumn.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\ToggleUse9x.cs" />
+    <Compile Include="Formats\Character\Actions\Block\SelectAll.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Block\CopyToClipboard.cs" />
+    <Compile Include="Formats\Character\Actions\Block\PasteFromClipboard.cs" />
+    <Compile Include="Formats\Character\Actions\Block\CutToClipboard.cs" />
+    <Compile Include="Formats\Character\Actions\CharacterSetEditor.cs" />
+    <Compile Include="Formats\Character\Actions\ChangeColour.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\ToggleIceMode.cs" />
+    <Compile Include="Formats\Character\Actions\SwitchForegroundBackground.cs" />
+    <Compile Include="Formats\Character\Actions\DefaultColour.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Types\Tundra.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BinaryReaderBigEndianExtensions.cs" />
+    <Compile Include="Formats\Character\Undo\UndoColour.cs" />
+    <Compile Include="Formats\Character\Undo\IUndoItem.cs" />
+    <Compile Include="ViewerPane.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\AllowGrow.cs" />
+    <Compile Include="Actions\Autoscroll.cs" />
+    <Compile Include="Actions\FitHeight.cs" />
+    <Compile Include="Actions\FitWidth.cs" />
+    <Compile Include="Formats\Character\Controls\ColourEditor.cs" />
+    <Compile Include="Formats\Character\Controls\CharacterSetEditor.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Formats\Character\Types\CtrlA.cs" />
+    <Compile Include="Sauce\Types\Vector\DataTypeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sauce\Types\Sound\DataTypeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sauce\Types\Archive\DataTypeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Network\ICommand.cs" />
+    <Compile Include="Sauce\Types\Binary\Admin.cs" />
+    <Compile Include="Network\Commands\ChatMessage.cs" />
+    <Compile Include="Network\Commands\UserStatusChanged.cs" />
+    <Compile Include="Network\Commands\UserList.cs" />
+    <Compile Include="Network\Network.cs" />
+    <Compile Include="Network\User.cs" />
+    <Compile Include="Network\Commands\LoadDocument.cs" />
+    <Compile Include="Network\IClientDelegate.cs" />
+    <Compile Include="Formats\Character\Types\Pablo.cs" />
+    <Compile Include="Network\NetCommands.cs" />
+    <Compile Include="Formats\Character\NetCommands.cs" />
+    <Compile Include="Formats\Character\LidgrenExtensions.cs" />
+    <Compile Include="Network\LidgrenExtensions.cs" />
+    <Compile Include="Network\Commands\LoadFile.cs" />
+    <Compile Include="Network\SendCommandArgs.cs" />
+    <Compile Include="Network\ReceiveCommandArgs.cs" />
+    <Compile Include="Formats\Character\Actions\Drawing\InsertLine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Include="Icons\editor.png" />
+    <EmbeddedResource Include="Icons\operator.png" />
+    <EmbeddedResource Include="Icons\viewer.png" />
+    <Compile Include="Formats\Character\Actions\Drawing\DrawCharacterSetChar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\Drawing\DrawCharacter.cs" />
+    <Compile Include="Formats\Character\Actions\StartDrawing.cs" />
+    <Compile Include="Formats\Character\Controls\FlagsPad.cs" />
+    <Compile Include="Formats\Character\Undo\UndoType.cs" />
+    <Compile Include="Formats\Character\Actions\SetPalette.cs" />
+    <Compile Include="Formats\Character\Actions\Block\Fill.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Actions\SetColour.cs" />
+    <Compile Include="Formats\Rip\RipCommand.cs" />
+    <Compile Include="Formats\Rip\Commands\Color.cs" />
+    <Compile Include="Formats\Rip\RipExtensions.cs" />
+    <Compile Include="Formats\Rip\Commands\TextWindow.cs" />
+    <Compile Include="Formats\Rip\Commands\ViewPort.cs" />
+    <Compile Include="Formats\Rip\Commands\ResetWindows.cs" />
+    <Compile Include="Formats\Rip\Commands\EraseWindow.cs" />
+    <Compile Include="Formats\Rip\Commands\EraseView.cs" />
+    <Compile Include="Formats\Rip\Commands\GotoXY.cs" />
+    <Compile Include="Formats\Rip\Commands\Home.cs" />
+    <Compile Include="Formats\Rip\Commands\EraseEOL.cs" />
+    <Compile Include="Formats\Rip\Commands\SetPalette.cs" />
+    <Compile Include="Formats\Rip\Commands\OnePalette.cs" />
+    <Compile Include="Formats\Rip\Commands\WriteMode.cs" />
+    <Compile Include="Formats\Rip\Commands\Move.cs" />
+    <Compile Include="Formats\Rip\Commands\FontStyle.cs" />
+    <Compile Include="Formats\Rip\Commands\Pixel.cs" />
+    <Compile Include="Formats\Rip\Commands\Line.cs" />
+    <Compile Include="Formats\Rip\Commands\Bar.cs" />
+    <Compile Include="Formats\Rip\Commands\Circle.cs" />
+    <Compile Include="Formats\Rip\Commands\Oval.cs" />
+    <Compile Include="Formats\Rip\Commands\FilledOval.cs" />
+    <Compile Include="Formats\Rip\Commands\Arc.cs" />
+    <Compile Include="Formats\Rip\Commands\OvalArc.cs" />
+    <Compile Include="Formats\Rip\Commands\PieSlice.cs" />
+    <Compile Include="Formats\Rip\Commands\OvalPieSlice.cs" />
+    <Compile Include="Formats\Rip\Commands\Bezier.cs" />
+    <Compile Include="Formats\Rip\Commands\Polygon.cs" />
+    <Compile Include="Formats\Rip\Commands\FilledPolygon.cs" />
+    <Compile Include="Formats\Rip\Commands\PolyLine.cs" />
+    <Compile Include="Formats\Rip\Commands\Fill.cs" />
+    <Compile Include="Formats\Rip\Commands\LineStyle.cs" />
+    <Compile Include="Formats\Rip\Commands\FillStyle.cs" />
+    <Compile Include="Formats\Rip\Commands\FillPattern.cs" />
+    <Compile Include="Formats\Rip\Commands\Mouse.cs" />
+    <Compile Include="Formats\Rip\Commands\KillMouseFields.cs" />
+    <Compile Include="Formats\Rip\Commands\BeginText.cs" />
+    <Compile Include="Formats\Rip\Commands\RegionText.cs" />
+    <Compile Include="Formats\Rip\Commands\EndText.cs" />
+    <Compile Include="Formats\Rip\Commands\GetImage.cs" />
+    <Compile Include="Formats\Rip\Commands\PutImage.cs" />
+    <Compile Include="Formats\Rip\Commands\WriteIcon.cs" />
+    <Compile Include="Formats\Rip\Commands\LoadIcon.cs" />
+    <Compile Include="Formats\Rip\Commands\ButtonStyle.cs" />
+    <Compile Include="Formats\Rip\Commands\Button.cs" />
+    <Compile Include="Formats\Rip\Commands\OutText.cs" />
+    <Compile Include="Formats\Rip\Commands\OutTextXY.cs" />
+    <Compile Include="Formats\Rip\Commands\DrawRectangle.cs" />
+    <Compile Include="Formats\Rip\Controls\ColourPad.cs" />
+    <Compile Include="Formats\Rip\Controls\ToolboxPad.cs" />
+    <Compile Include="Controls\CustomButton.cs" />
+    <Compile Include="Controls\ImageButton.cs" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Arc.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Line.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Oval.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Rectangle.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Fill.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\FilledOval.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\FilledRectangle.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Polygon.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\PolyLine.png" />
+    <Compile Include="Formats\Rip\RipCommandType.cs" />
+    <Compile Include="Formats\Rip\RipTool.cs" />
+    <Compile Include="Formats\Rip\Tools\Line.cs" />
+    <Compile Include="Formats\Rip\Tools\SimpleTool.cs" />
+    <Compile Include="Formats\Rip\Tools\Oval.cs" />
+    <Compile Include="Formats\Rip\Tools\FilledOval.cs" />
+    <Compile Include="Formats\Rip\Tools\DrawRectangle.cs" />
+    <Compile Include="Formats\Rip\Tools\Bar.cs" />
+    <Compile Include="Formats\Rip\Tools\Pixel.cs" />
+    <Compile Include="Formats\Rip\Tools\PixelBrush.cs" />
+    <Compile Include="Formats\Rip\Tools\PolyLine.cs" />
+    <Compile Include="Formats\Rip\Tools\MultiPointTool.cs" />
+    <Compile Include="Formats\Rip\Tools\Polygon.cs" />
+    <Compile Include="Formats\Rip\Tools\FilledPolygon.cs" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Bezier.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\FilledPieSlice.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\FilledPolygon.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\OvalArc.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\PieSlice.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Pixel.png" />
+    <Compile Include="Formats\Rip\Tools\Fill.cs" />
+    <Compile Include="Formats\Rip\Tools\CenterAspectTool.cs" />
+    <Compile Include="Formats\Rip\Actions\Animate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Include="Formats\Rip\Icons\Brush.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Brush-Multi.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Pixel-Multi.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\MultiPoint-Multi.png" />
+    <Compile Include="Formats\Rip\Tools\Bezier.cs" />
+    <Compile Include="Formats\Rip\Tools\InkDropper.cs" />
+    <EmbeddedResource Include="Formats\Rip\Icons\InkDropper.png" />
+    <Compile Include="Formats\Rip\Controls\LineStylePad.cs" />
+    <Compile Include="Formats\Rip\Controls\FillStylePad.cs" />
+    <Compile Include="Formats\Rip\RipHandler.styles.cs" />
+    <Compile Include="Formats\Rip\Tools\Copy.cs" />
+    <Compile Include="Formats\Rip\Tools\Paste.cs" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Copy.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Paste.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Copy-Clear.png" />
+    <Compile Include="Formats\Rip\LidgrenExtensions.cs" />
+    <Compile Include="BaseStream.cs" />
+    <Compile Include="Formats\Rip\RipWriter.cs" />
+    <Compile Include="Formats\Rip\Messages\SendCommands.cs" />
+    <Compile Include="Formats\Rip\NetCommands.cs" />
+    <Compile Include="Formats\Rip\Actions\Undo.cs" />
+    <Compile Include="Formats\Rip\Actions\Redo.cs" />
+    <Compile Include="LimitedStack.cs" />
+    <Compile Include="Formats\Rip\Tools\Arc.cs" />
+    <Compile Include="Formats\Rip\Tools\AngleTool.cs" />
+    <Compile Include="Formats\Rip\Tools\Pie.cs" />
+    <Compile Include="Formats\Rip\Controls\ColourEditor.cs" />
+    <Compile Include="Controls\ToggleGrid.cs" />
+    <Compile Include="Formats\Rip\Controls\LineStyleEditor.cs" />
+    <Compile Include="Formats\Rip\Controls\FillStyleEditor.cs" />
+    <Compile Include="Formats\Rip\Tools\Text.cs" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Text.png" />
+    <Compile Include="Formats\Rip\Tools\TwoPointTool.cs" />
+    <Compile Include="ImageViewer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Rip\Controls\FontStylePad.cs" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Text-Horizontal.png" />
+    <EmbeddedResource Include="Formats\Rip\Icons\Text-Vertical.png" />
+    <Compile Include="Formats\Rip\Controls\FontTypeSelector.cs" />
+    <Compile Include="Formats\Character\Types\Ansi.load.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="WebDav\WebDavClient.cs" />
+    <Compile Include="WebDav\WebDavDirectory.cs" />
+    <Compile Include="WebDav\WebDavFile.cs" />
+    <Compile Include="WebDav\WebDavBrowser.cs" />
+    <Compile Include="Formats\Character\CharacterTool.cs" />
+    <Compile Include="Formats\Character\Tools\Selection.cs" />
+    <Compile Include="Formats\Character\IGenerateRegion.cs" />
+    <Compile Include="Formats\Character\Controls\ToolboxPad.cs" />
+    <Compile Include="Formats\Character\Tools\Brush.cs" />
+    <Compile Include="Formats\Character\Tools\Pencil.cs" />
+    <Compile Include="Formats\Character\Actions\Drawing\Brush.cs" />
+    <Compile Include="Formats\Character\BrushInfo.cs" />
+    <Compile Include="Formats\Character\Tools\SizeTool.cs" />
+    <Compile Include="Formats\Character\Tools\ColourBrush.cs" />
+    <Compile Include="Formats\Character\Controls\BrushEditor.cs" />
+    <EmbeddedResource Include="Formats\Character\Fonts\Amiga\MicroKnight.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\Amiga\TopazPlus_a500.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\Amiga\TopazPlus_a1200.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\Amiga\Topaz_a500.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\Amiga\Topaz_a1200.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\Amiga\P0T-NOoDLE.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\Amiga\MicroKnightPlus.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\Amiga\mO%27sOul.F16" />
+    <Compile Include="Formats\Character\Controls\BrushPad.cs" />
+    <Compile Include="Formats\Character\Controls\SizePad.cs" />
+    <Compile Include="Formats\Character\Controls\CharacterSelection.cs" />
+    <Compile Include="Formats\Character\Tools\InkDropper.cs" />
+    <Compile Include="Formats\Character\Tools\SimpleTool.cs" />
+    <Compile Include="Formats\Character\Tools\TwoPointTool.cs" />
+    <Compile Include="Formats\Character\Tools\RectangleTool.cs" />
+    <Compile Include="Formats\Character\Tools\CenterAspectTool.cs" />
+    <Compile Include="Formats\Character\Controls\CharacterSelectPad.cs" />
+    <Compile Include="Drawing\ScanLines.cs" />
+    <Compile Include="Formats\Character\Tools\LineTool.cs" />
+    <Compile Include="Formats\Character\Actions\Drawing\DrawRect.cs" />
+    <Compile Include="Formats\Character\Actions\Drawing\DrawLine.cs" />
+    <Compile Include="Formats\Character\Actions\Drawing\DrawEllipse.cs" />
+    <Compile Include="Formats\Character\Tools\EllipseTool.cs" />
+    <EmbeddedResource Include="Formats\Character\Icons\ApplyColour.png" />
+    <EmbeddedResource Include="Formats\Character\Icons\Centered.png" />
+    <EmbeddedResource Include="Formats\Character\Icons\Square.png" />
+    <EmbeddedResource Include="Formats\Character\Icons\ColourBrush.png" />
+    <EmbeddedResource Include="Formats\Character\Icons\Erase.png" />
+    <EmbeddedResource Include="Formats\Character\Icons\DrawBackground.png" />
+    <EmbeddedResource Include="Formats\Character\Icons\DrawForeground.png" />
+    <Compile Include="Formats\Character\Actions\ToggleDosAspect.cs" />
+    <Compile Include="Network\UserBan.cs" />
+    <Compile Include="ArrayExtensions.cs" />
+    <Compile Include="Sixteencolors\FileInfo.cs" />
+    <Compile Include="Sixteencolors\PackDetails.cs" />
+    <Compile Include="Sixteencolors\PackInfo.cs" />
+    <Compile Include="Sixteencolors\SixteenBrowser.cs" />
+    <Compile Include="Sixteencolors\SixteenFile.cs" />
+    <Compile Include="Sixteencolors\SixteenFiles.cs" />
+    <Compile Include="Sixteencolors\SixteenPacks.cs" />
+    <Compile Include="Sixteencolors\YearInfo.cs" />
+    <Compile Include="SharpCompressDirectoryInfo.cs" />
+    <Compile Include="Formats\Character\Types\Atascii.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\Character\Controls\FontEditor.cs" />
+    <Compile Include="Formats\Character\Types\Font.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sauce\Types\BaseText\DataTypeInfo.cs" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP437.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP437.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP437.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP437.F19" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP737.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP737.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP737.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP775.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP775.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP775.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP850.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP850.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP850.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP850.F19" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP851.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP851.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP851.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP851.F19" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP852.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP852.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP852.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP852.F19" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP853.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP853.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP853.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP853.F19" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP855.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP855.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP855.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP857.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP857.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP857.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP860.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP860.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP860.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP860.F19" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP861.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP861.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP861.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP861.F19" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP862.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP862.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP862.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP863.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP863.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP863.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP863.F19" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP864.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP864.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP864.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP865.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP865.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP865.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP865.F19" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP866.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP866.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP866.F16" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP869.F08" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP869.F14" />
+    <EmbeddedResource Include="Formats\Character\Fonts\DOS\CP869.F16" />
+    <Compile Include="Formats\Character\BitFontSet.cs" />
+    <Compile Include="Sauce\Types\BaseText\Admin.cs" />
+    <Compile Include="Sauce\Types\Bitmap\DataTypeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release-MAS|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release-MAS\</OutputPath>
+    <DefineConstants>TRACE;DESKTOP;MAS</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <BaseAddress>285212672</BaseAddress>
+    <FileAlignment>4096</FileAlignment>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto.csproj">
+      <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
+      <Name>Eto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Mono.Nat.csproj">
+      <Project>{F5D74163-145F-47BF-83DC-D0E07249C6CA}</Project>
+      <Name>Mono.Nat</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\lidgren\Lidgren.Network\Lidgren.Network.csproj">
+      <Project>{AE483C29-042E-4226-BA52-D247CE7676DA}</Project>
+      <Name>Lidgren.Network</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sauce\Types\BaseText\" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+</Project>

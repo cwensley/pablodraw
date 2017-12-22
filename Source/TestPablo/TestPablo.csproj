@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DE45EBC6-B4D3-4FA6-A190-2676E05303DA}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>TestPablo</AssemblyName>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>
+    </AppDesignerFolder>
+    <RootNamespace>PabloDraw</RootNamespace>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <ReleaseVersion>
+    </ReleaseVersion>
+    <UseMSBuildEngine>False</UseMSBuildEngine>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugSymbols>True</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="./copyassemblies.sh ${ProjectConfigName} ${ProjectDir}/Assemblies" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
+    <Commandlineparameters>zO-pablo.ans zO-pablo.png dosaspect=true</Commandlineparameters>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.Xml</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pablo\Pablo.csproj">
+      <Project>{35DBE6BB-B46D-4AE9-8156-FBFC6EC2BB69}</Project>
+      <Name>Pablo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto.csproj">
+      <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
+      <Name>Eto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Platform.Windows\Eto.Platform.Windows.csproj">
+      <Project>{69D38C57-AD4B-4A16-A7B1-49BCFBE71491}</Project>
+      <Name>Eto.Platform.Windows</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Content Include="zO-pablo.ans">
+      <SubType>Code</SubType>
+    </Content>
+    <Compile Include="Startup.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>cd $(ProjectDir)
+copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Assemblies\Eto.dll" />
+    <EmbeddedResource Include="Assemblies\Eto.Platform.Gtk.dll" />
+    <EmbeddedResource Include="Assemblies\Eto.Platform.Windows.dll" />
+    <EmbeddedResource Include="Assemblies\Pablo.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="copyassemblies.cmd" />
+    <None Include="copyassemblies.sh" />
+  </ItemGroup>
+</Project>

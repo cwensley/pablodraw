@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F847A961-35B0-4098-BF22-321FC4CED6CD}</ProjectGuid>
+    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>PabloDraw.iOS</RootNamespace>
+    <ReleaseVersion>
+    </ReleaseVersion>
+    <AssemblyName>PabloDraw</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <MtouchLink>None</MtouchLink>
+    <MtouchDebug>True</MtouchDebug>
+    <ConsolePause>False</ConsolePause>
+    <MtouchI18n>west</MtouchI18n>
+    <EnvironmentVariables>
+      <EnvironmentVariables>
+        <Variable name="MONO_IOMAP" value="case" />
+      </EnvironmentVariables>
+    </EnvironmentVariables>
+    <MtouchProfiling>true</MtouchProfiling>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <MtouchArch>ARMv7</MtouchArch>
+    <MtouchExtraArgs>-cxx</MtouchExtraArgs>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <DebugType>none</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <MtouchI18n>west</MtouchI18n>
+    <EnvironmentVariables>
+      <EnvironmentVariables>
+        <Variable name="MONO_IOMAP" value="case" />
+      </EnvironmentVariables>
+    </EnvironmentVariables>
+    <MtouchArch>ARMv7</MtouchArch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <MtouchDebug>True</MtouchDebug>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <ConsolePause>False</ConsolePause>
+    <MtouchI18n>rare,west</MtouchI18n>
+    <EnvironmentVariables>
+      <EnvironmentVariables>
+        <Variable name="MONO_IOMAP" value="case" />
+      </EnvironmentVariables>
+    </EnvironmentVariables>
+    <MtouchArch>ARMv7</MtouchArch>
+    <IpaPackageName>
+    </IpaPackageName>
+    <MtouchUseSGen>True</MtouchUseSGen>
+    <MtouchLink>None</MtouchLink>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <DebugType>none</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\iPhone\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchArch>ARMv7</MtouchArch>
+    <MtouchI18n>rare,west</MtouchI18n>
+    <MtouchExtraArgs>-aot="nimt-trampolines=2048"</MtouchExtraArgs>
+    <EnvironmentVariables>
+      <EnvironmentVariables>
+        <Variable name="MONO_IOMAP" value="case" />
+      </EnvironmentVariables>
+    </EnvironmentVariables>
+    <MtouchUseSGen>True</MtouchUseSGen>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="monotouch" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+    <None Include="entitlements.plist" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Startup.cs">
+      <DeployService-Deploy>True</DeployService-Deploy>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Platform.iOS\Eto.Platform.iOS.csproj">
+      <Project>{E711B298-D141-4EC5-9BFD-84962B264F90}</Project>
+      <Name>Eto.Platform.iOS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto - iOS.csproj">
+      <Project>{83452633-C37C-490F-852A-3ADE0A2CF0D4}</Project>
+      <Name>Eto - iOS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Pablo\Pablo - iOS.csproj">
+      <Project>{2D49CD9B-63D3-4808-8BB3-2262A6140701}</Project>
+      <Name>Pablo - iOS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Pablo.Mobile\Pablo.Mobile - iOS.csproj">
+      <Project>{1B141E90-F0AA-41BC-882D-420F91B53035}</Project>
+      <Name>Pablo.Mobile - iOS</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="zO-pablo.ans">
+      <SubType>Code</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BM-ANGEL.rip" />
+    <Content Include="JD-BUTT.ans" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="PabloDraw-114.png" />
+    <ImageAsset Include="PabloDraw-57.png" />
+    <ImageAsset Include="PabloDraw-72.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Default-568h%402x.png" />
+    <BundleResource Include="Resources\Default%402x.png" />
+    <BundleResource Include="Resources\Default.png" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3FAACC7E-D156-4599-B0D1-6177AD78E8B1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Pablo.Interface</RootNamespace>
+    <AssemblyName>Pablo.Interface</AssemblyName>
+    <ReleaseVersion>
+    </ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Actions\ClientConnect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\NewFile.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\OpenFile.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\ServerStart.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Actions\ServerStop.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dialogs\About.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dialogs\NewFileDialog.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SauceInfoDialog.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Settings.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Application.cs" />
+    <Compile Include="Actions\DeleteFile.cs" />
+    <Compile Include="Actions\RenameFile.cs" />
+    <Compile Include="Dialogs\RenameDialog.cs" />
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Dialogs\FileModifiedDialog.cs" />
+    <Compile Include="Actions\Exit.cs" />
+    <Compile Include="Actions\Homepage.cs" />
+    <Compile Include="Actions\About.cs" />
+    <Compile Include="Actions\MoveFile.cs" />
+    <Compile Include="Actions\CloseWindow.cs" />
+    <Compile Include="Actions\EditSauce.cs" />
+    <Compile Include="PadPanel.cs" />
+    <Compile Include="Actions\EditFile.cs" />
+    <Compile Include="Actions\ViewFile.cs" />
+    <Compile Include="ChatPanel.cs" />
+    <Compile Include="Dialogs\ServerDialog.cs" />
+    <Compile Include="Dialogs\ClientDialog.cs" />
+    <Compile Include="Actions\FocusChatView.cs" />
+    <Compile Include="Dialogs\NewDocument.cs" />
+    <Compile Include="Actions\EnclosingFolder.cs" />
+    <Compile Include="Actions\EnableBackups.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="Icons\PabloDraw_logo_by_lordmx.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\edit.ico" />
+    <EmbeddedResource Include="Icons\close.ico" />
+    <EmbeddedResource Include="Icons\open.ico" />
+    <EmbeddedResource Include="Icons\save.ico" />
+    <EmbeddedResource Include="Icons\view.ico" />
+    <EmbeddedResource Include="Icons\new.ico" />
+    <EmbeddedResource Include="Icons\PabloDraw.ico" />
+    <EmbeddedResource Include="Icons\sauce.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto.csproj">
+      <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
+      <Name>Eto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Pablo\Pablo.csproj">
+      <Project>{35DBE6BB-B46D-4AE9-8156-FBFC6EC2BB69}</Project>
+      <Name>Pablo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\lidgren\Lidgren.Network\Lidgren.Network.csproj">
+      <Project>{AE483C29-042E-4226-BA52-D247CE7676DA}</Project>
+      <Name>Lidgren.Network</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+</Project>

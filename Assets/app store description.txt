@@ -1,0 +1,33 @@
+3.0.16
+
+Ansi/Ascii Text and RIPscrip vector graphic art viewer and editor with multi-user capabilities.
+
+Supports:
+• Text Formats: ANSI, ASCII, ADF, Avatar, BIN, CG, IDF, Tundra, CtrlA, XBIN, Animated ANSI
+• Vector Formats: RIPscrip
+• Raster Formats (viewing only): JPEG, GIF, PNG
+
+Features:
+• Convert any format to an image for easy sharing
+• Multi-user networking to draw and chat together
+• Watch animated ANSI and RIP
+• Baud rate emulation
+• Browse the sixteencolors.com archive of art
+• Amiga & 9px Fonts
+• DOS aspect emulation
+• Color & character set editors
+
+art,text,rip,ripscrip,editor,viewer,ansi,ascii,xbin,animated,convert,image,amiga
+
+2011 Curtis Wensley
+
+curtis.wensley@picoe.ca
+
+http://picoe.ca/support
+
+http://picoe.ca/products/pablodraw/alpha
+
+http://
+
+
+You can create new documents by clicking the 'new' button, and selecting the type of document to create.

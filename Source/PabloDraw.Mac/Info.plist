@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>tnd</string>
+				<string>txt</string>
+				<string>ans</string>
+				<string>asc</string>
+				<string>jpeg</string>
+				<string>gif</string>
+				<string>png</string>
+				<string>rip</string>
+				<string>adf</string>
+				<string>avt</string>
+				<string>bin</string>
+				<string>idf</string>
+				<string>cg</string>
+				<string>xb</string>
+				<string>nfo</string>
+				<string>diz</string>
+				<string>bmp</string>
+				<string>tiff</string>
+				<string>jpg</string>
+				<string>msg</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>PabloDraw-Document</string>
+			<key>CFBundleTypeName</key>
+			<string>Pablo Document</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>*</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+		</dict>
+	</array>
+	<key>CFBundleIconFile</key>
+	<string>PabloDraw.icns</string>
+	<key>CFBundleIconFiles</key>
+	<array>
+		<string>PabloDraw.icns</string>
+	</array>
+	<key>CFBundleName</key>
+	<string>PabloDraw</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.graphics-design</string>
+	<key>LSEnvironment</key>
+	<dict>
+		<key>MONO_IOMAP</key>
+		<string>case</string>
+	</dict>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.6</string>
+	<key>NSMainNibFile</key>
+	<string></string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>CFBundleShortVersionString</key>
+	<string>3.2.1</string>
+	<key>CFBundleVersion</key>
+	<string>3.2.1</string>
+	<key>CFBundleIdentifier</key>
+	<string>ca.picoe.pablodraw</string>
+</dict>
+</plist>

@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0457895A-719B-47E9-84F3-356B2A1F8D3C}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PabloDraw.Console</RootNamespace>
+    <AssemblyName>PabloDraw.Console</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <ReleaseVersion>
+    </ReleaseVersion>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <StartupObject>PabloDraw.Console.Startup</StartupObject>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <UseMSBuildEngine>False</UseMSBuildEngine>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="./copyassemblies.sh ${ProjectConfigName} ${ProjectDir}/Assemblies" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <Commandlineparameters>--platform mac --server --adminpw hello</Commandlineparameters>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="./copyassemblies.sh ${ProjectConfigName} ${ProjectDir}/Assemblies" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommandHandlers\HelpCommandLine.cs" />
+    <Compile Include="EmbeddedAssemblyLoader.cs" />
+    <Compile Include="ICommandLineHandler.cs" />
+    <Compile Include="CommandHandlers\PlatformCommandLine.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Commands\NewFile.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="Commands\EditFile.cs" />
+    <Compile Include="CommandHandlers\ServerCommandLine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CommandHandlers\ConvertCommandLine.cs" />
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="copyassemblies.cmd" />
+    <None Include="copyassemblies.sh" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Platform.Gtk\Eto.Platform.Gtk.csproj">
+      <Project>{1FF7BE58-A6A2-4132-8CAF-AA2EF18122A1}</Project>
+      <Name>Eto.Platform.Gtk</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Platform.Windows\Eto.Platform.Windows.csproj">
+      <Project>{69D38C57-AD4B-4A16-A7B1-49BCFBE71491}</Project>
+      <Name>Eto.Platform.Windows</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto.csproj">
+      <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
+      <Name>Eto</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\lidgren\Lidgren.Network\Lidgren.Network.csproj">
+      <Project>{AE483C29-042E-4226-BA52-D247CE7676DA}</Project>
+      <Name>Lidgren.Network</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Mono.Nat.csproj">
+      <Project>{F5D74163-145F-47BF-83DC-D0E07249C6CA}</Project>
+      <Name>Mono.Nat</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Pablo\Pablo.csproj">
+      <Project>{35DBE6BB-B46D-4AE9-8156-FBFC6EC2BB69}</Project>
+      <Name>Pablo</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Platform.Mac\Eto.Platform.Mac.csproj">
+      <Project>{9DD10DFF-5AB3-4E66-B798-CA17911A61E4}</Project>
+      <Name>Eto.Platform.Mac</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 4.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assemblies\Eto.Platform.Mac.dll" />
+    <EmbeddedResource Include="Assemblies\Eto.dll" />
+    <EmbeddedResource Include="Assemblies\Eto.Platform.Gtk.dll" />
+    <EmbeddedResource Include="Assemblies\Eto.Platform.Windows.dll" />
+    <EmbeddedResource Include="Assemblies\Pablo.dll" />
+    <EmbeddedResource Include="Assemblies\Lidgren.Network.dll" />
+    <EmbeddedResource Include="Assemblies\Mono.Nat.dll" />
+    <EmbeddedResource Include="Assemblies\Eto.Platform.Wpf.dll" />
+    <EmbeddedResource Include="..\..\Libraries\Eto\Libraries\MonoMac\MonoMac.dll">
+      <Link>Assemblies\MonoMac.dll</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\packages\sharpcompress.0.10.1.3\lib\net40\SharpCompress.dll">
+      <Link>Assemblies\SharpCompress.dll</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll">
+      <Link>Assemblies\Newtonsoft.Json.dll</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">cd $(ProjectDir)
+copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">cd $(ProjectDir)
+./copyassemblies.sh $(ConfigurationName) Assemblies</PreBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{90B2D03E-7B1D-4C1F-8ADB-664F980C2A32}</ProjectGuid>
+    <ProjectTypeGuids>{42C0BBD9-55CE-4FC1-8D90-A7348ABAFB23};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>PabloDraw</RootNamespace>
+    <AssemblyName>PabloDraw</AssemblyName>
+    <ReleaseVersion>
+    </ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;MAC</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Custom" name="Deploy" command="../macbuild ${ProjectConfig}" workingdir="${SolutionDir}" pauseExternalConsole="True" />
+        <Command type="Custom" name="AOT" command="mono --aot ${TargetDir}/PabloDraw.app/Contents/MonoBundle/*.{exe,dll}" />
+      </CustomCommands>
+    </CustomCommands>
+    <EnableCodeSigning>False</EnableCodeSigning>
+    <CodeSigningKey>Mac Developer</CodeSigningKey>
+    <CreatePackage>False</CreatePackage>
+    <EnablePackageSigning>False</EnablePackageSigning>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <CodeSignEntitlements>PabloDraw-entitlements.plist</CodeSignEntitlements>
+    <I18n>rare,west</I18n>
+    <MonoBundlingExtraArgs>-linkskip System</MonoBundlingExtraArgs>
+    <UseSGen>false</UseSGen>
+    <LinkMode>SdkOnly</LinkMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <DefineConstants>MAC</DefineConstants>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Custom" name="Deploy" command="../macbuild ${ProjectConfig}" workingdir="${SolutionDir}" pauseExternalConsole="True" />
+      </CustomCommands>
+    </CustomCommands>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>False</CreatePackage>
+    <EnablePackageSigning>False</EnablePackageSigning>
+    <IncludeMonoRuntime>True</IncludeMonoRuntime>
+    <CodeSigningKey>Developer ID Application</CodeSigningKey>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
+    <UseSGen>true</UseSGen>
+    <I18n>rare,west</I18n>
+    <LinkMode>SdkOnly</LinkMode>
+    <MonoBundlingExtraArgs>--linkskip=Eto --linkskip=Pablo</MonoBundlingExtraArgs>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release-MAS|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release-MAS</OutputPath>
+    <DefineConstants>MAC</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>True</IncludeMonoRuntime>
+    <UseSGen>True</UseSGen>
+    <I18n>other,rare,west</I18n>
+    <ConsolePause>False</ConsolePause>
+    <EnableCodeSigning>True</EnableCodeSigning>
+    <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
+    <CreatePackage>True</CreatePackage>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Custom" name="Deploy" command="../macbuild ${ProjectConfig}" workingdir="${SolutionDir}" />
+      </CustomCommands>
+    </CustomCommands>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <EnablePackageSigning>True</EnablePackageSigning>
+    <LinkMode>SdkOnly</LinkMode>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release-Developer|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release-Developer</OutputPath>
+    <DefineConstants>MAC</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>True</IncludeMonoRuntime>
+    <UseSGen>True</UseSGen>
+    <LinkMode>SdkOnly</LinkMode>
+    <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
+    <I18n>rare,west</I18n>
+    <ConsolePause>False</ConsolePause>
+    <EnableCodeSigning>False</EnableCodeSigning>
+    <CodeSigningKey>Developer ID Application: Curtis Wensley</CodeSigningKey>
+    <CreatePackage>False</CreatePackage>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Custom" name="Deploy" command="../macbuild ${ProjectConfig}" workingdir="${SolutionDir}" />
+        <Command type="AfterBuild" command="cp -Rf ${TargetDir}/PabloDraw.app ${SolutionDir}/Releases/3.1" />
+      </CustomCommands>
+    </CustomCommands>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <EnablePackageSigning>True</EnablePackageSigning>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="XamMac, Version=0.0.0.0, Culture=neutral, PublicKeyToken=84e04ff9cfb79065">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress">
+      <HintPath>..\packages\sharpcompress.0.10.1.3\lib\net40\SharpCompress.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Startup.cs" />
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="AppDelegate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+    <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Pablo.Interface\Pablo.Interface.csproj">
+      <Project>{3FAACC7E-D156-4599-B0D1-6177AD78E8B1}</Project>
+      <Name>Pablo.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Pablo\Pablo.csproj">
+      <Project>{35DBE6BB-B46D-4AE9-8156-FBFC6EC2BB69}</Project>
+      <Name>Pablo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto.csproj">
+      <Project>{16289D2F-044C-49EF-83E9-9391AFF8FD2B}</Project>
+      <Name>Eto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\lidgren\Lidgren.Network\Lidgren.Network.csproj">
+      <Project>{AE483C29-042E-4226-BA52-D247CE7676DA}</Project>
+      <Name>Lidgren.Network</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Mono.Nat.csproj">
+      <Project>{F5D74163-145F-47BF-83DC-D0E07249C6CA}</Project>
+      <Name>Mono.Nat</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Platform.Mac\Eto.Platform.XamMac.csproj">
+      <Project>{15490F6C-C579-4A86-AD16-8D9B5B41EB87}</Project>
+      <Name>Eto.Platform.XamMac</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="PabloDraw.icns" />
+    <Content Include="PabloDraw-Document.icns" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Deployment.LinuxDeployData generateScript="False" scriptName="pablodraw" />
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>

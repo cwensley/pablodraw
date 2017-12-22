@@ -1,0 +1,16 @@
+.DS_Store
+*.pbxuser
+*.perspectivev3
+build/
+*.xcuserdatad
+*.xcworkspace
+*.userprefs
+*.user
+*.pidb
+*.suo
+bin/
+obj/
+Pablo/deploy/
+.svn
+Source/packages
+Releases/**/*.exe

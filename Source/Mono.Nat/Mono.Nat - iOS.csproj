@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F5D74163-145F-47BF-83DC-D0E07249C6CA}</ProjectGuid>
+    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <AssemblyName>Mono.Nat</AssemblyName>
+    <RootNamespace>Mono.Nat</RootNamespace>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <TargetFrameworkProfile />
+    <ReleaseVersion>
+    </ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Libraries\Mono.Nat\src\Mono.Nat\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Libraries\Mono.Nat\src\Mono.Nat\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\AbstractNatDevice.cs">
+      <Link>AbstractNatDevice.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\AsyncResults\AsyncResult.cs">
+      <Link>AsyncResults\AsyncResult.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Enums\MapState.cs">
+      <Link>Enums\MapState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Enums\ProtocolType.cs">
+      <Link>Enums\ProtocolType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\EventArgs\DeviceEventArgs.cs">
+      <Link>EventArgs\DeviceEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Exceptions\MappingException.cs">
+      <Link>Exceptions\MappingException.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\INatDevice.cs">
+      <Link>INatDevice.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\ISearcher.cs">
+      <Link>ISearcher.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Mapping.cs">
+      <Link>Mapping.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\NatUtility.cs">
+      <Link>NatUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\PmpSearcher.cs">
+      <Link>PmpSearcher.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Pmp\AsyncResults\PortMapAsyncResult.cs">
+      <Link>Pmp\AsyncResults\PortMapAsyncResult.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Pmp\PmpConstants.cs">
+      <Link>Pmp\PmpConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Pmp\PmpNatDevice.cs">
+      <Link>Pmp\PmpNatDevice.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\UpnpSearcher.cs">
+      <Link>UpnpSearcher.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\AsyncResults\GetAllMappingsAsyncResult.cs">
+      <Link>Upnp\AsyncResults\GetAllMappingsAsyncResult.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\AsyncResults\PortMapAsyncResult.cs">
+      <Link>Upnp\AsyncResults\PortMapAsyncResult.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\Messages\DiscoverDeviceMessage.cs">
+      <Link>Upnp\Messages\DiscoverDeviceMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\Messages\ErrorMessage.cs">
+      <Link>Upnp\Messages\ErrorMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\Messages\GetServicesMessage.cs">
+      <Link>Upnp\Messages\GetServicesMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\Messages\Requests\CreatePortMappingMessage.cs">
+      <Link>Upnp\Messages\Requests\CreatePortMappingMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\Messages\Requests\DeletePortMappingMessage.cs">
+      <Link>Upnp\Messages\Requests\DeletePortMappingMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\Messages\Requests\GetExternalIPAddressMessage.cs">
+      <Link>Upnp\Messages\Requests\GetExternalIPAddressMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\Messages\Requests\GetGenericPortMappingEntry.cs">
+      <Link>Upnp\Messages\Requests\GetGenericPortMappingEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\Messages\Requests\GetSpecificPortMappingEntryMessage.cs">
+      <Link>Upnp\Messages\Requests\GetSpecificPortMappingEntryMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\Messages\Responses\CreatePortMappingResponseMessage.cs">
+      <Link>Upnp\Messages\Responses\CreatePortMappingResponseMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\Messages\Responses\DeletePortMappingResponseMessage.cs">
+      <Link>Upnp\Messages\Responses\DeletePortMappingResponseMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\Messages\Responses\GetExternalIPAddressResponseMessage.cs">
+      <Link>Upnp\Messages\Responses\GetExternalIPAddressResponseMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\Messages\Responses\GetGenericPortMappingEntryResponseMessage.cs">
+      <Link>Upnp\Messages\Responses\GetGenericPortMappingEntryResponseMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\Messages\UpnpMessage.cs">
+      <Link>Upnp\Messages\UpnpMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Upnp\UpnpNatDevice.cs">
+      <Link>Upnp\UpnpNatDevice.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <ProjectExtensions>
+    <VisualStudio AllowExistingFolder="true" />
+  </ProjectExtensions>
+</Project>

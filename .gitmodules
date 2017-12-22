@@ -1,0 +1,9 @@
+[submodule "Libraries/Mono.Nat"]
+	path = Libraries/Mono.Nat
+	url = https://github.com/cwensley/Mono.Nat.git
+[submodule "Libraries/Eto"]
+	path = Libraries/Eto
+	url = https://github.com/picoe/Eto.git
+[submodule "Libraries/lidgren"]
+	path = Libraries/lidgren
+	url = https://github.com/lidgren/lidgren-network-gen3.git
