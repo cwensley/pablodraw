@@ -216,6 +216,13 @@ namespace Pablo.Formats.Character
 			charFormat.EnsureSauce(this);
 		}
 
+		public override void FillSauce(Sauce.SauceInfo sauce, Format format)
+		{
+			base.FillSauce(sauce, format);
+			var charFormat = (CharacterFormat)format;
+			charFormat?.FillSauce(sauce, this);
+		}
+
 		protected override void LoadStream(Stream stream, Format format, Handler handler)
 		{
 			resizeCanvas = true;

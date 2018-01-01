@@ -7,7 +7,7 @@ namespace Pablo.Formats.Character.Types
 {
 	public partial class Ansi : CharacterFormat
 	{
-		protected override void FillSauce(Sauce.SauceInfo sauce, CharacterDocument document)
+		public override void FillSauce(Sauce.SauceInfo sauce, CharacterDocument document)
 		{
 			base.FillSauce(sauce, document);
 			sauce.ByteFileType = (byte)Sauce.Types.Character.CharacterFileType.Ansi;

@@ -13,7 +13,7 @@ namespace Pablo.Formats.Character.Types
 			return SauceDataType.BinaryText;
 		}
 
-		protected override void FillSauce(SauceInfo sauce, CharacterDocument document)
+		public override void FillSauce(SauceInfo sauce, CharacterDocument document)
 		{
 			base.FillSauce(sauce, document);
 			sauce.ByteFileType = (byte)(document.Pages[0].Canvas.Size.Width / 2);

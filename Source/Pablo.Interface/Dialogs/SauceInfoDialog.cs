@@ -40,7 +40,8 @@ namespace Pablo.Interface.Dialogs
 			allowSave = !readOnly;
 			if (document != null)
 			{
-				sauce = document.Sauce != null ? new SauceInfo(document.Sauce) : null;
+				if (document.Sauce != null)
+					sauce = new SauceInfo(document.Sauce);
 			}
 			else if (file != null)
 			{
@@ -58,6 +59,8 @@ namespace Pablo.Interface.Dialogs
 			if (sauce == null)
 			{
 				sauce = new SauceInfo();
+				if (document != null)
+					document.FillSauce(sauce, document.LoadedFormat);
 				allowRemove = false;
 			}
 			
