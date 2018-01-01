@@ -2319,12 +2319,15 @@ namespace Pablo.BGI
 						{
 							if (bmp != null && Control != null)
 							{ // in case it was disposed
-								/*foreach (var rect in rects) {
-									rect.Restrict (viewPort);
-									this.Control.Invalidate (rect);
-								}*/
-								//Console.WriteLine ("Rect: {0}, {1}", rectBounds, new System.Diagnostics.StackTrace());
-								Control.Invalidate(rectBounds);
+							  /*foreach (var rect in rects) {
+								  rect.Restrict (viewPort);
+								  this.Control.Invalidate (rect);
+							  }*/
+							  //Console.WriteLine ("Rect: {0}, {1}", rectBounds, new System.Diagnostics.StackTrace());
+								var rect = Eto.Drawing.Rectangle.Round((RectangleF)rectBounds / Scale);
+								rect.Inflate(1, 1);
+								rect.Restrict(Point.Empty, Control.Size);
+								Control.Invalidate(rect);
 							}
 						}
 					});

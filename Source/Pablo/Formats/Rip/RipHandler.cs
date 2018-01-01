@@ -120,7 +120,7 @@ namespace Pablo.Formats.Rip
 
 		public RipHandler(RipDocument doc) : base(doc)
 		{
-			/* Disable dos aspect here */
+			/* Disable dos aspect here *
 			if (doc.EditMode)
 				EnableZoom = false;
 			/**/
@@ -194,8 +194,7 @@ namespace Pablo.Formats.Rip
 				var control = args.Control;
 				var actionDos = new CheckCommand { 
 					ID = "dosAspect", MenuText = "Emulate Legacy &Aspect", ToolTip = "Stretch image vertically to emulate DOS",
-					Checked = !RipDocument.EditMode && RipDocument.Info.DosAspect,
-					Enabled = !RipDocument.EditMode
+					Checked = RipDocument.Info.DosAspect
 				};
 				actionDos.CheckedChanged += actionDos_CheckedChanged;
 
@@ -251,8 +250,7 @@ namespace Pablo.Formats.Rip
 
 		public override void OnMouseDown(MouseEventArgs e)
 		{
-			if (SelectedTool != null)
-				SelectedTool.OnMouseDown(e);
+			SelectedTool?.OnMouseDown(new MouseEventArgs(e.Buttons, e.Modifiers, e.Location * BGI.Scale, e.Delta, e.Pressure));
 			
 			if (!e.Handled)
 				base.OnMouseDown(e);
@@ -261,8 +259,7 @@ namespace Pablo.Formats.Rip
 
 		public override void OnMouseUp(MouseEventArgs e)
 		{
-			if (SelectedTool != null)
-				SelectedTool.OnMouseUp(e);
+			SelectedTool?.OnMouseUp(new MouseEventArgs(e.Buttons, e.Modifiers, e.Location * BGI.Scale, e.Delta, e.Pressure));
 
 			if (!e.Handled)
 				base.OnMouseUp(e);
@@ -270,8 +267,7 @@ namespace Pablo.Formats.Rip
 
 		public override void OnMouseMove(MouseEventArgs e)
 		{
-			if (SelectedTool != null)
-				SelectedTool.OnMouseMove(e);
+			SelectedTool?.OnMouseMove(new MouseEventArgs(e.Buttons, e.Modifiers, e.Location * BGI.Scale, e.Delta, e.Pressure));
 
 			if (!e.Handled)
 				base.OnMouseMove(e);
@@ -350,7 +346,7 @@ namespace Pablo.Formats.Rip
 				AddCommand(command as RipCommand, updates);
 			else
 			{
-				if (command.ShouldApply(this.BGI))
+				if (command.ShouldApply(BGI))
 				{
 					AddCommand(command, updates);
 				}
@@ -396,22 +392,20 @@ namespace Pablo.Formats.Rip
 		public void Redraw(IList<Rectangle> updates = null)
 		{
 			var tempUpdates = new List<Rectangle>();
-			if (this.SelectedTool != null)
-				this.SelectedTool.RemoveDrawing(tempUpdates);
-			this.BGI.GraphDefaults(tempUpdates);
+			SelectedTool?.RemoveDrawing(tempUpdates);
+			BGI.GraphDefaults(tempUpdates);
 			foreach (var command in RipDocument.Commands)
 			{
 				tempUpdates.Clear();
 				command.Apply(tempUpdates);
 			}
-			if (this.SelectedTool != null)
-				this.SelectedTool.ApplyDrawing(tempUpdates);
+			SelectedTool?.ApplyDrawing(tempUpdates);
 			
-			var rect = new Rectangle(this.BGI.WindowSize);
+			var rect = new Rectangle(BGI.WindowSize);
 			if (updates != null)
 				updates.Add(rect);
 			else
-				this.BGI.UpdateRegion(rect);
+				BGI.UpdateRegion(rect);
 		}
 
 		protected override void Dispose(bool disposing)

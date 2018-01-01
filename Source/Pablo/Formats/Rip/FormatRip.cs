@@ -50,7 +50,7 @@ namespace Pablo.Formats.Rip
 				Application.Instance.Invoke (delegate {
 					//lastEnableZoom = handler.EnableZoom;
 #if DESKTOP
-					handler.EnableZoom = false;
+					//handler.EnableZoom = false;
 #endif
 				});
 			}			
@@ -90,7 +90,7 @@ namespace Pablo.Formats.Rip
 				if (document.AnimateView && Application.Instance != null) {
 					Application.Instance.Invoke (delegate {
 						if (document.AnimateView) {
-							handler.EnableZoom = lastEnableZoom;
+							//handler.EnableZoom = lastEnableZoom;
 						}
 					});
 				}

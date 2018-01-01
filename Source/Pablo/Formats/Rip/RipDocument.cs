@@ -148,8 +148,8 @@ namespace Pablo.Formats.Rip
 
 		void SetBGI(RipHandler handler)
 		{
-			var pane = handler != null && handler.HasViewerControl ? handler.ViewerControl as ViewerPane : null;
-			var viewer = pane != null ? pane.Viewer : null;
+			var pane = handler?.ViewerControl as ViewerPane;
+			var viewer = pane != null ? pane?.Viewer : null;
 			
 			if (BGI != null)
 				BGI.Control = viewer;
@@ -173,22 +173,21 @@ namespace Pablo.Formats.Rip
 			formatRip.Save(stream, this);
 		}
 
-		protected override void EnsureSauce(Format format, Handler handler)
+		public override void FillSauce(Sauce.SauceInfo sauce, Format format)
 		{
-			base.EnsureSauce(format, handler);
-			if (Sauce != null)
+			base.FillSauce(sauce, format);
+			sauce.DataType = Pablo.Sauce.SauceDataType.Character;
+			var info = sauce.TypeInfo as Sauce.Types.Character.DataTypeInfo;
+			if (info != null)
 			{
-				Sauce.DataType = Pablo.Sauce.SauceDataType.Character;
-				var info = Sauce.TypeInfo as Sauce.Types.Character.DataTypeInfo;
-				if (info != null)
-				{
-					info.Type = Pablo.Sauce.Types.Character.CharacterFileType.Rip;
-					info.Width = (ushort)BGI.WindowSize.Width;
-					info.Height = (ushort)BGI.WindowSize.Height;
-					info.NumberOfColors = (ushort)BGI.Palette.Count;
-				}
+				info.Type = Pablo.Sauce.Types.Character.CharacterFileType.Rip;
+				info.Width = (ushort)BGI.WindowSize.Width;
+				info.Height = (ushort)BGI.WindowSize.Height;
+				info.NumberOfColors = (ushort)BGI.Palette.Count;
+				info.AspectRatio = Info.DosAspect;
 			}
 		}
+
 
 		public override Document ConvertDocument(DocumentInfo targetDocumentInfo, Handler handler)
 		{
