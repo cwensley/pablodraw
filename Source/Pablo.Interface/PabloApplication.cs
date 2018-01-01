@@ -40,11 +40,6 @@ namespace Pablo.Interface
 		{
 			this.Name = "PabloDraw";
 			this.Style = "application";
-			Eto.Style.Add<TableLayout>(null, widget =>
-			{
-				widget.Padding = new Padding(10);
-				widget.Spacing = new Size(5, 5);
-			});
 			EtoDirectoryInfo.AddVirtualDirectoryType<SharpCompressDirectoryInfo>(".rar");
 			EtoDirectoryInfo.AddVirtualDirectoryType<SharpCompressDirectoryInfo>(".7z");
 			//EtoDirectoryInfo.AddVirtualDirectoryType<SharpCompressDirectoryInfo>(".tar.gz");

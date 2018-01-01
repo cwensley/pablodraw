@@ -19,7 +19,11 @@ namespace Pablo.Formats.Character.Controls
 			this.CharacterHandler = handler;
 			this.Title = "Character Set Editor";
 
-			var layout = new DynamicLayout();
+			var layout = new DynamicLayout
+			{
+				Padding = 6,
+				Spacing = new Size(6, 6)
+			};
 
 			selected = CharacterHandler.CharacterSet;
 
@@ -73,8 +77,7 @@ namespace Pablo.Formats.Character.Controls
 
 		Control CharacterSelection()
 		{
-			var layout = new DynamicLayout();
-			layout.Spacing = new Size(10, 5);
+			var layout = new DynamicLayout { Spacing = new Size(10, 5) };
 
 			RadioButton master = null;
 			for (int i = 0; i < CharacterDocumentInfo.MAX_CHARACTER_SETS; i++)
@@ -128,7 +131,7 @@ namespace Pablo.Formats.Character.Controls
 		Control Buttons()
 		{
 			var layout = new DynamicLayout();
-			layout.Padding = Padding.Empty;
+			layout.Spacing = new Size(4, 4);
 			layout.AddRow(SetDefaultButton(), null, CancelButton(), OkButton());
 
 			return layout;

@@ -95,15 +95,18 @@ namespace Pablo.Formats.Character.Controls
 			Resizable = true;
 #endif
 			this.Palette = handler.CurrentPage.Palette.Clone();
-			var layout = new DynamicLayout();
-			
+			var layout = new DynamicLayout
+			{
+				Padding = 6,
+				DefaultSpacing = new Size(4, 4)
+			};
 			layout.Add(new Label
-			{ 
+			{
 				Text = "Double click a colour to change it. Note that most formats only support up to 16 colours, except for Tundra and Ansi format",
 				Wrap = WrapMode.Word,
-				HorizontalAlign = HorizontalAlign.Center,
-				VerticalAlign = VerticalAlign.Middle,
-				Size = new Size(50, 50)
+				TextAlignment = TextAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				Width = 1, Height = Platform.IsWinForms ? 46 : -1
 			});
 			
 			layout.BeginVertical(xscale: true, yscale: true);
@@ -188,6 +191,7 @@ namespace Pablo.Formats.Character.Controls
 			var size = new Size(16, ((Palette.Count + 15) / 16));
 			var layout = new TableLayout(size);
 			layout.Spacing = new Size(2, 2);
+			layout.Padding = 4;
 			
 			int count = 0;
 			for (int y = 0; y < size.Height; y++)

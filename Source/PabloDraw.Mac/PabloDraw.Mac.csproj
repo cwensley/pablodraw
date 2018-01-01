@@ -94,8 +94,7 @@
     <UseSGen>True</UseSGen>
     <I18n>other,rare,west</I18n>
     <ConsolePause>False</ConsolePause>
-    <EnableCodeSigning>True</EnableCodeSigning>
-    <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
+    <EnableCodeSigning>false</EnableCodeSigning>
     <CreatePackage>True</CreatePackage>
     <CustomCommands>
       <CustomCommands>
@@ -108,7 +107,7 @@
       </CustomCommands>
     </CustomCommands>
     <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
-    <EnablePackageSigning>True</EnablePackageSigning>
+    <EnablePackageSigning>false</EnablePackageSigning>
     <LinkMode>SdkOnly</LinkMode>
     <DebugSymbols>true</DebugSymbols>
     <UseRefCounting>false</UseRefCounting>

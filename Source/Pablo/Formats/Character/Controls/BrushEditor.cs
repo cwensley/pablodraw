@@ -35,6 +35,8 @@ namespace Pablo.Formats.Character.Controls
 			base.OnPreLoad(e);
 
 			var layout = new DynamicLayout();
+			layout.Padding = 6;
+			layout.Spacing = new Size(4, 4);
 
 			layout.Add(Brushes());
 			layout.Add(Characters());
@@ -120,7 +122,7 @@ namespace Pablo.Formats.Character.Controls
 			pl.Add(layout.Container, 0, 0);
 			return scroll;
 			/**/
-			return new GroupBox { Content = layout };
+			return new GroupBox { Content = layout, Padding = 6 };
 			/**/
 		}
 

@@ -43,7 +43,7 @@ namespace Pablo.Interface.Dialogs
 			this.Title = "Connect to server";
 			this.MinimumSize = new Size(300, 10);
 			//this.Resizable = true;
-			var layout = new TableLayout (1, 3);
+			var layout = new TableLayout(1, 3) { Padding = 6, Spacing = new Size(6, 6) };
 			
 			int row = 0;
 			layout.Add (EntryControls (), 0, row++);
@@ -67,7 +67,7 @@ namespace Pablo.Interface.Dialogs
 		
 		Control EntryControls ()
 		{
-			var layout = new TableLayout (2, 1);
+			var layout = new TableLayout(2, 1) { Spacing = new Size(4, 4) };
 			int row = 0;
 			layout.Add (new Label{ Text = "Alias"}, 0, row);
 			layout.Add (AliasControl (), 1, row++);
@@ -78,7 +78,7 @@ namespace Pablo.Interface.Dialogs
 		
 		Control ServerControls ()
 		{
-			var layout = new TableLayout(2, 3);
+			var layout = new TableLayout(2, 3) { Spacing = new Size(4, 4), Padding = 6 };
 			
 			int row = 0;
 			
@@ -133,7 +133,7 @@ namespace Pablo.Interface.Dialogs
 		
 		Control Buttons ()
 		{
-			var layout = new TableLayout (3, 1);
+			var layout = new TableLayout(3, 1) { Spacing = new Size(4, 4) };
 			layout.SetColumnScale (0);
 			layout.Add (CancelButton (), 1, 0);
 			layout.Add (OkButton (), 2, 0);

@@ -45,7 +45,9 @@ namespace Pablo.Formats.Character.Controls
 			font = CharacterHandler.CurrentPage.Font;
 			
 			var layout = new DynamicLayout();
-			
+			layout.Spacing = new Size(4, 4);
+			layout.Padding = 6;
+
 			layout.AddCentered(Preview(), verticalCenter: false);
 			layout.AddCentered(CharNum(), verticalCenter: false);
 			layout.Add(Characters());

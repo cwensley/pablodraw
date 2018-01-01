@@ -67,12 +67,14 @@ namespace Pablo.Interface
 		private void CreateLayout ()
 		{
 			var layout = new DynamicLayout ();
+			layout.Padding = 6;
+			layout.Spacing = new Size(4, 4);
 		
 			layout.Add (new Label { Text = "Please select the type of file to create" });
 			
 			layout.Add (FileTypeListBox (), true, true);
-			
-			layout.BeginVertical(Padding.Empty);
+
+			layout.BeginVertical(spacing: new Size(2, 2));
 			layout.BeginHorizontal();
 			
 			layout.Add (null, true);

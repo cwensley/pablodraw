@@ -16,3 +16,4 @@ Source/packages
 Releases/**/*.exe
 UpgradeLog.htm
 .vs
+Source/deploy
