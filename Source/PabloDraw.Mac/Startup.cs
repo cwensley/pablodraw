@@ -114,11 +114,12 @@ namespace PabloDraw
 				{
 					handler.Control.DisplayMode = NSToolbarDisplayMode.Icon;
 				});
-
+			/*
 			Style.Add<ButtonToolItemHandler>(null, handler =>
 				{
-					handler.UseStandardButton(false);
+				handler.UseStandardButton(false);
 				});
+				*/
 			Style.Add<CheckToolItemHandler>(null, handler =>
 				{
 					handler.Control.MaxSize = new CGSize(16, 16);

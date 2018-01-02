@@ -33,7 +33,7 @@ namespace Pablo.Formats.Rip.Controls
 			
 			var layout = new DynamicLayout ();
 			
-			layout.BeginVertical ();
+			layout.BeginVertical (yscale: true);
 			layout.BeginHorizontal ();
 			layout.Add (Design ());
 			
@@ -201,9 +201,7 @@ namespace Pablo.Formats.Rip.Controls
 				DrawCanvas ();
 			};
 			
-			var layout = new DynamicLayout();
-			layout.AddCentered (drawable, verticalCenter:false);
-			return new GroupBox { Text = "Preview", Content = layout };
+			return new GroupBox { Text = "Preview", Content = drawable };
 		}
 		
 		Control CancelButton ()

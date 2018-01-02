@@ -169,6 +169,12 @@ namespace Pablo
 
 		protected virtual void EnsureSauce(Format format, Handler handler)
 		{
+			if (Sauce != null)
+				FillSauce(Sauce, format);
+		}
+
+		public virtual void FillSauce(SauceInfo sauce, Format format)
+		{
 		}
 
 		protected abstract void SaveStream(Stream stream, Format format, Handler handler);

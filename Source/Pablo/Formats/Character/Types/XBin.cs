@@ -30,7 +30,7 @@ namespace Pablo.Formats.Character.Types
 			fpEnableCompression = new FormatParameter("compress", "Enable Compression", typeof(bool), true);
 		}
 
-		protected override void FillSauce(Sauce.SauceInfo sauce, CharacterDocument document)
+		public override void FillSauce(Sauce.SauceInfo sauce, CharacterDocument document)
 		{
 			base.FillSauce(sauce, document);
 			sauce.ByteFileType = 0;

@@ -65,7 +65,7 @@ namespace Pablo.Formats.Character
 			document.Sauce = sauce;
 		}
 
-		protected virtual void FillSauce(Sauce.SauceInfo sauce, CharacterDocument document)
+		public virtual void FillSauce(Sauce.SauceInfo sauce, CharacterDocument document)
 		{
 			sauce.DataType = GetSauceDataType(document);
 		}

@@ -36,11 +36,11 @@ namespace Pablo.Formats.Rip.Controls
 			
 			var layout = new DynamicLayout();
 			
-			layout.BeginVertical();
+			layout.BeginVertical(yscale: true);
 			
 			layout.Add(Design());
 			
-			layout.Add(Preview());
+			layout.Add(Preview(), yscale: true);
 			
 			layout.EndVertical();
 

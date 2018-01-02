@@ -63,14 +63,14 @@ namespace Pablo.Interface.Dialogs
 		public ServerDialog()
 		{
 			this.Title = "Server Options";
-			this.MinimumSize = new Size(300, 10);
-			var layout = new TableLayout(1, 3);
+			//this.MinimumSize = new Size(300, 10);
+			var layout = new TableLayout(1, 3) { Spacing = new Size(4, 4), Padding = 6 };
 			
 			int row = 0;
 			
 			layout.Add(EntryControls(), 0, row++);
 			layout.Add(ServerControls(), 0, row++);
-			
+			layout.SetRowScale(1);
 			layout.Add(Buttons(), 0, row++);
 
 			Content = layout;
@@ -78,7 +78,7 @@ namespace Pablo.Interface.Dialogs
 
 		Control EntryControls()
 		{
-			var layout = new TableLayout(2, 1);
+			var layout = new TableLayout(2, 1) { Spacing = new Size(4, 4) };
 			int row = 0;
 			layout.Add(new Label { Text = "Alias" }, 0, row);
 			layout.Add(AliasControl(), 1, row++);
@@ -88,7 +88,7 @@ namespace Pablo.Interface.Dialogs
 
 		Control ServerControls()
 		{
-			var layout = new DynamicLayout();
+			var layout = new DynamicLayout { DefaultSpacing = new Size(4, 4), Padding = 6 };
 			
 			layout.AddRow(new Label { Text = "Server Port" }, ServerPortControl());
 
@@ -151,7 +151,7 @@ namespace Pablo.Interface.Dialogs
 
 		Control Buttons()
 		{
-			var layout = new TableLayout(3, 1);
+			var layout = new TableLayout(3, 1) { Spacing = new Size(4, 4) };
 			layout.SetColumnScale(0);
 			layout.Add(CancelButton(), 1, 0);
 			layout.Add(OkButton(), 2, 0);
