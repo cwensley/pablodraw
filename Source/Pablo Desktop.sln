@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PabloDraw", "PabloDraw\Pabl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.Nat", "..\Libraries\Mono.Nat\src\Mono.Nat\Mono.Nat.csproj", "{F5D74163-145F-47BF-83DC-D0E07249C6CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PabloDraw.Mac", "PabloDraw.Mac\PabloDraw.Mac.csproj", "{90B2D03E-7B1D-4C1F-8ADB-664F980C2A32}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PabloDraw.Console", "PabloDraw.Console\PabloDraw.Console.csproj", "{0457895A-719B-47E9-84F3-356B2A1F8D3C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Eto", "Eto", "{C8B59D00-6086-492E-9112-3DA8E5025FBB}"
@@ -29,8 +27,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.WinForms - net45", "..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Wpf - net45", "..\Libraries\Eto\Source\Eto.Wpf\Eto.Wpf - net45.csproj", "{63137FA0-CA55-11E3-9C1A-0800200C9A66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.XamMac - net45", "..\Libraries\Eto\Source\Eto.Mac\Eto.XamMac - net45.csproj", "{BF405A10-C9EB-11E3-9C1A-0800200C9A66}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{88CCB819-8E11-429C-94D7-D5A27A671129}"
 	ProjectSection(SolutionItems) = preProject
 		Pablo Desktop.sln = Pablo Desktop.sln
@@ -40,6 +36,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network", "..\Libraries\lidgren\Lidgren.Network\Lidgren.Network.csproj", "{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.XamMac2 - net45", "..\Libraries\Eto\Source\Eto.Mac\Eto.XamMac2 - net45.csproj", "{856E8C70-2702-11E4-8C21-0800200C9A66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PabloDraw.Mac", "PabloDraw.Mac\PabloDraw.Mac.csproj", "{5590729F-3176-4A91-94E3-54F75DA2EB9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eto.Mac - net45", "..\Libraries\Eto\Source\Eto.Mac\Eto.Mac - net45.csproj", "{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,16 +99,6 @@ Global
 		{F5D74163-145F-47BF-83DC-D0E07249C6CA}.Win Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5D74163-145F-47BF-83DC-D0E07249C6CA}.Win Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5D74163-145F-47BF-83DC-D0E07249C6CA}.Win Release|Any CPU.Build.0 = Release|Any CPU
-		{90B2D03E-7B1D-4C1F-8ADB-664F980C2A32}.Mac App Store|Any CPU.ActiveCfg = Release-MAS|Any CPU
-		{90B2D03E-7B1D-4C1F-8ADB-664F980C2A32}.Mac App Store|Any CPU.Build.0 = Release-MAS|Any CPU
-		{90B2D03E-7B1D-4C1F-8ADB-664F980C2A32}.Mac Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90B2D03E-7B1D-4C1F-8ADB-664F980C2A32}.Mac Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90B2D03E-7B1D-4C1F-8ADB-664F980C2A32}.Mac Developer|Any CPU.ActiveCfg = Release|Any CPU
-		{90B2D03E-7B1D-4C1F-8ADB-664F980C2A32}.Mac Developer|Any CPU.Build.0 = Release|Any CPU
-		{90B2D03E-7B1D-4C1F-8ADB-664F980C2A32}.Mac Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90B2D03E-7B1D-4C1F-8ADB-664F980C2A32}.Mac Release|Any CPU.Build.0 = Release|Any CPU
-		{90B2D03E-7B1D-4C1F-8ADB-664F980C2A32}.Win Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90B2D03E-7B1D-4C1F-8ADB-664F980C2A32}.Win Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0457895A-719B-47E9-84F3-356B2A1F8D3C}.Mac App Store|Any CPU.ActiveCfg = Release|Any CPU
 		{0457895A-719B-47E9-84F3-356B2A1F8D3C}.Mac App Store|Any CPU.Build.0 = Release|Any CPU
 		{0457895A-719B-47E9-84F3-356B2A1F8D3C}.Mac Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -193,16 +183,6 @@ Global
 		{63137FA0-CA55-11E3-9C1A-0800200C9A66}.Win Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63137FA0-CA55-11E3-9C1A-0800200C9A66}.Win Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63137FA0-CA55-11E3-9C1A-0800200C9A66}.Win Release|Any CPU.Build.0 = Release|Any CPU
-		{BF405A10-C9EB-11E3-9C1A-0800200C9A66}.Mac App Store|Any CPU.ActiveCfg = Release|Any CPU
-		{BF405A10-C9EB-11E3-9C1A-0800200C9A66}.Mac App Store|Any CPU.Build.0 = Release|Any CPU
-		{BF405A10-C9EB-11E3-9C1A-0800200C9A66}.Mac Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF405A10-C9EB-11E3-9C1A-0800200C9A66}.Mac Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF405A10-C9EB-11E3-9C1A-0800200C9A66}.Mac Developer|Any CPU.ActiveCfg = Release|Any CPU
-		{BF405A10-C9EB-11E3-9C1A-0800200C9A66}.Mac Developer|Any CPU.Build.0 = Release|Any CPU
-		{BF405A10-C9EB-11E3-9C1A-0800200C9A66}.Mac Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF405A10-C9EB-11E3-9C1A-0800200C9A66}.Mac Release|Any CPU.Build.0 = Release|Any CPU
-		{BF405A10-C9EB-11E3-9C1A-0800200C9A66}.Win Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF405A10-C9EB-11E3-9C1A-0800200C9A66}.Win Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Mac App Store|Any CPU.ActiveCfg = Release|Any CPU
 		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Mac App Store|Any CPU.Build.0 = Release|Any CPU
 		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Mac Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -225,6 +205,28 @@ Global
 		{856E8C70-2702-11E4-8C21-0800200C9A66}.Mac Release|Any CPU.Build.0 = Release|Any CPU
 		{856E8C70-2702-11E4-8C21-0800200C9A66}.Win Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{856E8C70-2702-11E4-8C21-0800200C9A66}.Win Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Mac App Store|Any CPU.ActiveCfg = Release|Any CPU
+		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Mac App Store|Any CPU.Build.0 = Release|Any CPU
+		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Mac Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Mac Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Mac Developer|Any CPU.ActiveCfg = Release|Any CPU
+		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Mac Developer|Any CPU.Build.0 = Release|Any CPU
+		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Mac Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Mac Release|Any CPU.Build.0 = Release|Any CPU
+		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Win Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Win Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}.Mac App Store|Any CPU.ActiveCfg = Release|Any CPU
+		{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}.Mac App Store|Any CPU.Build.0 = Release|Any CPU
+		{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}.Mac Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}.Mac Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}.Mac Developer|Any CPU.ActiveCfg = Release|Any CPU
+		{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}.Mac Developer|Any CPU.Build.0 = Release|Any CPU
+		{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}.Mac Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}.Mac Release|Any CPU.Build.0 = Release|Any CPU
+		{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}.Win Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}.Win Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}.Win Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}.Win Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -236,8 +238,8 @@ Global
 		{543B2F90-CA56-11E3-9C1A-0800200C9A66} = {C8B59D00-6086-492E-9112-3DA8E5025FBB}
 		{9F51798A-354C-47A1-9207-4BB7D7FC7FC4} = {C8B59D00-6086-492E-9112-3DA8E5025FBB}
 		{63137FA0-CA55-11E3-9C1A-0800200C9A66} = {C8B59D00-6086-492E-9112-3DA8E5025FBB}
-		{BF405A10-C9EB-11E3-9C1A-0800200C9A66} = {C8B59D00-6086-492E-9112-3DA8E5025FBB}
 		{856E8C70-2702-11E4-8C21-0800200C9A66} = {C8B59D00-6086-492E-9112-3DA8E5025FBB}
+		{3E7995E0-C9EB-11E3-9C1A-0800200C9A66} = {C8B59D00-6086-492E-9112-3DA8E5025FBB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8F8DD3BA-3F1A-4B83-87FD-07C1D69CB86C}

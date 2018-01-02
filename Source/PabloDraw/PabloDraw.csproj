@@ -61,19 +61,6 @@
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <WarningLevel>4</WarningLevel>
     <DebugType>pdbonly</DebugType>
-    <CustomCommands>
-      <CustomCommands>
-        <Command>
-          <type>BeforeBuild</type>
-          <command>./copyassemblies.sh ${ProjectConfigName} ${ProjectDir}/Assemblies</command>
-          <workingdir>${ProjectDir}</workingdir>
-        </Command>
-        <Command>
-          <type>AfterBuild</type>
-          <command>cp -Rf ${TargetDir}/PabloDraw.exe ${SolutionDir}/../Releases/3.2</command>
-        </Command>
-      </CustomCommands>
-    </CustomCommands>
     <EnvironmentVariables>
       <EnvironmentVariables>
         <Variable name="MONO_IOMAP" value="case" />
@@ -97,15 +84,6 @@
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <WarningLevel>4</WarningLevel>
     <DebugType>full</DebugType>
-    <CustomCommands>
-      <CustomCommands>
-        <Command>
-          <type>BeforeBuild</type>
-          <command>./copyassemblies.sh ${ProjectConfigName} ${ProjectDir}/Assemblies</command>
-          <workingdir>${ProjectDir}</workingdir>
-        </Command>
-      </CustomCommands>
-    </CustomCommands>
     <EnvironmentVariables>
       <EnvironmentVariables>
         <Variable name="MONO_IOMAP" value="case" />
@@ -141,6 +119,9 @@
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
       <Name>System</Name>
@@ -151,13 +132,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
-  <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">cd $(ProjectDir)
-copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
-    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">cd $(ProjectDir)
-./copyassemblies.sh $(ConfigurationName) Assemblies</PreBuildEvent>
-    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">rem del $(TargetDir)\Eto.dll</PostBuildEvent>
-  </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
@@ -171,9 +145,9 @@ copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -186,11 +160,6 @@ copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 4.5</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assemblies\Eto.dll" />
@@ -198,10 +167,10 @@ copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
     <EmbeddedResource Include="Assemblies\Pablo.Interface.dll" />
     <EmbeddedResource Include="Assemblies\Lidgren.Network.dll" />
     <EmbeddedResource Include="Assemblies\Mono.Nat.dll" />
-    <EmbeddedResource Include="..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll">
+    <EmbeddedResource Include="..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll">
       <Link>Assemblies\Newtonsoft.Json.dll</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\packages\sharpcompress.0.10.1.3\lib\net40\SharpCompress.dll">
+    <EmbeddedResource Include="..\packages\sharpcompress.0.10.2\lib\net40\SharpCompress.dll">
       <Link>Assemblies\SharpCompress.dll</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="Assemblies\Eto.Gtk2.dll" />
@@ -209,8 +178,6 @@ copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="copyassemblies.cmd" />
-    <None Include="copyassemblies.sh" />
     <None Include="PabloDraw_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
@@ -235,7 +202,7 @@ copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
       <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
-    <PublishFile Include="Eto.Platform.Gtk">
+    <PublishFile Include="Eto.Direct2D">
       <Visible>False</Visible>
       <Group>
       </Group>
@@ -245,7 +212,37 @@ copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
       <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
-    <PublishFile Include="Eto.Platform.Windows">
+    <PublishFile Include="Eto.Gtk2">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="Eto.Gtk3">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="Eto.WinForms">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="Eto.Wpf">
       <Visible>False</Visible>
       <Group>
       </Group>
@@ -365,6 +362,36 @@ copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
       <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
+    <PublishFile Include="SharpDX">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.Direct2D1">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.DXGI">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assemblies\Eto.Wpf.dll" />
@@ -428,37 +455,66 @@ copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
     <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Direct2D\Eto.Direct2D - net45.csproj">
       <Project>{330EF9FD-5947-4AC9-9796-950C7633695F}</Project>
       <Name>Eto.Direct2D - net45</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Gtk\Eto.Gtk2 - net45.csproj">
       <Project>{80915A80-CA54-11E3-9C1A-0800200C9A66}</Project>
       <Name>Eto.Gtk2 - net45</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Gtk\Eto.Gtk3 - net45.csproj">
       <Project>{543B2F90-CA56-11E3-9C1A-0800200C9A66}</Project>
       <Name>Eto.Gtk3 - net45</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.WinForms\Eto.WinForms - net45.csproj">
       <Project>{9F51798A-354C-47A1-9207-4BB7D7FC7FC4}</Project>
       <Name>Eto.WinForms - net45</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Wpf\Eto.Wpf - net45.csproj">
       <Project>{63137fa0-ca55-11e3-9c1a-0800200c9a66}</Project>
       <Name>Eto.Wpf - net45</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto - pcl.csproj">
       <Project>{35EF0A4E-2A1A-492C-8BED-106774EA09F2}</Project>
       <Name>Eto - pcl</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Pablo\Pablo.csproj">
       <Project>{35DBE6BB-B46D-4AE9-8156-FBFC6EC2BB69}</Project>
       <Name>Pablo</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Pablo.Interface\Pablo.Interface.csproj">
       <Project>{3FAACC7E-D156-4599-B0D1-6177AD78E8B1}</Project>
       <Name>Pablo.Interface</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Mono.Nat.csproj">
+      <Project>{F5D74163-145F-47BF-83DC-D0E07249C6CA}</Project>
+      <Name>Mono.Nat</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\lidgren\Lidgren.Network\Lidgren.Network.csproj">
+      <Project>{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}</Project>
+      <Name>Lidgren.Network</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <Target Name="BeforeCompile">
+    <ItemGroup>
+      <FilesToCopy Include="..\..\Libraries\Eto\BuildOutput\net45\$(ConfigurationName)\Eto*.dll" />
+      <FilesToCopy Include="..\..\Libraries\lidgren\Lidgren.Network\bin\$(ConfigurationName)\Lidgren.Network.*" />
+      <FilesToCopy Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\bin\$(ConfigurationName)\Mono.Nat.*" />
+      <FilesToCopy Include="..\Pablo\bin\$(ConfigurationName)\Pablo.dll" />
+      <FilesToCopy Include="..\Pablo.Interface\bin\$(ConfigurationName)\Pablo.Interface.dll" />
+    </ItemGroup>
+    <Message Text="Copying embedded files" />
+    <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(MSBuildThisFileDirectory)Assemblies" />
+  </Target>
 </Project>
