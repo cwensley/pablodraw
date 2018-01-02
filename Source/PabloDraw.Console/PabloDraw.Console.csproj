@@ -86,13 +86,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="copyassemblies.cmd" />
-    <None Include="copyassemblies.sh" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\Eto\Source\Eto\Eto - pcl.csproj">
       <Project>{35EF0A4E-2A1A-492C-8BED-106774EA09F2}</Project>
       <Name>Eto - pcl</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\lidgren\Lidgren.Network\Lidgren.Network.csproj">
       <Project>{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}</Project>
@@ -112,21 +111,22 @@
     <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Gtk\Eto.Gtk2 - net45.csproj">
       <Project>{80915A80-CA54-11E3-9C1A-0800200C9A66}</Project>
       <Name>Eto.Gtk2 - net45</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.WinForms\Eto.WinForms - net45.csproj">
       <Project>{9F51798A-354C-47A1-9207-4BB7D7FC7FC4}</Project>
       <Name>Eto.WinForms - net45</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Eto\Source\Eto.Mac\Eto.Mac - net45.csproj">
       <Project>{3E7995E0-C9EB-11E3-9C1A-0800200C9A66}</Project>
       <Name>Eto.Mac - net45</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
   <Target Name="AfterBuild">
   </Target>
   -->
@@ -160,20 +160,24 @@
     <EmbeddedResource Include="..\..\Libraries\Eto\Libraries\MonoMac\MonoMac.dll">
       <Link>Assemblies\MonoMac.dll</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\packages\sharpcompress.0.10.1.3\lib\net40\SharpCompress.dll">
+    <EmbeddedResource Include="..\packages\sharpcompress.0.10.2\lib\net40\SharpCompress.dll">
       <Link>Assemblies\SharpCompress.dll</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll">
+    <EmbeddedResource Include="..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll">
       <Link>Assemblies\Newtonsoft.Json.dll</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="Assemblies\Eto.Gtk2.dll" />
     <EmbeddedResource Include="Assemblies\Eto.Mac.dll" />
     <EmbeddedResource Include="Assemblies\Eto.WinForms.dll" />
   </ItemGroup>
-  <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">cd $(ProjectDir)
-copyassemblies.cmd $(ConfigurationName) Assemblies</PreBuildEvent>
-    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">cd $(ProjectDir)
-./copyassemblies.sh $(ConfigurationName) Assemblies</PreBuildEvent>
-  </PropertyGroup>
+  <Target Name="BeforeCompile">
+    <ItemGroup>
+      <FilesToCopy Include="..\..\Libraries\Eto\BuildOutput\net45\$(ConfigurationName)\Eto*.dll" />
+      <FilesToCopy Include="..\..\Libraries\lidgren\Lidgren.Network\bin\$(ConfigurationName)\Lidgren.Network.*" />
+      <FilesToCopy Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\bin\$(ConfigurationName)\Mono.Nat.*" />
+      <FilesToCopy Include="..\Pablo\bin\$(ConfigurationName)\Pablo.dll" />
+    </ItemGroup>
+    <Message Text="Copying embedded files" />
+    <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(MSBuildThisFileDirectory)Assemblies" />
+  </Target>
 </Project>
