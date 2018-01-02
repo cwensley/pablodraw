@@ -8,7 +8,7 @@ using System;
 using System.Runtime.InteropServices;
 using Eto.Mac.Forms.ToolBar;
 
-#if __Unified__
+#if __UNIFIED__
 using AppKit;
 using ObjCRuntime;
 using Foundation;
