@@ -6,7 +6,9 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.CodeDom.Compiler;
+using System.Reflection;
 using System.Threading;
+using log4net;
 
 namespace PabloDraw.Console.CommandHandlers
 {
@@ -16,7 +18,9 @@ namespace PabloDraw.Console.CommandHandlers
 	    private int _autosaveInterval;
 	    private bool _backup = false;
 	    private int _port;
-	    
+	    private byte _autoSaveRetryCounter;
+	    private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public override string Name { get { return "Server"; } }
 
 		public bool EditMode { get { return true; } }
@@ -206,40 +210,67 @@ namespace PabloDraw.Console.CommandHandlers
 	            {
 	                string file;
 
-                    if (Document.LoadedFormat == null)
+	                if (!String.IsNullOrEmpty(Document.FileName))
 	                {
-	                    Document.LoadedFormat = Document.Info.DefaultFormat; // Set to Rip.
-	                    file = Path.Combine(_port.ToString(), "AutoSave.rip"); 
-                    }
-	                else
+	                    file = Path.Combine(_port.ToString(), "AutoSave" + Path.GetExtension(Document.FileName));
+
+	                }
+	                else // New file was created.
 	                {
-                       file = Path.Combine(_port.ToString(), "AutoSave.ans"); 
+	                    if (Document.Info.ID == "rip") 
+	                    {
+	                        file = Path.Combine(_port.ToString(), "AutoSave.rip");
+	                    }
+	                    else if (Document.Info.ID == "character")
+                        {
+	                        file = Path.Combine(_port.ToString(), "AutoSave.ans");
+	                    }
+	                    else
+                        {
+                            string msg = string.Format("File format was not detected - {0} at {1}", Document.Info.ID, DateTime.Now);
+                            System.Console.WriteLine(msg);
+                            Log.Warn(msg);
+
+                            return; // Undetected file format.
+                        }
+
 	                }
 
-	                if (_backup)
+                    if (_backup)
 	                {
 	                    Handler.SaveWithBackup(file, Document.LoadedFormat);
-	                    System.Console.WriteLine(string.Format("AutoSave - {0} was saved at {1} with Backup", Handler.Document.FileName, DateTime.Now));
+	                    string msg = string.Format("AutoSave - {0} was saved at {1} with Backup", file, DateTime.Now);
+                        System.Console.WriteLine(msg);
+                        Log.Info(msg);
                     }
 	                else
 	                {
 	                    Handler.Save(file, Document.LoadedFormat);
-	                    System.Console.WriteLine(string.Format("AutoSave - {0} was saved at {1}", Handler.Document.FileName, DateTime.Now));
+	                    string msg = string.Format("AutoSave - {0} was saved at {1}", file, DateTime.Now);
+                        System.Console.WriteLine(msg);
+                        Log.Info(msg);
                     }
 
 	                Handler.Document.IsModified = false;
+	                _autoSaveRetryCounter = 0;
 
-	                
 	            }
 	        }
 	        catch (Exception ex)
 	        {
-	            
-#if DEBUG
-	            throw;
-#endif
-	        }
-	        finally
+	            Log.ErrorFormat("An error happened: {0}", ex);
+
+	            if (_autoSaveRetryCounter == 5)
+	            {
+//#if DEBUG
+	                throw new Exception(ex.Message, ex);
+	                //#endif
+	            }
+
+	            _autoSaveRetryCounter++;
+
+            }
+            finally
 	        {
 
 	            // Make sure timer is set again.

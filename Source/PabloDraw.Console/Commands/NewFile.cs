@@ -34,7 +34,13 @@ namespace PabloDraw.Console.Commands
 			if (clientDelegate.DocumentInfos.TryGetValue (infoId, out info)) {
 				var doc = info.Create ();
 				doc.EditMode = true;
-				clientDelegate.SetDocument(doc);
+
+			    if (doc.LoadedFormat == null) // When a New Text Document or Ripscript is created LoadedFormat is null. Set default format.
+			    {
+			        doc.LoadedFormat = doc.Info.DefaultFormat;
+			    }
+
+                clientDelegate.SetDocument(doc);
 			}
 		}
 

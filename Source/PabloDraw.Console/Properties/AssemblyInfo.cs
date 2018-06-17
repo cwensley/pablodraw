@@ -8,3 +8,6 @@ using System.Runtime.CompilerServices;
 //
 [assembly: AssemblyTitle("PabloDraw Console")]
 [assembly: AssemblyDescription("PabloDraw Console")]
+
+// Config log4net
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]

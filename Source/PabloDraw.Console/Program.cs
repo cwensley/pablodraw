@@ -3,12 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.CodeDom.Compiler;
+using System.Reflection;
+using log4net;
 
 namespace PabloDraw.Console
 {
 	static class Program
 	{
-		public static IEnumerable<ICommandLineHandler> GetHandlers()
+	    private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+        public static IEnumerable<ICommandLineHandler> GetHandlers()
 		{
 			yield return new CommandHandlers.PlatformCommandLine();
 			yield return new CommandHandlers.ServerCommandLine();
@@ -18,21 +22,30 @@ namespace PabloDraw.Console
 
 		public static int Run ()
 		{
-			var command = new CommandLine (Environment.CommandLine);
+		    try
+		    {
+		        var command = new CommandLine(Environment.CommandLine);
 
-			var args = new ProcessCommandLineArgs
-			{
-				Command = command,
-				Handlers = GetHandlers().ToArray(),
-				Writer = new IndentedTextWriter(System.Console.Out, "  ")
-			};
-			foreach (var handler in args.Handlers)
-			{
-				if (handler.Process(args))
-					return 0;
-			}
-			System.Console.WriteLine();
-			return -1;
+		        var args = new ProcessCommandLineArgs
+		        {
+		            Command = command,
+		            Handlers = GetHandlers().ToArray(),
+		            Writer = new IndentedTextWriter(System.Console.Out, "  ")
+		        };
+		        foreach (var handler in args.Handlers)
+		        {
+		            if (handler.Process(args))
+		                return 0;
+		        }
+
+		        System.Console.WriteLine();
+		        return -1;
+		    }
+		    catch (Exception ex)
+		    {
+                Log.ErrorFormat("An error happened: {0}", ex);
+		        return 0;
+		    }
 		}
 	}
 }
