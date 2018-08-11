@@ -6,13 +6,22 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.CodeDom.Compiler;
+using System.Reflection;
 using System.Threading;
+using log4net;
 
 namespace PabloDraw.Console.CommandHandlers
 {
 	public class ServerCommandLine : CommandLineHandler, IClientDelegate
 	{
-		public override string Name { get { return "Server"; } }
+	    private Timer _autoSaveTimer;
+	    private int _autosaveInterval;
+	    private bool _backup = false;
+	    private int _port;
+	    private byte _autoSaveRetryCounter;
+	    private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+	    
+        public override string Name { get { return "Server"; } }
 
 		public bool EditMode { get { return true; } }
 
@@ -142,7 +151,7 @@ namespace PabloDraw.Console.CommandHandlers
 			EnableBackups = command.GetBool("backup") ?? true;
 			var password = command.GetValue("password", "pw");
 			var operatorPassword = command.GetValue("op", "oppassword", "oppw");
-			var port = command.GetInt("port") ?? 14400;
+			_port = command.GetInt("port") ?? 14400;
 			var nat = command.GetBool("nat") ?? false;
 			var userLevel = command.GetEnum<UserLevel>("userlevel", "ul") ?? UserLevel.Viewer;
 
@@ -168,20 +177,22 @@ namespace PabloDraw.Console.CommandHandlers
 				}
 			}
 
-			var autosaveInterval = command.GetInt("autosave") ?? 0;
-			if (autosaveInterval > 0)
+            _autosaveInterval = command.GetInt("autosave") ?? 0;
+			if (_autosaveInterval > 0)
 			{
-				// turn on autosaving
-			}
+                if (!Directory.Exists(_port.ToString()))
+			    {
+			        Directory.CreateDirectory(_port.ToString( )); // Store AutoSave in its port number folder so that multiple instances don't overwrite each other.
+                }
+			    _autosaveInterval *= 1000; // Convert to seconds.
+                _autoSaveTimer = new Timer(TimerCallback, null, _autosaveInterval, Timeout.Infinite);
+            }
 
-			var backup = command.GetBool("backup") ?? false;
-			if (backup)
-			{
-				// turn on backups
-			}
+            _backup = command.GetBool("backup") ?? false;
+			
 
-			args.Writer.WriteLine("Starting PabloDraw server on port {0}...", port);
-			StartServer(port, password, operatorPassword, nat, userLevel, args.Writer);
+			args.Writer.WriteLine("Starting PabloDraw server on port {0}...", _port);
+			StartServer(_port, password, operatorPassword, nat, userLevel, args.Writer);
 
 			args.Writer.WriteLine("Started! Press any key to stop");
 			System.Console.Read();
@@ -190,5 +201,86 @@ namespace PabloDraw.Console.CommandHandlers
 			StopServer();
 			return true;
 		}
+
+        // TODO - It seems that some Document properties are not set when a new doc is created on the server (iceColors, IsModifier, ...)
+        // TODO - It would be better to set these properties (Document Creation, Editing, ...)
+	    private void TimerCallback(Object state)
+	    {
+            try
+            {
+                if (Handler != null) Handler.Document.IsModified = true; // TODO - IsModified is always false, even if document is changed
+
+                if (Handler != null && Handler.Document.IsModified) 
+                {
+                    string path;
+	                string fileName = "";
+
+	                if (Document.Info.ID == "rip")
+	                {
+	                    fileName = "AutoSave.rip";
+	                }
+	                else if (Document.Info.ID == "character")
+	                {
+	                    fileName = "AutoSave.ans";
+	                    if (((Pablo.Formats.Character.CharacterHandler) Handler).CurrentPage.Palette.Count > 16) // TODO - Find a better way to detect/set this.
+                        {
+	                        ((Pablo.Formats.Character.CharacterDocument) Document).ICEColours = true; 
+
+	                    }
+                    }
+	                else
+                    {
+                        string msg = string.Format("File format was not detected - {0} at {1}", Document.Info.ID, DateTime.Now);
+                        System.Console.WriteLine(msg);
+                        Log.Warn(msg);
+
+                        return; // Undetected file format.
+                    }
+
+	                Document.FileName = fileName;
+                    path = Path.Combine(_port.ToString(), fileName);
+                    
+                    if (_backup)
+	                {
+	                    Handler.SaveWithBackup(path, Document.LoadedFormat);
+	                    string msg = string.Format("AutoSave - {0} was saved at {1} with Backup", path, DateTime.Now);
+                        System.Console.WriteLine(msg);
+                        Log.Info(msg);
+                    }
+	                else
+	                {
+	                    Handler.Save(path, Document.LoadedFormat);
+	                    string msg = string.Format("AutoSave - {0} was saved at {1}", path, DateTime.Now);
+                        System.Console.WriteLine(msg);
+                        Log.Info(msg);
+                    }
+
+	                Handler.Document.IsModified = false;
+	                _autoSaveRetryCounter = 0;
+
+	            }
+	        }
+	        catch (Exception ex)
+	        {
+	            Log.ErrorFormat("An error happened: {0}", ex);
+
+	            if (_autoSaveRetryCounter == 5)
+	            {
+//#if DEBUG
+	                throw new Exception(ex.Message, ex);
+	                //#endif
+	            }
+
+	            _autoSaveRetryCounter++;
+
+            }
+            finally
+	        {
+
+	            // Make sure timer is set again.
+	            _autoSaveTimer.Change(_autosaveInterval, Timeout.Infinite);
+	        }
+	    }
+
 	}
 }

@@ -34,7 +34,21 @@ namespace PabloDraw.Console.Commands
 			if (clientDelegate.DocumentInfos.TryGetValue (infoId, out info)) {
 				var doc = info.Create ();
 				doc.EditMode = true;
-				clientDelegate.SetDocument(doc);
+			    doc.IsNew = true;
+
+			    if (doc.LoadedFormat == null) // When a New Text Document or Ripscript is created LoadedFormat is null. Set default format.
+			    {
+			        doc.LoadedFormat = doc.Info.DefaultFormat;
+			    }
+
+			    if (infoId == "character") // Set default for character (ansi) file
+			    {
+			        ((Pablo.Formats.Character.CharacterDocument) doc).ICEColours = false;
+			        ((Pablo.Formats.Character.CharacterDocument) doc).DosAspect = false;
+			        ((Pablo.Formats.Character.CharacterDocument) doc).Use9x = false;
+                }
+
+                clientDelegate.SetDocument(doc);
 			}
 		}
 
