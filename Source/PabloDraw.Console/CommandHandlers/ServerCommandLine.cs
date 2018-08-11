@@ -20,7 +20,7 @@ namespace PabloDraw.Console.CommandHandlers
 	    private int _port;
 	    private byte _autoSaveRetryCounter;
 	    private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
+	    
         public override string Name { get { return "Server"; } }
 
 		public bool EditMode { get { return true; } }
@@ -202,51 +202,55 @@ namespace PabloDraw.Console.CommandHandlers
 			return true;
 		}
 
+        // TODO - It seems that some Document properties are not set when a new doc is created on the server (iceColors, IsModifier, ...)
+        // TODO - It would be better to set these properties (Document Creation, Editing, ...)
 	    private void TimerCallback(Object state)
 	    {
             try
-	        {
-	            if (Handler != null && 1 == 1 /*Handler.Document.IsModified*/) // TODO - IsModified is always false, even if document is changed
-	            {
-	                string file;
+            {
+                if (Handler != null) Handler.Document.IsModified = true; // TODO - IsModified is always false, even if document is changed
 
-	                if (!String.IsNullOrEmpty(Document.FileName))
+                if (Handler != null && Handler.Document.IsModified) 
+                {
+                    string path;
+	                string fileName = "";
+
+	                if (Document.Info.ID == "rip")
 	                {
-	                    file = Path.Combine(_port.ToString(), "AutoSave" + Path.GetExtension(Document.FileName));
-
+	                    fileName = "AutoSave.rip";
 	                }
-	                else // New file was created.
+	                else if (Document.Info.ID == "character")
 	                {
-	                    if (Document.Info.ID == "rip") 
-	                    {
-	                        file = Path.Combine(_port.ToString(), "AutoSave.rip");
-	                    }
-	                    else if (Document.Info.ID == "character")
+	                    fileName = "AutoSave.ans";
+	                    if (((Pablo.Formats.Character.CharacterHandler) Handler).CurrentPage.Palette.Count > 16) // TODO - Find a better way to detect/set this.
                         {
-	                        file = Path.Combine(_port.ToString(), "AutoSave.ans");
+	                        ((Pablo.Formats.Character.CharacterDocument) Document).ICEColours = true; 
+
 	                    }
-	                    else
-                        {
-                            string msg = string.Format("File format was not detected - {0} at {1}", Document.Info.ID, DateTime.Now);
-                            System.Console.WriteLine(msg);
-                            Log.Warn(msg);
+                    }
+	                else
+                    {
+                        string msg = string.Format("File format was not detected - {0} at {1}", Document.Info.ID, DateTime.Now);
+                        System.Console.WriteLine(msg);
+                        Log.Warn(msg);
 
-                            return; // Undetected file format.
-                        }
+                        return; // Undetected file format.
+                    }
 
-	                }
-
+	                Document.FileName = fileName;
+                    path = Path.Combine(_port.ToString(), fileName);
+                    
                     if (_backup)
 	                {
-	                    Handler.SaveWithBackup(file, Document.LoadedFormat);
-	                    string msg = string.Format("AutoSave - {0} was saved at {1} with Backup", file, DateTime.Now);
+	                    Handler.SaveWithBackup(path, Document.LoadedFormat);
+	                    string msg = string.Format("AutoSave - {0} was saved at {1} with Backup", path, DateTime.Now);
                         System.Console.WriteLine(msg);
                         Log.Info(msg);
                     }
 	                else
 	                {
-	                    Handler.Save(file, Document.LoadedFormat);
-	                    string msg = string.Format("AutoSave - {0} was saved at {1}", file, DateTime.Now);
+	                    Handler.Save(path, Document.LoadedFormat);
+	                    string msg = string.Format("AutoSave - {0} was saved at {1}", path, DateTime.Now);
                         System.Console.WriteLine(msg);
                         Log.Info(msg);
                     }
