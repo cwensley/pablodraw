@@ -38,7 +38,7 @@ namespace Pablo.Actions
 			ofd.Filters.Insert(0, new FileDialogFilter{ Name = "Auto Detect", Extensions = allFormats.ToArray() });
 			if (!handler.Generator.IsMac || setCurrent)
 			{
-				if (!string.IsNullOrEmpty(handler.Document.FileName))
+				if (!string.IsNullOrEmpty(handler.Document.FileName) && handler.Document.HasSavePermission)
 				{
 					if (Path.IsPathRooted(handler.Document.FileName))
 					{

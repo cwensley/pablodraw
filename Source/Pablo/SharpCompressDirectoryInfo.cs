@@ -1,10 +1,11 @@
 using System;
-using SharpCompress.Reader;
-using SharpCompress.Archive;
+using SharpCompress.Readers;
+using SharpCompress.Compressors;
 using System.IO;
 using System.Collections.Generic;
 using Eto.IO;
 using SharpCompress.Common.Rar;
+using SharpCompress.Archives;
 
 namespace Pablo
 {
@@ -37,11 +38,11 @@ namespace Pablo
 				}
 			}
 			/**/
-			using (var archive = ArchiveFactory.Open(stream, SharpCompress.Common.Options.LookForHeader))
+			using (var archive = ArchiveFactory.Open(stream, new ReaderOptions { LookForHeader = true }))
 			{
 				foreach (var entry in archive.Entries)
 				{
-					yield return new VirtualFileEntry(entry.FilePath.TrimEnd(Path.DirectorySeparatorChar), entry.IsDirectory);
+					yield return new VirtualFileEntry(entry.Key.TrimEnd(Path.DirectorySeparatorChar), entry.IsDirectory);
 				}
 			}
 			/**/
@@ -68,11 +69,11 @@ namespace Pablo
 			}
 			/**/
 			using (var stream = FileInfo.OpenRead())
-			using (var archive = ArchiveFactory.Open(stream, SharpCompress.Common.Options.None))
+			using (var archive = ArchiveFactory.Open(stream))
 			{
 				foreach (var entry in archive.Entries)
 				{
-					if (!entry.IsDirectory && string.Equals(entry.FilePath, fileName, StringComparison.InvariantCultureIgnoreCase))
+					if (!entry.IsDirectory && string.Equals(entry.Key, fileName, StringComparison.InvariantCultureIgnoreCase))
 					{
 						ms = new MemoryStream((int)entry.Size);
 						entry.WriteTo(ms);

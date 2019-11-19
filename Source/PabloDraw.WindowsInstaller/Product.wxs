@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The name of the product -->
+<?define Name = "PabloDraw" ?>
+<!-- The Description of the product -->
+<?define Description = "An ANSI/ASCII/RIP/Text editor." ?>
+<!-- The manufacturer, for setup package publisher and folder info -->
+<?define Manufacturer = "Picoe Software Solutions" ?>
+<!-- The version number of this setup package-->
+<?define Version = "$(var.AssemblyVersion)" ?>
+<!-- UpgradeCode must be unique and not changed once the first version of the program is installed. -->
+<?define UpgradeCode = "dc30a6a5-e756-4440-b8cd-cc823d9de7a3" ?>
+<!-- The name of the Cabinet -->
+<?define CabName = "PabloDraw.cab" ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" 
+           Language="1033"
+           Name="$(var.Name)"
+           Manufacturer="$(var.Manufacturer)"
+           UpgradeCode="$(var.UpgradeCode)"
+           Version="$(var.Version)">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="x64" Manufacturer="$(var.Manufacturer)" />
+
+    <!--Application logo-->
+    <Icon Id="Logo.ico" SourceFile="$(var.PabloDraw.ProjectDir)\PabloDraw.ico" />
+
+    <!--Application logo for Control Panel-->
+    <Property Id="ARPPRODUCTICON" Value="Logo.ico" />
+
+    <!--Embed Cabinet into single msi file-->
+    <Media Id="1" Cabinet="$(var.CabName)" EmbedCab="yes" />
+    
+		<MajorUpgrade DowngradeErrorMessage="A newer version of $(var.Name) is already installed." />
+    
+    <!--Main Feature for this Setup which can be found in Fragment Tag with ComponentGroupRef Id-->
+    <Feature Id="ProductFeature" Title="$(var.Name)" Level="1">
+      <!--Main application executable component-->
+      <ComponentGroupRef Id="ProductComponents" />
+      <!--Main application shortcut for Program Menu-->
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+	</Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLFOLDER" Name="PabloDraw" />
+      </Directory>
+      <!--Create application folder in Program Menu-->
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="PabloDraw" />
+      </Directory>
+    </Directory>
+
+  </Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+      <Component Id="PabloDraw.exe" Win64="yes">
+        <File Id="PabloDraw.exe" Source="$(var.PabloDraw.TargetPath)" ProcessorArchitecture="x64" />
+      </Component>
+      <Component Win64="yes">
+        <File Source="$(var.PabloDraw.TargetPath).config" ProcessorArchitecture="x64" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <!--Create application shortcut in Program Menu-->
+      <Component Id="ApplicationShortcut" Guid="*">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="$(var.Name)" Description="$(var.Description)" Icon="Logo.ico" Target="[#PabloDraw.exe]" WorkingDirectory="INSTALLFOLDER" />
+        <!--Remove application shortcut from Program Menu on uninstall-->
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
+        <!--Create application registry entry-->
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\$(var.Manufacturer)\$(var.Name)" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

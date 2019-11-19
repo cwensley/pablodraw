@@ -7,7 +7,7 @@ namespace PabloDraw
 		[STAThread]
 		static void Main()
 		{
-			EmbeddedAssemblyLoader.Register("PabloDraw.Assemblies");
+            EmbedReferences.Init();
 			Program.Run();
 		}
 	}

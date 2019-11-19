@@ -23,13 +23,6 @@ namespace Pablo.Interface
 		static Main main2;
 #endif
 		
-#if DEBUG
-		static PabloApplication ()
-		{
-			Debug.Listeners.Clear();
-			Debug.Listeners.Add (new TextWriterTraceListener (System.Console.Out));
-		}
-#endif
 		public PabloApplication()
 			: this(Platform.Detect)
 		{

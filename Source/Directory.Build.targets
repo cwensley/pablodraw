@@ -1,0 +1,49 @@
+﻿<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="EmbedReferences.targets" />
+  
+  <UsingTask TaskName="_ParseVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Version ParameterType="System.String" Required="true" />
+      <AssemblyVersion ParameterType="System.String" Output="true" />
+      <AssemblyFileVersion ParameterType="System.String" Output="true" />
+      <AssemblyInformationalVersion ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System"/>
+      <Using Namespace="System.IO"/>
+      <Using Namespace="System.Text.RegularExpressions"/>
+      <Code Type="Fragment" Language="cs"><![CDATA[
+var regex = new Regex(@"(?<ver>(?<maj>\d+)[.](?<min>\d+)([.](?<build>\d+)([.](?<rev>\d+))?)?)([-](?<info>.+))?");
+
+if (string.IsNullOrEmpty(AssemblyVersion)) AssemblyVersion = regex.Replace(Version, "${ver}");
+if (string.IsNullOrEmpty(AssemblyFileVersion)) AssemblyFileVersion = AssemblyFileVersion ?? regex.Replace(Version, "${ver}");
+if (string.IsNullOrEmpty(AssemblyInformationalVersion)) AssemblyInformationalVersion = Version;
+
+]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="_ParseAssemblyVersion" BeforeTargets="BeforeBuild">
+    
+    <_ParseVersion Version="$(Version)">
+      <Output TaskParameter="AssemblyVersion" PropertyName="AssemblyVersion"/>
+      <Output TaskParameter="AssemblyFileVersion" PropertyName="AssemblyFileVersion"/>
+      <Output TaskParameter="AssemblyInformationalVersion" PropertyName="AssemblyInformationalVersion"/>
+    </_ParseVersion>
+  </Target>
+  
+  <Target Name="_WriteVersion" BeforeTargets="CoreCompile" Condition="$(GenerateAssemblyVersion) == 'True'"
+          Inputs="$(MSBuildAllProjects);@(Compile);@(_CoreCompileResourceInputs);$(ApplicationIcon);$(AssemblyOriginatorKeyFile);@(ReferencePathWithRefAssemblies);@(CompiledLicenseFile);@(LinkResource);@(EmbeddedDocumentation);$(Win32Resource);$(Win32Manifest);@(CustomAdditionalCompileInputs);$(ResolvedCodeAnalysisRuleSet);@(AdditionalFiles);@(EmbeddedFiles)"
+          Outputs="$(IntermediateOutputPath)VersionInfo.cs">
+
+    <ItemGroup>
+      <VersionInfo Include="[assembly: System.Reflection.AssemblyVersion(&quot;$(AssemblyVersion)&quot;)]" />
+      <VersionInfo Include="[assembly: System.Reflection.AssemblyFileVersion(&quot;$(AssemblyFileVersion)&quot;)]" />
+      <VersionInfo Include="[assembly: System.Reflection.AssemblyInformationalVersion(&quot;$(AssemblyInformationalVersion)&quot;)]" />
+    </ItemGroup>
+    <MakeDir Directories="$(IntermediateOutputPath)" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)VersionInfo.cs" Overwrite="True" Lines="@(VersionInfo)" />
+  </Target>
+
+</Project>

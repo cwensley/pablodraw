@@ -24,7 +24,13 @@ namespace Pablo.Actions
 			this.Shortcut = PabloCommand.CommonModifier | Keys.S;
 		}
 
-		protected override void OnExecuted(EventArgs e)
+        public override bool Enabled
+        {
+            get => base.Enabled && handler.Document.HasSavePermission; 
+            set => base.Enabled = value;
+        }
+
+        protected override void OnExecuted(EventArgs e)
 		{
 			var file = handler.Document.FileName;
 			var shouldSave = string.IsNullOrEmpty(file) || !File.Exists(file) || File.GetAttributes(file).HasFlag(FileAttributes.ReadOnly);
