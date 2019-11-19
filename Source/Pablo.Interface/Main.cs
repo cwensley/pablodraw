@@ -396,7 +396,8 @@ namespace Pablo.Interface
 				if (fileList.SelectedFile != null)
 				{
 					currentFormat = null;
-					ReloadFile(false, true, true);
+                    
+                    ReloadFile(!fileList.SelectedFile.ReadOnly, true, true);
 				}
 			};
 			fileList.SelectedIndexChanged += delegate
@@ -406,7 +407,7 @@ namespace Pablo.Interface
 					if (fileList.SelectedFile != null)
 					{
 						currentFormat = null;
-						ReloadFile(false, false, false);
+						ReloadFile(!fileList.SelectedFile.ReadOnly, false, false);
 					}
 				}
 			};
@@ -527,10 +528,10 @@ namespace Pablo.Interface
 			aiNetwork.Items.Add(new Actions.ServerStart(this), 500);
 			aiNetwork.Items.Add(new Actions.ClientConnect(this), 500);
 			aiNetwork.Items.Add(new Actions.ServerStop(this), 500);
-			//#endif
+            //#endif
 
-			// help
-			aiHelp.Items.Add(new Actions.Homepage(), 500);
+            // help
+            aiHelp.Items.Add(new Actions.Homepage(), 500);
 
 			args.ToolBar.Items.Add(new Actions.NewFile(this), 100);
 			args.ToolBar.Items.Add(new Actions.OpenFile(this), 100);
@@ -793,7 +794,7 @@ namespace Pablo.Interface
 			}
 		}
 
-		public bool LoadFile(string fileName, bool hasSavePermissions)
+		public bool LoadFile(string fileName, bool hasSavePermissions, bool setFileList = true, bool? editMode = null)
 		{
 			if (FileModifiedDialog.Show(this) != DialogResult.Ok)
 				return true;
@@ -805,7 +806,7 @@ namespace Pablo.Interface
 			if (format != null && File.Exists(fileName))
 			{
 				var stream = File.OpenRead(fileName);
-				LoadFile(fileName, stream, format, EditMode, true, hasSavePermissions);
+				LoadFile(fileName, stream, format, editMode ?? EditMode, setFileList, hasSavePermissions);
 				return true;
 			}
 			return false;

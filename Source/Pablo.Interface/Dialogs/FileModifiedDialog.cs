@@ -24,8 +24,10 @@ namespace Pablo.Interface.Dialogs
 				var result = MessageBox.Show (main, "Do you wish to save?", "There are changes to this document", MessageBoxButtons.YesNoCancel);
 				if (result == DialogResult.Yes || result == DialogResult.No) {
 					if (result == DialogResult.Yes) {
-						var action = new Pablo.Actions.SaveFile(main.ViewHandler);
-						action.Execute();
+                        if (main.Document.HasSavePermission)
+						    new Pablo.Actions.SaveFile(main.ViewHandler).Execute();
+                        else
+                            new Pablo.Actions.SaveAs(main.ViewHandler).Execute();
 					}
 					return DialogResult.Ok;
 				} else
