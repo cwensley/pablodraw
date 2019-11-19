@@ -79,6 +79,8 @@ namespace Pablo.Formats.Animated
 #if DEBUG
 #endif
 					baudRateMap.Add("Fastest", 0);
+					baudRateMap.Add(460800);
+					baudRateMap.Add(230400);
 					baudRateMap.Add(115200);
 					baudRateMap.Add(57600);
 					baudRateMap.Add(38400);
