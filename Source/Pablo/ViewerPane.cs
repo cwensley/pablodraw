@@ -139,6 +139,11 @@ namespace Pablo
 					return 1.0f;
 
 				Size clientSize = ClientSize;
+				if (Platform.IsMac && clientSize.IsEmpty)
+                {
+                    // bug in eto?
+					clientSize = Size;
+                }
 				if (ZoomInfo.FitWidth && ViewHandler.Size.Width > 0)
 				{
 					float val = (float)clientSize.Width / (float)ViewHandler.Size.Width / ViewHandler.Ratio.Width;
@@ -164,6 +169,11 @@ namespace Pablo
 		{
 #if DESKTOP
 			Size clientSize = ClientSize;
+			if (Platform.IsMac && clientSize.IsEmpty)
+			{
+				// bug in eto?
+				clientSize = Size;
+			}
 			if (Platform.IsWinForms && ScrollPosition.Y + clientSize.Height > ushort.MaxValue)
 			{
 				//ScrollPosition = Point.Empty;
@@ -180,7 +190,8 @@ namespace Pablo
 
 		void viewer_SizeChanged(object sender, EventArgs e)
 		{
-			UpdateSizes();
+            if (this.Loaded)
+    			UpdateSizes();
 		}
 
 		void StartAutoScroll()

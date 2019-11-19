@@ -99,6 +99,8 @@ namespace Pablo
 			try
 				//lock (this)
 			{
+                //e.Graphics.FillRectangle(Colors.Blue, e.ClipRectangle);
+
 				Rectangle rectScreen;
 				Rectangle rectGenerate;
 
