@@ -531,6 +531,7 @@ namespace Pablo.Interface
             //#endif
 
             // help
+            aiHelp.Items.Add(new Actions.Readme(this), 500);
             aiHelp.Items.Add(new Actions.Homepage(), 500);
 
 			args.ToolBar.Items.Add(new Actions.NewFile(this), 100);
@@ -698,8 +699,14 @@ namespace Pablo.Interface
 
 		Stream loadingStream;
 
-		public void LoadFile(string fileName, Stream stream, Format format, bool editMode, bool setFileList, bool hasPermissions)
+		public bool LoadFile(string fileName, Stream stream, Format format = null, bool editMode = false, bool setFileList = true, bool hasSavePermissions = true)
 		{
+            if (format == null)
+            {
+				format = Settings.Infos.FindFormat(fileName, "character", "ansi");
+				if (format == null)
+					return false;
+			}
 			if (Client != null)
 			{
 				var doc = format.Info.Create(Platform);
@@ -708,7 +715,7 @@ namespace Pablo.Interface
 					doc.EditMode = editMode;
 					doc.FileName = fileName;
 					doc.Load(stream, format, null);
-					doc.HasSavePermission = hasPermissions;
+					doc.HasSavePermission = hasSavePermissions;
 					Client.SetDocument(doc);
 				}
 				else
@@ -720,9 +727,10 @@ namespace Pablo.Interface
 						Client.SetFile(fileName, ms, format, editMode);
 					}
 				}
-				return;
+				return true;
 			}
-			InternalLoadFile(fileName, stream, format, editMode, setFileList, hasPermissions);
+			InternalLoadFile(fileName, stream, format, editMode, setFileList, hasSavePermissions);
+			return true;
 		}
 
 		void InternalLoadFile(string fileName, Stream stream, Format format, bool editMode, bool setFileList, bool hasSavePermission)
@@ -761,7 +769,6 @@ namespace Pablo.Interface
 				MessageBox.Show(this, string.Format("Unable to load the selected file ({0})", e));
 #if DEBUG
 				Debug.Print("Error loading: {0}", e);
-				throw;
 #endif
 			}
 		}
@@ -801,13 +808,13 @@ namespace Pablo.Interface
 
 			currentFormat = null;
 			currentFile = null;
-			Format format = Settings.Infos.FindFormat(fileName, "character", "ansi");
 
-			if (format != null && File.Exists(fileName))
+			if (File.Exists(fileName))
 			{
-				var stream = File.OpenRead(fileName);
-				LoadFile(fileName, stream, format, editMode ?? EditMode, setFileList, hasSavePermissions);
-				return true;
+				using (var stream = File.OpenRead(fileName))
+				{
+					return LoadFile(fileName, stream, null, editMode ?? EditMode, setFileList, hasSavePermissions);
+				}
 			}
 			return false;
 		}

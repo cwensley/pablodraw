@@ -9,6 +9,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\*.*" />
+    <EmbeddedResource Include="..\README.ans">
+      <Link>README.ans</Link>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Eto.Forms" Version="2.5.0-rc.4 " />

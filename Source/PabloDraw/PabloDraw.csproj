@@ -13,10 +13,6 @@
     <None Remove="Icon.icns" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\README.ans">
-      <Link>README.ans</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Icon.icns" />
   </ItemGroup>
   <ItemGroup>
