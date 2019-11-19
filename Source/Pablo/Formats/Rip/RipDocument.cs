@@ -99,8 +99,8 @@ namespace Pablo.Formats.Rip
 
 		protected override void Dispose(bool disposing)
 		{
-			if (image != null)
-				image.Dispose();
+			image?.Dispose();
+            image = null;
 			base.Dispose(disposing);
 		}
 
