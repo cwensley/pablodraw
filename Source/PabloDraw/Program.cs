@@ -12,7 +12,7 @@ namespace PabloDraw
 		{
 			var command = new CommandLine(Environment.CommandLine);
 
-			var platform = command.GetValue("platform", "p");
+            var platform = command.GetValue("platform", "p");
 			//#if DEBUG
 			// use winforms by default on windows
 			if (platform == null && EtoEnvironment.Platform.IsWindows)
@@ -28,12 +28,12 @@ namespace PabloDraw
 						case "d2d":
 							Platform.Initialize(Platforms.Direct2D);
 							break;
-						case "gtk":
-						case "gtk2":
+                        case "gtk":
+                        case "gtk2":
 							Platform.Initialize(Platforms.Gtk2);
 							break;
-						case "gtk3":
-							Platform.Initialize(Platforms.Gtk3);
+                        case "gtk3":
+							Platform.Initialize(Platforms.Gtk);
 							break;
 						case "winforms":
 						case "win":

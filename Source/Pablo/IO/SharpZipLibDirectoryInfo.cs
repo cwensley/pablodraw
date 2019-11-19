@@ -1,4 +1,4 @@
-#if !IOS
+#if USE_SHARPZIPLIB
 using System;
 using System.Text.RegularExpressions;
 using System.Collections;

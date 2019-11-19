@@ -15,12 +15,12 @@ namespace PabloDraw.Console
 {
 	static class Startup
 	{
-		static EmbeddedAssemblyLoader loader;
+		static EmbedReferences loader;
 
 		internal static void EnsureInternalAssemblies()
 		{
-			if (loader == null)
-				loader = EmbeddedAssemblyLoader.Register("PabloDraw.Console.Assemblies");
+            if (loader == null)
+                loader = EmbedReferences.Init();
 		}
 
 		[STAThread]

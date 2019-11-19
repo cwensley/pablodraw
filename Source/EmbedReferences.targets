@@ -1,0 +1,148 @@
+﻿<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+  Embeds references inside a single assembly.
+  -->
+  <PropertyGroup>
+    <ShouldEmbed Condition="$(OutputType) == 'Library' OR $(OutputType) == 'Exe' OR $(OutputType) == 'WinExe'">True</ShouldEmbed>
+  </PropertyGroup>
+
+  <Target Name="_EmbedReferencedAssemblies" Condition="$(ShouldEmbed) == 'True' AND $(EmbedReferences) != ''" AfterTargets="ResolveAssemblyReferences">
+    <PropertyGroup>
+      <EmbedDebugSymbols Condition="$(EmbedDebugSymbols) == ''">false</EmbedDebugSymbols>
+      <EmbedPrefix Condition="$(EmbedPrefix) == ''">References</EmbedPrefix>
+      <EmbedCopyLocalReferences Condition="$(EmbedCopyLocalReferences) == ''">False</EmbedCopyLocalReferences>
+    </PropertyGroup>
+    <!-- Embed only specified references -->
+    <_GetCommonFiles Files="@(ReferencePath)" Names="$(EmbedReferences)" Condition="$(EmbedReferences) != 'True'">
+      <Output ItemName="EmbedReferences" TaskParameter="Result" />
+    </_GetCommonFiles>
+    <ItemGroup>
+      <EmbedExcludeReferences Include="$(EmbedExcludeReferences)"/>
+      
+      <!-- Embed all copy local references -->
+      <EmbedReferences Include="@(ReferenceCopyLocalPaths)" Condition="$(EmbedReferences) == 'True'" />
+      <EmbedReferences Remove="@(ReferenceCopyLocalPaths)" Condition="'%(FileName)%(Extension)' == @(EmbedExcludeReferences->'%(Identity)')"/>
+      <!-- Find files to embed and exclude -->
+      <FilesToEmbed Include="@(EmbedReferences)" Condition="'%(EmbedReferences.Extension)' == '.dll'" />
+      <FilesToEmbed Include="@(EmbedReferences)" Condition="$(EmbedDebugSymbols) == 'True' AND '%(EmbedReferences.Extension)' == '.pdb'" />
+      <FilesToExclude Include="@(EmbedReferences)" Condition="$(EmbedDebugSymbols) != 'True' AND '%(EmbedReferences.Extension)' == '.pdb'" />
+      <FilesToExclude Include="@(EmbedReferences)" Condition="'%(EmbedReferences.Extension)' == '.xml'" />
+      <EmbeddedResource Include="@(FilesToEmbed)">
+        <LogicalName>$(EmbedPrefix).%(FilesToEmbed.DestinationSubDirectory)%(FilesToEmbed.Filename)%(FilesToEmbed.Extension)</LogicalName>
+      </EmbeddedResource>
+      <!-- no need to copy the assemblies locally anymore -->
+      <ReferenceCopyLocalPaths Remove="@(FilesToEmbed)" Condition="$(EmbedCopyLocalReferences) != 'True'" />
+      <ReferenceCopyLocalPaths Remove="@(FilesToExclude)" Condition="$(EmbedCopyLocalReferences) != 'True'" />
+    </ItemGroup>
+    <Message Importance="high" Text="Embedding: @(FilesToEmbed->'%(Filename)%(Extension)', ', ')" />
+  </Target>
+
+  <ItemGroup Condition="$(ShouldEmbed) == 'True'">
+    <Compile Include="$(IntermediateOutputPath)EmbedReferences.cs">
+      <Link>EmbedReferences.cs</Link>
+      <Visible>false</Visible>
+    </Compile>
+  </ItemGroup>
+  <Target Name="_WriteEmbedReferences"
+          Condition="$(ShouldEmbed) == 'True'"
+        BeforeTargets="CoreCompile"
+        Outputs="$(IntermediateOutputPath)EmbedReferences.cs">
+    <PropertyGroup>
+      <EmbedReferencesLines>
+        <![CDATA[using System%3b
+using System.Collections.Generic%3b
+using System.IO%3b
+using System.Reflection%3b
+
+	/// <summary>
+	/// Loads assemblies from embedded resources instead of from disk
+	/// </summary>
+	/// <remarks>
+	/// This is useful when you want to create a single assembly/executable without having to ship referenced dll's 
+	/// alongside your application.
+	/// </remarks>
+	/// <copyright>(c) 2012 by Curtis Wensley</copyright>
+	/// <license type="BSD-3">See LICENSE for full terms</license>
+	class EmbedReferences
+	{
+		readonly Dictionary<string, Assembly> loadedAssemblies = new Dictionary<string, Assembly>()%3b
+
+		/// <summary>
+		/// Gets the assembly in which this loader will load assembly resources from
+		/// </summary>
+		public Assembly Assembly { get%3b private set%3b }
+
+		/// <summary>
+		/// Gets the namespace in the <see cref="Assembly"/> to get the assembly resources from
+		/// </summary>
+		public string ResourceNamespace { get%3b private set%3b }
+
+		/// <summary>
+		/// Registers the specified namespace for loading embedded assemblies
+		/// </summary>
+		/// <param name="resourceNamespace">Namespace of where the embedded assemblies should be loaded</param>
+		/// <param name="assembly">Assembly to load the embedded assemblies from, or null to use the calling assembly</param>
+		/// <param name="domain">Application domain to load the assemblies in, or null to use the current app domain</param>
+		/// <returns>A new instance of an EmbedReferences, registered for the specified namespace and assembly</returns>
+		public static EmbedReferences Init(string resourceNamespace = "References", Assembly assembly = null, AppDomain domain = null)
+		{
+			assembly = assembly ?? Assembly.GetCallingAssembly()%3b
+			var loader = new EmbedReferences(resourceNamespace, assembly)%3b
+			loader.Init(domain)%3b
+			return loader%3b
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the EmbedReferences
+		/// </summary>
+		/// <param name="resourceNamespace">Namespace of where the embedded assemblies should be loaded</param>
+		/// <param name="assembly">Assembly to load the embedded assemblies from, or null to use the calling assembly</param>
+		public EmbedReferences(string resourceNamespace, Assembly assembly = null)
+		{
+			this.Assembly = assembly ?? Assembly.GetCallingAssembly()%3b
+			this.ResourceNamespace = resourceNamespace%3b
+		}
+
+		/// <summary>
+		/// Registers this loader for the specified <paramref name="domain"/>
+		/// </summary>
+		/// <param name="domain">App domain to register this loader for, or null to use the current domain</param>
+		public void Init(AppDomain domain = null)
+		{
+			domain = domain ?? AppDomain.CurrentDomain%3b
+			domain.AssemblyResolve += (sender, args) =>
+			{
+				var assemblyName = new AssemblyName(args.Name)%3b
+				if (assemblyName.Name.EndsWith(".resources", StringComparison.OrdinalIgnoreCase)) return null%3b
+
+				string resourceName = ResourceNamespace + "." + assemblyName.Name + ".dll"%3b
+				Assembly loadedAssembly%3b
+				lock (loadedAssemblies)
+				{
+					if (!loadedAssemblies.TryGetValue(resourceName, out loadedAssembly))
+					{
+						using (var stream = Assembly.GetManifestResourceStream(resourceName))
+						{
+							if (stream != null)
+							{
+								using (var binaryReader = new BinaryReader(stream))
+								{
+									loadedAssembly = Assembly.Load(binaryReader.ReadBytes((int)stream.Length))%3b
+									loadedAssemblies.Add(resourceName, loadedAssembly)%3b
+								}
+							}
+						}
+					}
+				}
+				return loadedAssembly%3b
+			}%3b
+		}
+	}
+      ]]></EmbedReferencesLines>
+    </PropertyGroup>
+    <MakeDir Directories="$(IntermediateOutputPath)" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)EmbedReferences.cs" Overwrite="True" Lines="$(EmbedReferencesLines)" />
+  </Target>
+
+</Project>
