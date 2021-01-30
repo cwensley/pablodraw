@@ -571,6 +571,9 @@ namespace Pablo.Formats.Character
 
 		GenerateCommandArgs args;
 
+		// bug in Eto:
+		static Command s_DisabledCommand = new Command { Enabled = false };
+
 		public override void GenerateCommands(GenerateCommandArgs args)
 		{
 			base.GenerateCommands(args);
@@ -582,13 +585,13 @@ namespace Pablo.Formats.Character
 
 				if (Generator.IsMac && control != null)
 				{
-					control.MapPlatformCommand("cut", null);
-					control.MapPlatformCommand("copy", null);
-					control.MapPlatformCommand("paste", null);
-					control.MapPlatformCommand("selectAll", null);
-					control.MapPlatformCommand("delete", null);
-					control.MapPlatformCommand("undo", null);
-					control.MapPlatformCommand("redo", null);
+					control.MapPlatformCommand("cut", s_DisabledCommand);
+					control.MapPlatformCommand("copy", s_DisabledCommand);
+					control.MapPlatformCommand("paste", s_DisabledCommand);
+					control.MapPlatformCommand("selectAll", s_DisabledCommand);
+					control.MapPlatformCommand("delete", s_DisabledCommand);
+					control.MapPlatformCommand("undo", s_DisabledCommand);
+					control.MapPlatformCommand("redo", s_DisabledCommand);
 				}
 
 				var edit = args.Menu.Items.GetSubmenu("&Edit", 200);
