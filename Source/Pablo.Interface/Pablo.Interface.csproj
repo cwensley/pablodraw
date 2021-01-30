@@ -14,10 +14,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Eto.Forms" Version="2.5.0-rc.4 " />
+    <PackageReference Include="Eto.Forms" Version="2.5.10 " />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\lidgren\Lidgren.Network\Lidgren.Network.csproj" />
     <ProjectReference Include="..\Pablo\Pablo.csproj" />
   </ItemGroup>
 </Project>

@@ -1,17 +1,22 @@
 ﻿<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Company>Picoe Software Solutions</Company>
-    <Copyright>(c) 2006-2019 by Curtis Wensley aka Eto</Copyright>
+    <Copyright>(c) 2006-2021 by Curtis Wensley aka Eto</Copyright>
     <Version>3.3.0-dev</Version>
     
     <BasePath>$(MSBuildThisFileDirectory)..\</BasePath>
-    <ArtifactsDir>$(BasePath)Artifacts\</ArtifactsDir>
+    <ArtifactsDir>$(BasePath)artifacts\</ArtifactsDir>
+
+    <DebugType>embedded</DebugType>
     
     <BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == ''">$(ArtifactsDir)obj\$(OS)\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
     <OutputArtifactName Condition="$(OutputArtifactName) == ''">bin</OutputArtifactName>
     <BaseOutputPath Condition="$(BaseOutputPath) == ''">$(ArtifactsDir)$(OutputArtifactName)\</BaseOutputPath>
     <PackageOutputPath Condition="$(PackageOutputPath) == ''">$(ArtifactsDir)nuget\$(Configuration)\</PackageOutputPath>
     <RestoreProjectStyle Condition="'$(RestoreProjectStyle)' == ''">PackageReference</RestoreProjectStyle>
+
+    <!-- Uncomment to use Eto from source -->
+    <!-- <EtoBasePath>..\..\..\Eto\</EtoBasePath> -->
 
   </PropertyGroup>
 </Project>

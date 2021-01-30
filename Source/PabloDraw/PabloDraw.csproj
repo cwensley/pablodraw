@@ -1,30 +1,85 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Condition="$(BuildTarget) == ''">
+    <BuildTarget Condition="$([MSBuild]::IsOSPlatform(Windows))">Windows</BuildTarget>
+    <BuildTarget Condition="$([MSBuild]::IsOSPlatform(OSX))">Mac</BuildTarget>
+    <BuildTarget Condition="$([MSBuild]::IsOSPlatform(Linux))">Linux</BuildTarget>
+  </PropertyGroup>
+
   <PropertyGroup>
-    <TargetFramework>net47</TargetFramework>
     <OutputType>WinExe</OutputType>
     <ApplicationIcon>PabloDraw.ico</ApplicationIcon>
-    <DefineConstants>DESKTOP</DefineConstants>
     <AssemblyTitle>PabloDraw</AssemblyTitle>
     <AssemblyDescription>PabloDraw</AssemblyDescription>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmbedReferences Condition="$(Configuration) == 'Release'">True</EmbedReferences>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Icon.icns" />
+
+  <PropertyGroup Condition="$(BuildTarget) == 'Generic'">
+    <TargetFramework>net5.0</TargetFramework>
+    <OutputPath>bin/$(Configuration)/generic</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(BuildTarget) == 'Windows'">
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
+    <!-- <PublishReadyToRun>True</PublishReadyToRun> -->
+    <DefineConstants>WINDOWS</DefineConstants>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(BuildTarget) == 'Linux'">
+    <TargetFramework>net5.0</TargetFramework>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <DefineConstants>LINUX</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(BuildTarget) == 'Mac'">
+    <TargetFramework>net5.0</TargetFramework>
+    <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+    <DefineConstants>MAC</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);DESKTOP</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(Configuration) == 'Release' and !$(TargetFramework.StartsWith('net4'))">
+    <PublishSingleFile>True</PublishSingleFile>
+    <SelfContained>True</SelfContained>
+    <PublishTrimmed>True</PublishTrimmed>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(BuildTarget) == 'Mac'">
+    <None Remove="*.icns" />
+    <Content Include="PabloDraw.icns" />
+    <Content Include="PabloDraw-Document.icns" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Icon.icns" />
-  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Pablo\Pablo.csproj" />
     <ProjectReference Include="..\Pablo.Interface\Pablo.Interface.csproj" />
-    <ProjectReference Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Mono.Nat.csproj" />
-    <ProjectReference Include="..\..\Libraries\lidgren\Lidgren.Network\Lidgren.Network.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="Eto.Platform.Gtk" Version="2.5.0-rc.4" />
-    <PackageReference Include="Eto.Platform.Gtk2" Version="2.5.0-rc.4" />
-    <PackageReference Include="Eto.Platform.Windows" Version="2.5.0-rc.4" />
-    <PackageReference Include="Eto.Platform.Wpf" Version="2.5.0-rc.4" />
+    <PackageReference Include="Eto.Forms" Version="2.5.10" />
+    <PackageReference Include="Eto.Platform.Gtk" Version="2.5.10" Condition="$(BuildTarget) == 'Linux'" />
+    <!-- <PackageReference Include="Eto.Platform.Gtk2" Version="2.5.8" Condition="$(RuntimeIdentifier.StartsWith('linux-'))" /> -->
+    <PackageReference Include="Eto.Platform.Mac64" Version="2.5.10" Condition="$(BuildTarget) == 'Mac'" />
+    <PackageReference Include="Eto.Platform.Windows" Version="2.5.10" Condition="$(BuildTarget) == 'Windows'" />
+    <!-- <PackageReference Include="Eto.Platform.Wpf" Version="2.5.10" Condition="$(BuildTarget) == 'Windows'" /> -->
+    <PackageReference Include="Mono.Nat" Version="3.0.1" />
+    <PackageReference Include="Lidgren.Network" Version="1.0.2" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
+
+  <ItemGroup Condition="$(EtoBasePath) != ''">
+    <ProjectReference Include="$(EtoBasePath)src\Eto\Eto.csproj" />
+    <ProjectReference Include="$(EtoBasePath)src\Eto.Gtk\Eto.Gtk.csproj" Condition="$(BuildTarget) == 'Linux'" />
+    <ProjectReference Include="$(EtoBasePath)src\Eto.WinForms\Eto.WinForms.csproj" Condition="$(BuildTarget) == 'Windows'" />
+    <ProjectReference Include="$(EtoBasePath)src\Eto.Mac\Eto.Mac64.csproj" Condition="$(BuildTarget) == 'Mac'" />
+    <ProjectReference Include="$(EtoBasePath)lib\monomac\src\MonoMac.csproj" Condition="$(BuildTarget) == 'Mac'" />
+    <PackageReference Update="Eto.*" ExcludeAssets="all" />
+  </ItemGroup>
+
+  <Import Project="$(EtoBasePath)\build\Common.Mac.targets" Condition="$(BuildTarget) == 'Mac' and $(EtoBasePath) != ''" />
+
+
 </Project>

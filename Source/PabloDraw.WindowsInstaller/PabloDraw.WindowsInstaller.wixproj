@@ -11,13 +11,13 @@
     <OutputType>Package</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>..\..\Artifacts\bin\$(Configuration)\net47</OutputPath>
-    <IntermediateOutputPath>..\..\Artifacts\obj\$(OS)\$(Configuration)\</IntermediateOutputPath>
+    <OutputPath>..\..\artifacts\bin\$(Configuration)\net47</OutputPath>
+    <IntermediateOutputPath>..\..\artifacts\obj\$(OS)\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>..\..\Artifacts\bin\$(Configuration)\net47</OutputPath>
-    <IntermediateOutputPath>..\..\Artifacts\obj\$(OS)\$(Configuration)\</IntermediateOutputPath>
+    <OutputPath>..\..\artifacts\bin\$(Configuration)\net47</OutputPath>
+    <IntermediateOutputPath>..\..\artifacts\obj\$(OS)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
