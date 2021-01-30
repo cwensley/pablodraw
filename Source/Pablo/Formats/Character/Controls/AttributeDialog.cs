@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using Eto.Drawing;
 using Eto.Forms;
 
@@ -38,7 +39,7 @@ namespace Pablo.Formats.Character.Controls
 #if DESKTOP
 			this.Resizable = true;
 #endif
-			
+
 			TableLayout layout = new TableLayout(1, 2);
 
 			colours = new ColourSelection(palette, attribute);
@@ -52,15 +53,15 @@ namespace Pablo.Formats.Character.Controls
 			Content = layout;
 		}
 
-		protected override void OnLoadComplete (EventArgs e)
+		protected override void OnLoadComplete(EventArgs e)
 		{
-			base.OnLoadComplete (e);
-			colours.Focus ();
+			base.OnLoadComplete(e);
+			Application.Instance.AsyncInvoke(colours.Focus);
 		}
-		
-		protected override void OnClosed (EventArgs e)
+
+		protected override void OnClosing(CancelEventArgs e)
 		{
-			base.OnClosed (e);
+			base.OnClosing(e);
 			handler.CharacterDocument.Info.AttributeDialogBounds = this.RestoreBounds;
 			handler.CharacterDocument.Info.AttributeDialogSize = this.ClientSize;
 		}
@@ -73,7 +74,8 @@ namespace Pablo.Formats.Character.Controls
 
 		private Control GenerateButtons()
 		{
-			TableLayout layout = new TableLayout(1,1) {
+			TableLayout layout = new TableLayout(1, 1)
+			{
 				Size = new Size(150, 28)
 			};
 			layout.Spacing = new Size(5, 5);
