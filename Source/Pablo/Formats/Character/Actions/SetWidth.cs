@@ -13,9 +13,9 @@ namespace Pablo.Formats.Character.Actions
 		public SetWidth (CharacterHandler handler) : base(handler)
 		{
 			ID = ActionID;
-			MenuText = "Set Canvas &Width...";
-			ToolBarText = "Set Width";
-			ToolTip = "Sets the canvas width";
+			MenuText = "Set Canvas &Size...";
+			ToolBarText = "Set Size";
+			ToolTip = "Sets the canvas size";
 			Image = ImageCache.IconFromResource("Pablo.Icons.setwidth.ico");
 		}
 		
@@ -30,18 +30,18 @@ namespace Pablo.Formats.Character.Actions
 			CharacterHandler handler = base.Handler as CharacterHandler;
 			var size = handler.CurrentPage.Canvas.Size;
 			var dialog = new WidthDialog ();
-			dialog.Width = size.Width;
+			dialog.CanvasSize = size;
 			var result = dialog.ShowModal (handler.Viewer as Control);
 			if (result == DialogResult.Ok) {
-				DoResize (dialog.Width);
+				DoResize (dialog.CanvasSize);
 			}
 		}
 		
-		void DoResize(int width)
+		void DoResize(Size canvasSize)
 		{
 			CharacterHandler handler = base.Handler as CharacterHandler;
 			var size = handler.CurrentPage.Canvas.Size;
-			size.Width = width;
+			size = canvasSize;
 			
 			handler.CurrentPage.Canvas.ResizeCanvas (size, true, true);
 			var pos = handler.CursorPosition;
@@ -57,10 +57,10 @@ namespace Pablo.Formats.Character.Actions
 			CharacterHandler handler = base.Handler as CharacterHandler;
 			var size = handler.CurrentPage.Canvas.Size;
 			var dialog = new WidthDialog ();
-			dialog.Width = size.Width;
+			dialog.CanvasSize = size;
 			var result = dialog.ShowModal(handler.Viewer as Control);
 			if (result == DialogResult.Ok) {
-				args.Message.WriteVariableInt32 (dialog.Width);
+				args.Message.Write (dialog.CanvasSize);
 				return true;
 			}
 			else
@@ -70,8 +70,8 @@ namespace Pablo.Formats.Character.Actions
 		public override void Receive (ReceiveCommandArgs args)
 		{
 			base.Receive (args);
-			int width = args.Message.ReadVariableInt32 ();
-			DoResize (width);
+			var size = args.Message.ReadSize ();
+			DoResize (size);
 		}
 	}
 }

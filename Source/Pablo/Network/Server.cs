@@ -15,7 +15,7 @@ namespace Pablo.Network
 {
 	public class Server : Network
 	{
-		public const int VERSION = 7;
+		public const int VERSION = 8;
 		bool mappedPort;
 		NetServer server;
 		static INatDevice natdevice;
