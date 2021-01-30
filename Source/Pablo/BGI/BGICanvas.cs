@@ -2310,7 +2310,7 @@ namespace Pablo.BGI
 					return;
 
 				var platform = Platform.Instance;
-				if (platform.IsWpf || platform.IsIos || platform.IsMac)
+				if (platform.IsWpf || platform.IsIos || platform.IsMac || platform.IsWinForms)
 				{
 					Application.Instance.AsyncInvoke(delegate
 					{
