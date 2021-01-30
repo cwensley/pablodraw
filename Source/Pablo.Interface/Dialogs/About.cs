@@ -37,14 +37,14 @@ mO'sOul is © Desoto/Mo'Soul";
 			{
 				Text = "PabloDraw",
 				Font = Fonts.Sans(16, FontStyle.Bold),
-				HorizontalAlign = HorizontalAlign.Center
+				TextAlignment = TextAlignment.Center
 			});
 
 			var version = Assembly.GetEntryAssembly().GetName().Version;
 			layout.Add(new Label
 			{
 				Text = string.Format("Version {0}", version),
-				HorizontalAlign = HorizontalAlign.Center
+				TextAlignment = TextAlignment.Center
 			});
 
 			if (!Platform.IsMac)
@@ -74,8 +74,8 @@ mO'sOul is © Desoto/Mo'Soul";
 					Content = new Label
 					{
 						Text = CopyRightText,
-						HorizontalAlign = HorizontalAlign.Center,
-						VerticalAlign = VerticalAlign.Middle
+						TextAlignment = TextAlignment.Center,
+						VerticalAlignment = VerticalAlignment.Center
 
 					},
 					BackgroundColor = Colors.White

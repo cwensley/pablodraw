@@ -76,7 +76,7 @@ namespace Pablo.Sauce.Types.BaseFileType
 			if (DataType.HasFileType && fileTypes.Count > 1)
 			{
 				Layout.BeginHorizontal();
-				Layout.Add(new Label { Text = "File Type", VerticalAlign = VerticalAlign.Middle });
+				Layout.Add(new Label { Text = "File Type", VerticalAlignment = VerticalAlignment.Center });
 				Layout.AddAutoSized(FileTypeComboBox());
 				Layout.EndHorizontal();
 			}

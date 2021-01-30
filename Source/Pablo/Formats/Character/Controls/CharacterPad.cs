@@ -75,8 +75,8 @@ namespace Pablo.Formats.Character.Controls
 				var character = new FontTextBox (handler, new Size(1, 1));
 
 				var label = new Label{ };//Size = new Size (width - character.Size.Width, charHeight)};
-				label.HorizontalAlign = HorizontalAlign.Right;
-				label.VerticalAlign = VerticalAlign.Middle;
+				label.TextAlignment = TextAlignment.Right;
+				label.VerticalAlignment = VerticalAlignment.Center;
 				label.Text = string.Format ("F{0}", i + 1);
 				layout.Add (label);
 				//layout.Add (label, 0, i * charHeight);

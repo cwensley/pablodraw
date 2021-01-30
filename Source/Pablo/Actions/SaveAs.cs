@@ -33,9 +33,9 @@ namespace Pablo.Actions
 			foreach (Format format in formats)
 			{
 				allFormats.AddRange(format.Extensions);
-				ofd.Filters.Add(new FileDialogFilter{ Name = format.Name, Extensions = format.Extensions });
+				ofd.Filters.Add(new FileFilter{ Name = format.Name, Extensions = format.Extensions });
 			}
-			ofd.Filters.Insert(0, new FileDialogFilter{ Name = "Auto Detect", Extensions = allFormats.ToArray() });
+			ofd.Filters.Insert(0, new FileFilter{ Name = "Auto Detect", Extensions = allFormats.ToArray() });
 			if (!handler.Generator.IsMac || setCurrent)
 			{
 				if (!string.IsNullOrEmpty(handler.Document.FileName) && handler.Document.HasSavePermission)

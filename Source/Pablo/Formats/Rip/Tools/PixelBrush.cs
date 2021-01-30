@@ -149,8 +149,8 @@ namespace Pablo.Formats.Rip.Tools
 			var updownfont = new Font (SystemFont.Default, 8);
 
 			layout.BeginVertical(Padding.Empty, Size.Empty);
-			layout.Add(new Label { Text = "Width", Font = font, HorizontalAlign = HorizontalAlign.Center });
-			var widthBox = new NumericUpDown{
+			layout.Add(new Label { Text = "Width", Font = font, TextAlignment = TextAlignment.Center });
+			var widthBox = new NumericStepper{
 				Font = updownfont,
 				Value = width,
 				MinValue = 1,
@@ -163,8 +163,8 @@ namespace Pablo.Formats.Rip.Tools
 			layout.Add (widthBox);
 			layout.EndBeginVertical(Padding.Empty, Size.Empty);
 
-			layout.Add (new Label{ Text = "Density", Font = font, HorizontalAlign = HorizontalAlign.Center});
-			var pointsBox = new NumericUpDown{
+			layout.Add (new Label{ Text = "Density", Font = font, TextAlignment = TextAlignment.Center});
+			var pointsBox = new NumericStepper{
 				Font = updownfont,
 				Value = points,
 				MinValue = 1,

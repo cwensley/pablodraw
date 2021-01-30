@@ -41,10 +41,10 @@ namespace Pablo.Interface.Actions
 				{
 					var extensions = from ex in format.Extensions select "." + ex;
 					allFormats.AddRange (extensions);
-					ofd.Filters.Add(new FileDialogFilter{ Name = format.Name, Extensions = extensions.ToArray () });
+					ofd.Filters.Add(new FileFilter{ Name = format.Name, Extensions = extensions.ToArray () });
 				}
 			}
-			ofd.Filters.Insert(0, new FileDialogFilter{ Name = "All Formats", Extensions = allFormats.ToArray() });
+			ofd.Filters.Insert(0, new FileFilter{ Name = "All Formats", Extensions = allFormats.ToArray() });
 
 			var dr = ofd.ShowDialog(main);
 			if (dr == DialogResult.Ok)

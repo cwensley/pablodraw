@@ -22,8 +22,8 @@ namespace Pablo.Formats.Character.Controls
 			}).MakeWeak(e => Handler.CursorPositionChanged -= e);
 			
 			label = new Label{ 
-				HorizontalAlign = HorizontalAlign.Right,
-				VerticalAlign = VerticalAlign.Middle
+				TextAlignment = TextAlignment.Right,
+				VerticalAlignment = VerticalAlignment.Center
 			};
 
 			var layout = new DynamicLayout { Padding = new Padding(0, 5, 5, 5) };

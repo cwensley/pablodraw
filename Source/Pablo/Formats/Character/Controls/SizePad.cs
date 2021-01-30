@@ -14,7 +14,7 @@ namespace Pablo.Formats.Character.Controls
 			var layout = new DynamicLayout { Padding = Padding.Empty };
 			
 			layout.BeginVertical (Padding.Empty, Size.Empty);
-			layout.Add (new Label{ Text = "Size", HorizontalAlign = HorizontalAlign.Center, Font = new Font (SystemFont.Default, 7)});
+			layout.Add (new Label{ Text = "Size", TextAlignment = TextAlignment.Center, Font = new Font (SystemFont.Default, 7)});
 			layout.Add (BrushSize ());
 			layout.EndVertical ();
 			Content = layout;
@@ -23,7 +23,7 @@ namespace Pablo.Formats.Character.Controls
 		
 		Control BrushSize()
 		{
-			var control = new NumericUpDown{
+			var control = new NumericStepper{
 				Font = new Font (SystemFont.Default, 8),
 				MinValue = 1,
 				MaxValue = 9,

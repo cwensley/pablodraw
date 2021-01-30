@@ -14,7 +14,7 @@ namespace Pablo.Formats.Rip.Controls
 		ImageButton vertical;
 		ImageButton horizontal;
 		BGICanvas canvas;
-		NumericUpDown fontSize;
+		NumericStepper fontSize;
 
 		public FontStylePad(RipHandler handler)
 		{
@@ -22,7 +22,7 @@ namespace Pablo.Formats.Rip.Controls
 			var layout = new DynamicLayout { Padding = Padding.Empty };
 
 			layout.BeginVertical(Padding.Empty, Size.Empty);
-			layout.Add(new Label { Text = "Font Size", HorizontalAlign = HorizontalAlign.Center, Font = new Font(SystemFont.Default, 7) });
+			layout.Add(new Label { Text = "Font Size", TextAlignment = TextAlignment.Center, Font = new Font(SystemFont.Default, 7) });
 			layout.Add(FontSize());
 			layout.EndVertical();
 
@@ -152,7 +152,7 @@ namespace Pablo.Formats.Rip.Controls
 
 		Control FontSize()
 		{
-			var control = fontSize = new NumericUpDown
+			var control = fontSize = new NumericStepper
 			{
 				MinValue = 1,
 				MaxValue = 10,

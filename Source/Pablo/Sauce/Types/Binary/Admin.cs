@@ -15,7 +15,7 @@ namespace Pablo.Sauce.Types.Binary
 		{
 			base.CreateControls();
 			Layout.BeginHorizontal ();
-			Layout.Add (new Label{ Text = "Binary Width", VerticalAlign = VerticalAlign.Middle });
+			Layout.Add (new Label{ Text = "Binary Width", VerticalAlignment = VerticalAlignment.Center });
 			Layout.Add (WidthControl ());
 			Layout.EndHorizontal ();
 		}
