@@ -1,0 +1,117 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ '*' ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DotNetVersion: "5.0.x"
+  BuildConfiguration: "Release"
+  BuildParameters: "Source/PabloDraw/PabloDraw.csproj /clp:NoSummary /p:Configuration=Release /p:BuildVersion=${{ github.run_id }} /p:BuildBranch=${{ github.ref }}"
+
+jobs:
+  build-windows:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DotNetVersion }}
+
+    - run: dotnet publish ${{ env.BuildParameters }} -f net5.0-windows -r win-x64
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: pablodraw-windows
+        path: artifacts/bin/${{ env.BuildConfiguration }}/net5.0-windows/win-x64/publish/*
+
+  build-linux:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DotNetVersion }}
+
+    - run: dotnet publish ${{ env.BuildParameters }} -f net5.0 -r linux-x64
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: pablodraw-linux
+        path: artifacts/bin/${{ env.BuildConfiguration }}/net5.0/linux-x64/publish/*
+        
+  build-mac:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DotNetVersion }}
+
+    - uses: maxim-lobanov/setup-xamarin@v1
+      with:
+        mono-version: latest
+        xamarin-mac-version: latest
+        xcode-version: latest
+
+    # - name: Import code signing certificate
+    #   if: github.event_name != 'pull_request'
+    #   uses: apple-actions/import-codesign-certs@v1
+    #   with:
+    #     p12-file-base64: ${{ secrets.DEVID_CERTIFICATE_P12 }}
+    #     p12-password: ${{ secrets.DEVID_CERTIFICATE_P12_PASSWORD }}
+
+    # - name: Enable code signing
+    #   if: github.event_name != 'pull_request'
+    #   run: echo "BuildParameters=${{ env.BuildParameters }} /p:EnableCodeSignBuild=True" >> $GITHUB_ENV
+
+    # - name: Set notarization credentials
+    #   if: startsWith(github.ref, 'refs/tags/')
+    #   run: |
+    #     xcrun altool --store-password-in-keychain-item "AC_PASSWORD" -u "${{ secrets.AC_USERNAME }}" -p "${{ secrets.AC_PASSWORD }}"
+    #     echo "BuildParameters=${{ env.BuildParameters }} /p:EnableNotarizationBuild=True" >> $GITHUB_ENV
+
+    - run: dotnet build ${{ env.BuildParameters }} -f net5.0 -r osx-x64
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: pablodraw-mac
+        path: artifacts/bin/${{ env.BuildConfiguration }}/net5.0/osx-x64/PabloDraw.dmg
+
+  update-release:
+    needs: [ build-windows, build-mac ]
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
+    steps:
+      - id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
+      - id: get_release
+        uses: bruceadams/get-release@v1.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+      - uses: actions/download-artifact@v2
+        with:
+          name: pablodraw
+
+      # - uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.get_release.outputs.upload_url }}
+      #     asset_path: 
+      #     asset_name: 
+      #     asset_content_type: application/octet-stream

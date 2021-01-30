@@ -21,27 +21,34 @@
   <PropertyGroup Condition="$(BuildTarget) == 'Windows'">
     <TargetFramework>net5.0-windows</TargetFramework>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
     <!-- <PublishReadyToRun>True</PublishReadyToRun> -->
     <DefineConstants>WINDOWS</DefineConstants>
+    <IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
   </PropertyGroup>
+
   <PropertyGroup Condition="$(BuildTarget) == 'Linux'">
     <TargetFramework>net5.0</TargetFramework>
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <DefineConstants>LINUX</DefineConstants>
   </PropertyGroup>
+
   <PropertyGroup Condition="$(BuildTarget) == 'Mac'">
     <TargetFramework>net5.0</TargetFramework>
     <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
     <DefineConstants>MAC</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(BuildTarget) == 'Mac' and $(Configuration) == 'Release'">
+    <EnableDmgBuild>True</EnableDmgBuild>
+    <!-- <EnableCodeSigning>True</EnableCodeSigning> -->
+    <!-- <EnableNotarization>True</EnableNotarization> -->
   </PropertyGroup>
 
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);DESKTOP</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(Configuration) == 'Release' and !$(TargetFramework.StartsWith('net4'))">
+  <PropertyGroup Condition="$(Configuration) == 'Release'">
     <PublishSingleFile>True</PublishSingleFile>
     <SelfContained>True</SelfContained>
     <PublishTrimmed>True</PublishTrimmed>
@@ -61,7 +68,7 @@
   <ItemGroup>
     <PackageReference Include="Eto.Forms" Version="2.5.10" />
     <PackageReference Include="Eto.Platform.Gtk" Version="2.5.10" Condition="$(BuildTarget) == 'Linux'" />
-    <!-- <PackageReference Include="Eto.Platform.Gtk2" Version="2.5.8" Condition="$(RuntimeIdentifier.StartsWith('linux-'))" /> -->
+    <!-- <PackageReference Include="Eto.Platform.Gtk2" Version="2.5.8" Condition="$(BuildTarget) == 'Linux'" /> -->
     <PackageReference Include="Eto.Platform.Mac64" Version="2.5.10" Condition="$(BuildTarget) == 'Mac'" />
     <PackageReference Include="Eto.Platform.Windows" Version="2.5.10" Condition="$(BuildTarget) == 'Windows'" />
     <!-- <PackageReference Include="Eto.Platform.Wpf" Version="2.5.10" Condition="$(BuildTarget) == 'Windows'" /> -->
