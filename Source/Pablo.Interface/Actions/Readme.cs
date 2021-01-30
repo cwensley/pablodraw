@@ -20,6 +20,9 @@ namespace Pablo.Interface.Actions
 		protected override void OnExecuted(EventArgs e)
 		{
 			base.OnExecuted(e);
+			if (!main.PromptSave())
+				return;
+
 			using (var stream = typeof(Readme).Assembly.GetManifestResourceStream("Pablo.Interface.README.ans"))
 			{
 				main.LoadFile("README.ans", stream, hasSavePermissions: false, setFileList: false, editMode: false);
