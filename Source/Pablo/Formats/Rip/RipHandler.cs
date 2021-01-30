@@ -5,6 +5,7 @@ using Pablo.BGI;
 using System.Collections.Generic;
 using Eto;
 using System.Linq;
+using System.IO;
 
 namespace Pablo.Formats.Rip
 {
@@ -129,8 +130,7 @@ namespace Pablo.Formats.Rip
 		protected override void OnZoomChanged(EventArgs e)
 		{
 			base.OnZoomChanged(e);
-			if (BGI != null)
-				BGI.Scale = new SizeF(1 / this.ZoomRatio.Width, 1 / this.ZoomRatio.Height);
+			EnsureBGIScale();
 		}
 
 		public RipDocument RipDocument
@@ -245,7 +245,7 @@ namespace Pablo.Formats.Rip
 			var action = (CheckCommand)sender;
 			RipDocument.Info.DosAspect = action.Checked;
 			OnSizeChanged(EventArgs.Empty);
-			BGI.Scale = new SizeF(1 / this.ZoomRatio.Width, 1 / this.ZoomRatio.Height);
+			EnsureBGIScale();
 		}
 
 		public override void OnMouseDown(MouseEventArgs e)
@@ -296,6 +296,18 @@ namespace Pablo.Formats.Rip
 			}
 			if (!e.Handled)
 				base.OnKeyDown(e);
+		}
+
+		public override void PreLoad(Stream stream, Format format)
+		{
+			base.PreLoad(stream, format);
+			EnsureBGIScale();
+		}
+
+		void EnsureBGIScale()
+		{
+			if (BGI != null)
+				BGI.Scale = new SizeF(1 / ZoomRatio.Width, 1 / ZoomRatio.Height);
 		}
 
 		public override void Loaded()

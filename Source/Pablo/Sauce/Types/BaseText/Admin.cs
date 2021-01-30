@@ -18,7 +18,7 @@ namespace Pablo.Sauce.Types.BaseText
 			base.CreateControls();
 			if (DataType.HasFontName)
 			{
-				Layout.AddRow(new Label { Text = "Font Name", VerticalAlign = VerticalAlign.Middle }, FontName());
+				Layout.AddRow(new Label { Text = "Font Name", VerticalAlignment = VerticalAlignment.Center }, FontName());
 			}
 		}
 

@@ -215,7 +215,7 @@ namespace Pablo.Formats.Animated
 					if (loadingThread.IsAlive)
 					{
 						//Console.WriteLine ("Aborting thread..");
-						loadingThread.Abort();
+						// loadingThread.Abort();
 					}
 					//threadKilledEvent.WaitOne ();
 					//threadKilledEvent.Set ();

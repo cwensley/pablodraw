@@ -186,7 +186,7 @@ namespace Pablo.Interface.Dialogs
 		{
 			public MyLabel()
 			{
-				VerticalAlign = VerticalAlign.Middle;
+				VerticalAlignment = VerticalAlignment.Center;
 			}
 		}
 
@@ -373,7 +373,7 @@ namespace Pablo.Interface.Dialogs
 		static T LabelControl<T>(TableLayout layout, T control, string label, int y)
 			where T: Control
 		{
-			layout.Add(new Label{ Text = label, VerticalAlign = VerticalAlign.Middle }, 0, y);
+			layout.Add(new Label{ Text = label, VerticalAlignment = VerticalAlignment.Center }, 0, y);
 			layout.Add(control, 1, y);
 			return control;
 		}

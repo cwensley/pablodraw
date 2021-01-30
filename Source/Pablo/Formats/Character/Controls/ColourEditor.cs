@@ -102,11 +102,11 @@ namespace Pablo.Formats.Character.Controls
 			};
 			layout.Add(new Label
 			{
-				Text = "Double click a colour to change it. Note that most formats only support up to 16 colours, except for Tundra and Ansi format",
+				Text = "Double click a colour to change it.\nNote that most formats only support up to 16 colours, except for Tundra and Ansi format.",
 				Wrap = WrapMode.Word,
 				TextAlignment = TextAlignment.Center,
 				VerticalAlignment = VerticalAlignment.Center,
-				Width = 1, Height = Platform.IsWinForms ? 46 : -1
+				Width = 300
 			});
 			
 			layout.BeginVertical(xscale: true, yscale: true);

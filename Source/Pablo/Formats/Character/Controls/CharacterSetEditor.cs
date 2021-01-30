@@ -29,7 +29,7 @@ namespace Pablo.Formats.Character.Controls
 
 			layout.AddCentered(CharacterSelection(), xscale: true, yscale: true);
 
-			layout.Add(new Label { Text = "Click a character above, then select the character below to change it", Size = new Size(100, 32), HorizontalAlign = HorizontalAlign.Center });
+			layout.Add(new Label { Text = "Click a character above, then select the character below to change it", Size = new Size(100, 32), TextAlignment = TextAlignment.Center });
 
 			layout.Add(Characters());
 

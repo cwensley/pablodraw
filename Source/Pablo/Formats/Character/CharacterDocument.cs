@@ -105,7 +105,7 @@ namespace Pablo.Formats.Character
 			defaultSize = new Size(80, EditSize);
 			defaultPalette = Palette.GetDosPalette();
 			Initialize(1, defaultSize);
-			
+
 			Info.Use9xChanged += Info_Use9xChanged;
 			Info.SelectedFontChanged += Info_SelectedFontChanged;
 			SetFont(true);
@@ -160,6 +160,11 @@ namespace Pablo.Formats.Character
 			for (int i = 0; i < numPages; i++)
 			{
 				var page = new Page(this, canvasSize, defaultFont, defaultPalette);
+				page.Canvas.Update += delegate
+				{
+					if (!IsLoading)
+						IsModified = true;
+				};
 				pages[i] = page;
 			}
 		}
@@ -167,7 +172,7 @@ namespace Pablo.Formats.Character
 		public bool ResizeCanvas
 		{
 			get { return resizeCanvas; }
-			
+
 		}
 
 		public override Size Size
@@ -183,7 +188,7 @@ namespace Pablo.Formats.Character
 		protected override void LoadingAnimated(Stream stream, Format format, Handler handler)
 		{
 			base.LoadingAnimated(stream, format, handler);
-			
+
 			var canAnimate = true;
 			var charFormat = format as CharacterFormat;
 			if (charFormat != null)
@@ -228,9 +233,8 @@ namespace Pablo.Formats.Character
 			resizeCanvas = true;
 			var charFormat = (CharacterFormat)format;
 			use9x = charFormat.Use9pxFont;
-			
-			
-			IsModified = false;
+
+
 			if (Sauce != null)
 			{
 				var info = Sauce.TypeInfo as Sauce.Types.BaseText.DataTypeInfo;
@@ -251,12 +255,9 @@ namespace Pablo.Formats.Character
 			SetFont(false, false);
 			Pages[0].Palette = defaultPalette;
 			Pages[0].Load(stream, charFormat, (CharacterHandler)handler, resizeCanvas);
-			
+
 			UpdateCanvasSize(Pages[0], Info.AutoResize);
-			Pages[0].Canvas.Update += delegate
-			{
-				IsModified = true;
-			};
+			IsModified = false;
 		}
 
 		void UpdateCanvasSize(Page page, bool resizeNonEdit)
@@ -356,12 +357,12 @@ namespace Pablo.Formats.Character
 			args.Message.WritePadBits();
 			using (var stream = new MemoryStream())
 			{
-			
+
 				var type = new Types.Pablo(Info);
 				type.Save(stream, this);
 				stream.Flush();
 				stream.Seek(0, SeekOrigin.Begin);
-				
+
 				args.Message.WriteStream(stream);
 			}
 			return true;

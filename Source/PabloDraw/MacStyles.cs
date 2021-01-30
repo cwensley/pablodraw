@@ -1,3 +1,4 @@
+#if MAC
 using Eto;
 using Eto.Drawing;
 using Eto.Mac;
@@ -26,18 +27,8 @@ using CGRect = System.Drawing.RectangleF;
 
 namespace PabloDraw
 {
-	public static class Startup
+	public static class MacStyles
 	{
-		static void Main(string[] args)
-		{
-			AddStyles();
-
-			var app = new Pablo.Interface.PabloApplication(new Eto.Mac.Platform());
-
-			//ApplicationHandler.Instance.AppDelegate = new AppDelegate();
-			app.Run();
-		}
-
 		enum NSActivityOptions : ulong
 		{
 			IdleDisplaySleepDisabled = (1 << 40),
@@ -63,8 +54,10 @@ namespace PabloDraw
 		static NSObject activityToken;
 		static NSString ActivityReason { get { return new NSString("networking"); } }
 
-		static void AddStyles()
+		public static void Apply()
 		{
+			Style.Add<ApplicationHandler>(null, h => h.AppDelegate = new AppDelegate());
+
 			Style.Add<Main>(null, ctl => ctl.ClientChanged += (sender, e) =>
 				{
 					if (NSProcessInfo.ProcessInfo.RespondsToSelector(Selector.FromHandle(selBeginActivity)))
@@ -129,3 +122,5 @@ namespace PabloDraw
 	}
 }
 
+
+#endif

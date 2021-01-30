@@ -195,8 +195,8 @@ namespace Pablo.Formats.Rip.Tools
 			layout.Add (new Controls.LineStylePad (Handler, true));
 			
 			var font = new Font (SystemFont.Default, 7);
-			layout.Add (new Label{ Text = "Segments", Font = font, HorizontalAlign = HorizontalAlign.Center });
-			var segmentBox = new NumericUpDown{
+			layout.Add (new Label{ Text = "Segments", Font = font, TextAlignment = TextAlignment.Center });
+			var segmentBox = new NumericStepper{
 				Font = new Font (SystemFont.Default, 8),
 				Value = segments,
 				MinValue = 1,

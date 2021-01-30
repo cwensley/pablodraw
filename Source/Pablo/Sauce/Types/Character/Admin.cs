@@ -17,11 +17,11 @@ namespace Pablo.Sauce.Types.Character
 			if (DataType.HasDimensions)
 			{
 				Layout.BeginHorizontal();
-				Layout.Add(new Label { Text = "Width", VerticalAlign = VerticalAlign.Middle });
+				Layout.Add(new Label { Text = "Width", VerticalAlignment = VerticalAlignment.Center });
 				Layout.BeginVertical(Eto.Drawing.Padding.Empty);
 				Layout.BeginHorizontal();
 				Layout.Add(WidthControl(), xscale: true);
-				Layout.Add(new Label { Text = "Height", VerticalAlign = VerticalAlign.Middle }); 
+				Layout.Add(new Label { Text = "Height", VerticalAlignment = VerticalAlignment.Center }); 
 				Layout.Add(HeightControl(), xscale: true);
 				Layout.EndHorizontal();
 				Layout.EndVertical();
@@ -29,13 +29,13 @@ namespace Pablo.Sauce.Types.Character
 			}
 			if (DataType.HasNumberOfColors)
 			{
-				Layout.AddRow(new Label { Text = "Number of Colors", VerticalAlign = VerticalAlign.Middle }, NumberOfColors());
+				Layout.AddRow(new Label { Text = "Number of Colors", VerticalAlignment = VerticalAlignment.Center }, NumberOfColors());
 			}
 		}
 
 		Control WidthControl()
 		{
-			var control = new NumericUpDown
+			var control = new NumericStepper
 			{
 				MinValue = 0,
 				MaxValue = ushort.MaxValue,
@@ -51,7 +51,7 @@ namespace Pablo.Sauce.Types.Character
 
 		Control HeightControl()
 		{
-			var control = new NumericUpDown
+			var control = new NumericStepper
 			{
 				//Text = DataType.Height > 0 ? DataType.Height.ToString() : string.Empty
 				MinValue = 0,
@@ -67,7 +67,7 @@ namespace Pablo.Sauce.Types.Character
 
 		Control NumberOfColors()
 		{
-			var control = new NumericUpDown
+			var control = new NumericStepper
 			{
 				MinValue = 0,
 				MaxValue = ushort.MaxValue,

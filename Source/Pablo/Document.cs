@@ -31,14 +31,18 @@ namespace Pablo
 
 		public bool HasSavePermission { get; set; }
 
+		public bool IsLoading { get; private set; }
+
 		protected void OnStartLoad(EventArgs e)
 		{
+			IsLoading = true;
 			if (StartLoad != null)
 				StartLoad(this, e);
 		}
 
 		protected void OnLoaded(EventArgs e)
 		{
+			IsLoading = false;
 			if (Loaded != null)
 				Loaded(this, e);
 		}

@@ -44,8 +44,8 @@ namespace Pablo.Formats.Character.Controls
 		{
 			insertLabel = new Label
 			{ 
-				HorizontalAlign = HorizontalAlign.Right,
-				VerticalAlign = VerticalAlign.Middle
+				TextAlignment = TextAlignment.Right,
+				VerticalAlignment = VerticalAlignment.Center
 			};
 			return insertLabel;
 		}
@@ -55,8 +55,8 @@ namespace Pablo.Formats.Character.Controls
 			fontLabel = new Label
 			{
 				Wrap = WrapMode.None,
-				HorizontalAlign = HorizontalAlign.Left,
-				VerticalAlign = VerticalAlign.Middle
+				TextAlignment = TextAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Center
 			};
 #if DESKTOP
 			fontLabel.MouseDown += delegate

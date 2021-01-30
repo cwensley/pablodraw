@@ -1,8 +1,9 @@
-﻿using System;
+﻿#if MAC
+using System;
 using Eto.Forms;
 using Pablo.Interface;
 
-#if __UNIFIED__
+#if XAMMAC
 using AppKit;
 using ObjCRuntime;
 using Foundation;
@@ -65,3 +66,4 @@ namespace PabloDraw
 	}
 }
 
+#endif

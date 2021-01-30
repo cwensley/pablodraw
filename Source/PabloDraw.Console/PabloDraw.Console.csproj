@@ -11,13 +11,13 @@
     <EmbedReferences>True</EmbedReferences>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\lidgren\Lidgren.Network\Lidgren.Network.csproj" />
-    <ProjectReference Include="..\..\Libraries\Mono.Nat\src\Mono.Nat\Mono.Nat.csproj" />
     <ProjectReference Include="..\Pablo\Pablo.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Eto.Platform.Gtk" Version="2.5.0-rc.4" />
-    <PackageReference Include="Eto.Platform.Windows" Version="2.5.0-rc.4" />
-    <PackageReference Include="Eto.Platform.Mac64" Version="2.5.0-rc.4" />
+    <PackageReference Include="Eto.Platform.Gtk" Version="2.5.8" />
+    <PackageReference Include="Eto.Platform.Windows" Version="2.5.8" />
+    <PackageReference Include="Eto.Platform.Mac64" Version="2.5.8" />
+    <PackageReference Include="Mono.Nat" Version="3.0.1" />
+    <PackageReference Include="Lidgren.Network" Version="1.0.2" />
   </ItemGroup>
 </Project>

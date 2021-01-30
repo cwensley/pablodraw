@@ -15,7 +15,7 @@ namespace Pablo.Network
 {
 	public class Server : Network
 	{
-		public const int VERSION = 7;
+		public const int VERSION = 8;
 		bool mappedPort;
 		NetServer server;
 		static INatDevice natdevice;
@@ -110,8 +110,8 @@ namespace Pablo.Network
 					natdevice = null;
 				}
 				NatUtility.DeviceFound += HandleNatUtilityDeviceFound;
-				NatUtility.DeviceLost += HandleDeviceLost;
-				NatUtility.UnhandledException += HandleNatUtilityUnhandledException;
+				// NatUtility.DeviceLost += HandleDeviceLost;
+				// NatUtility.UnhandledException += HandleNatUtilityUnhandledException;
 				NatUtility.StartDiscovery();
 			}
 			/**/
@@ -184,8 +184,8 @@ namespace Pablo.Network
 				{
 					NatUtility.StopDiscovery();
 					NatUtility.DeviceFound -= HandleNatUtilityDeviceFound;
-					NatUtility.UnhandledException -= HandleNatUtilityUnhandledException;
-					NatUtility.DeviceLost -= HandleDeviceLost;
+					// NatUtility.UnhandledException -= HandleNatUtilityUnhandledException;
+					// NatUtility.DeviceLost -= HandleDeviceLost;
 
 				}
 				server.Shutdown("Server shutdown by host");

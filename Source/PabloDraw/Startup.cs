@@ -7,7 +7,7 @@ namespace PabloDraw
 		[STAThread]
 		static void Main()
 		{
-            EmbedReferences.Init();
+            // EmbedReferences.Init();
 			Program.Run();
 		}
 	}

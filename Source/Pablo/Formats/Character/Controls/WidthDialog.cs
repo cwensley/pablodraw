@@ -6,94 +6,107 @@ namespace Pablo.Formats.Character.Controls
 {
 	public class WidthDialog : Dialog<DialogResult>
 	{
-		int width;
-		TextBox widthControl;
-		
-		Control WidthControl ()
+		NumericStepper widthControl;
+		NumericStepper heightControl;
+
+		Control WidthControl()
 		{
-			widthControl = new TextBox ();
-			widthControl.TextChanged += delegate {
-				int.TryParse (widthControl.Text, out width);
-			};
+			widthControl = new NumericStepper { MinValue = 1, MaxValue = 5000 };
 			return widthControl;
 		}
-		
-		Control OkButton ()
+
+		Control HeightControl()
 		{
-			var control = new Button{
+			heightControl = new NumericStepper { MinValue = 1, MaxValue = 10000 };
+			return heightControl;
+		}
+
+		Control OkButton()
+		{
+			var control = new Button
+			{
 				Text = "Ok"
 			};
-			control.Click += delegate {
-				if (int.TryParse (widthControl.Text, out width)) {
-					if (width > 0 && width <= 5000) {
-						Result = DialogResult.Ok;
-						Close ();
-					} else {
-						MessageBox.Show(this, "Width must be a numeric value between 1 and 5000");
-					}
-				}
+			control.Click += delegate
+			{
+				Result = DialogResult.Ok;
+				Close();
 			};
 			this.DefaultButton = control;
 			return control;
 		}
-		
-		Control CancelButton ()
+
+		Control CancelButton()
 		{
-			var control = new Button{
+			var control = new Button
+			{
 				Text = "Cancel"
 			};
-			control.Click += delegate {
+			control.Click += delegate
+			{
 				Result = DialogResult.Cancel;
-				Close ();
+				Close();
 			};
 			base.AbortButton = control;
 			return control;
 		}
-		
-		Control Buttons ()
+
+		Control Buttons()
 		{
-			var layout = new TableLayout (3, 1);
-			layout.Padding = Padding.Empty;
-			
-			layout.SetColumnScale (0);
-			
-			layout.Add (CancelButton (), 1, 0);
-			layout.Add (OkButton (), 2, 0);
+			var layout = new TableLayout(3, 1);
+			layout.Spacing = new Size(5, 5);
+
+			layout.SetColumnScale(0);
+
+			layout.Add(CancelButton(), 1, 0);
+			layout.Add(OkButton(), 2, 0);
 			return layout;
 		}
-		
-		public int Width {
-			get { return width; }
-			set {
-				width = value;
-				widthControl.Text = width.ToString ();
+
+		public Size CanvasSize
+		{
+			get { return new Size((int)widthControl.Value, (int)heightControl.Value); }
+			set
+			{
+				widthControl.Value = value.Width;
+				heightControl.Value = value.Height;
 			}
 		}
-		
-		Control WidthRow ()
+
+		Control WidthRow()
 		{
-			var layout = new TableLayout (2, 2);
+			var layout = new DynamicLayout();
 			layout.Padding = new Padding(20, 10, 20, 0);
-			
-			layout.Add (new Label{ Text = "Canvas Width", VerticalAlign = VerticalAlign.Middle }, 0, 0);
-			layout.Add (WidthControl (), 1, 0, true, false);
+
+			layout.BeginHorizontal();
+			layout.AddSpace();
+			layout.Add(new Label { Text = "Canvas Size", VerticalAlignment = VerticalAlignment.Center });
+			layout.Add(WidthControl());
+			layout.Add(HeightControl());
+			layout.AddSpace();
+
+			layout.EndHorizontal();
+
 			return layout;
 		}
-		
-		public WidthDialog ()
+
+		public WidthDialog()
 		{
 			//this.ClientSize = new Size (350, 160);
-			
-			var toplayout = new TableLayout (1, 3);
-			toplayout.Padding = new Padding (10);
-			
-			toplayout.Add (new Label{ 
-				Text = "Set the width of the canvas.\nNote that ANSI and ASCII are usually maximum 80 columns,\nand BIN (Binary) files are usually 160 characters.\nAnything larger that 500 wide may cause PabloDraw to become slow or unresponsive.",
-				VerticalAlign = VerticalAlign.Middle,
-				HorizontalAlign = HorizontalAlign.Center
-			}, 0, 0, true, true);
-			toplayout.Add (WidthRow (), 0, 1);
-			toplayout.Add (Buttons (), 0, 2);
+
+			var toplayout = new DynamicLayout();
+			toplayout.Padding = new Padding(10);
+			toplayout.Spacing = new Size(5, 5);
+
+			toplayout.Add(new Label
+			{
+				Text = "Set the size of the canvas.\nNote that ANSI and ASCII are usually maximum 80 columns,\nand BIN (Binary) files are usually 160 characters.\nAnything larger that 500 wide may cause PabloDraw to become slow or unresponsive.",
+				Wrap = WrapMode.Word,
+				VerticalAlignment = VerticalAlignment.Center,
+				TextAlignment = TextAlignment.Center
+			}, yscale: true);
+			toplayout.Add(WidthRow());
+			toplayout.Add(Buttons());
 
 			Content = toplayout;
 		}

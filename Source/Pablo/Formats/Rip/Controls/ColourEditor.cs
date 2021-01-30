@@ -166,7 +166,7 @@ namespace Pablo.Formats.Rip.Controls
 			var slider = new Slider{ 
 				MinValue = 0, 
 				MaxValue = 3, 
-				Orientation = SliderOrientation.Vertical,
+				Orientation = Orientation.Vertical,
 				TickFrequency = 1
 			};
 			slider.ValueChanged += HandleSliderValueChanged;

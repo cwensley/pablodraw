@@ -37,7 +37,7 @@ namespace Pablo.Formats.Character.Controls
 
 			var layout = new DynamicLayout { Padding = Padding.Empty, Spacing = Size.Empty };
 
-			layout.Add(new Label { Text = "Char", HorizontalAlign = HorizontalAlign.Center, Font = new Font(SystemFont.Default, 7) });
+			layout.Add(new Label { Text = "Char", TextAlignment = TextAlignment.Center, Font = new Font(SystemFont.Default, 7) });
 
 			layout.AddCentered(GradientPreview(), Padding.Empty, Size.Empty);
 

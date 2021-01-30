@@ -2,7 +2,7 @@
 
   <Import Project="EmbedReferences.targets" />
   
-  <UsingTask TaskName="_ParseVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+  <UsingTask TaskName="_ParseVersion" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
     <ParameterGroup>
       <Version ParameterType="System.String" Required="true" />
       <AssemblyVersion ParameterType="System.String" Output="true" />

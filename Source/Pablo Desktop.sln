@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pablo", "Pablo\Pablo.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pablo.Interface", "Pablo.Interface\Pablo.Interface.csproj", "{3FAACC7E-D156-4599-B0D1-6177AD78E8B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.Nat", "..\Libraries\Mono.Nat\src\Mono.Nat\Mono.Nat.csproj", "{F5D74163-145F-47BF-83DC-D0E07249C6CA}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PabloDraw.Console", "PabloDraw.Console\PabloDraw.Console.csproj", "{0457895A-719B-47E9-84F3-356B2A1F8D3C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{88CCB819-8E11-429C-94D7-D5A27A671129}"
@@ -19,10 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.targets = Directory.Build.targets
 		EmbedReferences.targets = EmbedReferences.targets
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lidgren.Network", "..\Libraries\lidgren\Lidgren.Network\Lidgren.Network.csproj", "{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PabloDraw.Mac", "PabloDraw.Mac\PabloDraw.Mac.csproj", "{5590729F-3176-4A91-94E3-54F75DA2EB9D}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PabloDraw.WindowsInstaller", "PabloDraw.WindowsInstaller\PabloDraw.WindowsInstaller.wixproj", "{38A42F6D-A417-45B0-8EC8-A700F31CBE26}"
 EndProject
@@ -58,14 +52,6 @@ Global
 		{3FAACC7E-D156-4599-B0D1-6177AD78E8B1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3FAACC7E-D156-4599-B0D1-6177AD78E8B1}.Release|Mac.ActiveCfg = Release|Any CPU
 		{3FAACC7E-D156-4599-B0D1-6177AD78E8B1}.Release|Mac.Build.0 = Release|Any CPU
-		{F5D74163-145F-47BF-83DC-D0E07249C6CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5D74163-145F-47BF-83DC-D0E07249C6CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5D74163-145F-47BF-83DC-D0E07249C6CA}.Debug|Mac.ActiveCfg = Debug|Any CPU
-		{F5D74163-145F-47BF-83DC-D0E07249C6CA}.Debug|Mac.Build.0 = Debug|Any CPU
-		{F5D74163-145F-47BF-83DC-D0E07249C6CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5D74163-145F-47BF-83DC-D0E07249C6CA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F5D74163-145F-47BF-83DC-D0E07249C6CA}.Release|Mac.ActiveCfg = Release|Any CPU
-		{F5D74163-145F-47BF-83DC-D0E07249C6CA}.Release|Mac.Build.0 = Release|Any CPU
 		{0457895A-719B-47E9-84F3-356B2A1F8D3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0457895A-719B-47E9-84F3-356B2A1F8D3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0457895A-719B-47E9-84F3-356B2A1F8D3C}.Debug|Mac.ActiveCfg = Debug|Any CPU
@@ -74,20 +60,6 @@ Global
 		{0457895A-719B-47E9-84F3-356B2A1F8D3C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0457895A-719B-47E9-84F3-356B2A1F8D3C}.Release|Mac.ActiveCfg = Release|Any CPU
 		{0457895A-719B-47E9-84F3-356B2A1F8D3C}.Release|Mac.Build.0 = Release|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Debug|Mac.ActiveCfg = Debug|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Debug|Mac.Build.0 = Debug|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|Mac.ActiveCfg = Release|Any CPU
-		{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}.Release|Mac.Build.0 = Release|Any CPU
-		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Debug|Mac.ActiveCfg = Debug|Any CPU
-		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Debug|Mac.Build.0 = Debug|Any CPU
-		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Release|Mac.ActiveCfg = Release|Any CPU
-		{5590729F-3176-4A91-94E3-54F75DA2EB9D}.Release|Mac.Build.0 = Release|Any CPU
 		{38A42F6D-A417-45B0-8EC8-A700F31CBE26}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{38A42F6D-A417-45B0-8EC8-A700F31CBE26}.Debug|Mac.ActiveCfg = Debug|x86
 		{38A42F6D-A417-45B0-8EC8-A700F31CBE26}.Release|Any CPU.ActiveCfg = Release|x86
