@@ -217,7 +217,7 @@ namespace Pablo.Formats.Character
 		public virtual void FlipX(TranslateCharacter translate = null)
 		{
 			for (int y = 0; y < Height; y++)
-				for (int x = 0; x < Width / 2; x++)
+				for (int x = 0; x < (Width + 1) / 2; x++)
 				{
 					int right = Width - x - 1;
 					var vall = this[x, y];
@@ -234,7 +234,7 @@ namespace Pablo.Formats.Character
 
 		public virtual void FlipY(TranslateCharacter translate = null)
 		{
-			for (int y = 0; y < (Height + 0) / 2; y++)
+			for (int y = 0; y < (Height + 1) / 2; y++)
 			{
 				int bottom = Height - y - 1;
 				for (int x = 0; x < Width; x++)
