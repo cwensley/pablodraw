@@ -170,7 +170,7 @@ namespace Pablo.Formats.Character.Types
 			}
 		}
 
-		static void WriteCompressedRow(Canvas canvas, int y, BinaryWriter bw)
+		static void WriteCompressedRow(Canvas canvas, int y, BinaryWriter bw, Func<CanvasElement, CanvasElement> translate)
 		{
 			var runMode = CompressionType.NoCompression;
 			int runCount = 0;
@@ -181,7 +181,7 @@ namespace Pablo.Formats.Character.Types
 			for (int x=0; x<canvas.Width; x++)
 			{
 				
-				var ce = canvas[x, y];
+				var ce = translate(canvas[x, y]);
 				if (runCount > 0)
 				{
 					bool endRun = false;
@@ -192,15 +192,15 @@ namespace Pablo.Formats.Character.Types
 						switch (runMode)
 						{
 							case CompressionType.NoCompression:
-								if (x < canvas.Width - 1 && ce == canvas[x + 1, y])
+								if (x < canvas.Width - 1 && ce == translate(canvas[x + 1, y]))
 								{
 									endRun = true;
 								}
 								else if (x < canvas.Width - 2)
 								{
-									if (ce.Character == canvas[x + 1, y].Character && ce.Character == canvas[x + 2, y].Character)
+									if (ce.Character == translate(canvas[x + 1, y]).Character && ce.Character == translate(canvas[x + 2, y]).Character)
 										endRun = true;
-									else if (ce.Attribute == canvas[x + 1, y].Attribute && ce.Attribute == canvas[x + 2, y].Attribute)
+									else if (ce.Attribute == translate(canvas[x + 1, y]).Attribute && ce.Attribute == translate(canvas[x + 2, y]).Attribute)
 										endRun = true;
 								}
 								break;
@@ -209,7 +209,7 @@ namespace Pablo.Formats.Character.Types
 									endRun = true;
 								else if (x < canvas.Width - 2)
 								{
-									if (ce == canvas[x + 1, y] && ce == canvas[x + 2, y])
+									if (ce == translate(canvas[x + 1, y]) && ce == translate(canvas[x + 2, y]))
 										endRun = true;
 								}
 								break;
@@ -218,7 +218,7 @@ namespace Pablo.Formats.Character.Types
 									endRun = true;
 								else if (x < canvas.Width - 2)
 								{
-									endRun |= ce == canvas[x + 1, y] && ce == canvas[x + 2, y];
+									endRun |= ce == translate(canvas[x + 1, y]) && ce == translate(canvas[x + 2, y]);
 								}
 								break;
 							case CompressionType.Both:
@@ -234,7 +234,7 @@ namespace Pablo.Formats.Character.Types
 						runCount = 0;
 					}
 				}
-				
+
 				if (runCount > 0)
 				{
 					switch (runMode)
@@ -259,7 +259,7 @@ namespace Pablo.Formats.Character.Types
 					bufIndex = 0;
 					if (x < canvas.Width - 1)
 					{
-						var nextce = canvas[x + 1, y];
+						var nextce = translate(canvas[x + 1, y]);
 						if (ce == nextce)
 						{
 							runMode = CompressionType.Both;
@@ -330,12 +330,22 @@ namespace Pablo.Formats.Character.Types
 			
 			if (xbh.Font)
 				page.Font.Save(bw);
+
+			CanvasElement Translate(CanvasElement element)
+			{
+				if (xbh.Font512 && element.Character >= 256)
+				{
+					element.Character -= 256;
+					element.Attribute.Bold = true;
+				}
+				return element;
+			}
 			
 			if (xbh.Compress)
 			{
 				for (int y=0; y <= lasty; y++)
 				{
-					WriteCompressedRow(canvas, y, bw);
+					WriteCompressedRow(canvas, y, bw, Translate);
 				}
 			}
 			else
@@ -343,7 +353,7 @@ namespace Pablo.Formats.Character.Types
 				for (int y=0; y <= lasty; y++)
 					for (int x=0; x < canvas.Width; x++)
 					{
-						var ce = canvas[x, y];
+						var ce = Translate(canvas[x, y]);
 						bw.Write((byte)ce.Character);
 						bw.Write((byte)ce.Attribute);
 					}
@@ -375,6 +385,16 @@ namespace Pablo.Formats.Character.Types
 
 				loadSize.Width = (document.EditMode && header.Width > canvas.Size.Width) ? canvas.Size.Width : header.Width;
 				loadSize.Height = (document.EditMode && header.Height > canvas.Size.Height) ? canvas.Size.Height : header.Height;
+
+				CanvasElement Translate(CanvasElement element)
+				{
+					if (header.Font512 && element.Attribute.Bold)
+					{
+						element.Attribute.Bold = false;
+						element.Character += 256;
+					}
+					return element;
+				}
 
 				if (header.Palette)
 				{
@@ -425,7 +445,7 @@ namespace Pablo.Formats.Character.Types
 										ce.Character = br.ReadByte();
 										ce.Attribute = br.ReadByte();
 										if (x < canvas.Size.Width)
-											canvas[x, y] = ce;
+											canvas[x, y] = Translate(ce);
 										x++;
 										runlength--;
 									}
@@ -436,7 +456,7 @@ namespace Pablo.Formats.Character.Types
 									{
 										ce.Attribute = br.ReadByte();
 										if (x < canvas.Size.Width)
-											canvas[x, y] = ce;
+											canvas[x, y] = Translate(ce);
 										x++;
 										runlength--;
 									}
@@ -447,7 +467,7 @@ namespace Pablo.Formats.Character.Types
 									{
 										ce.Character = br.ReadByte();
 										if (x < canvas.Size.Width)
-											canvas[x, y] = ce;
+											canvas[x, y] = Translate(ce);
 										x++;
 										runlength--;
 									}
@@ -458,7 +478,7 @@ namespace Pablo.Formats.Character.Types
 									while (runlength > 0)
 									{
 										if (x < canvas.Size.Width)
-											canvas[x, y] = ce;
+											canvas[x, y] = Translate(ce);
 										x++;
 										runlength--;
 									}
@@ -479,7 +499,7 @@ namespace Pablo.Formats.Character.Types
 							ce.Character = br.ReadByte();
 							ce.Attribute = br.ReadByte();
 							if (x < canvas.Size.Width)
-								canvas[x, y] = ce;
+								canvas[x, y] = Translate(ce);
 						}
 					}
 				}
