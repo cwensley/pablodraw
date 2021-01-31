@@ -98,13 +98,19 @@ namespace Pablo.Formats.Character.Controls
 			toplayout.Padding = new Padding(10);
 			toplayout.Spacing = new Size(5, 5);
 
-			toplayout.Add(new Label
+			var label = new Label
 			{
 				Text = "Set the size of the canvas.\nNote that ANSI and ASCII are usually maximum 80 columns,\nand BIN (Binary) files are usually 160 characters.\nAnything larger that 500 wide may cause PabloDraw to become slow or unresponsive.",
 				Wrap = WrapMode.Word,
 				VerticalAlignment = VerticalAlignment.Center,
 				TextAlignment = TextAlignment.Center
-			}, yscale: true);
+			};
+			if (Platform.IsWinForms)
+			{
+				// winforms layout has.. some.. issues..
+				label.Width = 350;
+			}
+			toplayout.Add(label, yscale: true);
 			toplayout.Add(WidthRow());
 			toplayout.Add(Buttons());
 
