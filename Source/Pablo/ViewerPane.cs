@@ -75,6 +75,27 @@ namespace Pablo
 		}
 		*/
 
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+
+			// when switching to fullscreen we don't get updated sizes properly with OnSizeChanged.. hrm.
+			if (Platform.IsMac)
+				ParentWindow.SizeChanged += ParentWindow_SizeChanged;
+		}
+
+		protected override void OnUnLoad(EventArgs e)
+		{
+			base.OnUnLoad(e);
+			if (Platform.IsMac)
+				ParentWindow.SizeChanged -= ParentWindow_SizeChanged;
+		}
+
+		private void ParentWindow_SizeChanged(object sender, EventArgs e)
+		{
+			UpdateSizes();
+		}
+
 		protected override void OnSizeChanged(EventArgs e)
 		{
 			base.OnSizeChanged(e);
@@ -85,7 +106,7 @@ namespace Pablo
 
 		public ImageViewer Viewer { get { return viewer; } }
 
-		public float Zoom { get { return ZoomInfo.Zoom; } }
+		public new float Zoom { get { return ZoomInfo.Zoom; } }
 
 		public ZoomInfo ZoomInfo
 		{
