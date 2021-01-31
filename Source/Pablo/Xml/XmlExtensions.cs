@@ -31,7 +31,7 @@ namespace Eto
 		/// <param name="element">Element that will represent the object</param>
 		void WriteXml(XmlElement element);
 	}
-	
+
 	/// <summary>
 	/// Delegate to create the specified object from an XmlElement
 	/// </summary>
@@ -45,7 +45,7 @@ namespace Eto
 	/// <param name="element">Element to create the object from</param>
 	/// <returns>A new instance of the specified type for the element</returns>
 	public delegate T CreateFromXml<T>(XmlElement element);
-	
+
 	/// <summary>
 	/// Delegate to translate an attribute value to the specified type
 	/// </summary>
@@ -54,7 +54,7 @@ namespace Eto
 	/// <param name="result">Resulting value from the attribute type</param>
 	/// <returns>True if the translation was sucessful, false otherwise</returns>
 	public delegate bool XmlToValue<T>(string attribute, out T result);
-	
+
 	/// <summary>
 	/// Extensions for reading/writing xml values
 	/// </summary>
@@ -75,7 +75,7 @@ namespace Eto
 			string attr = element.GetAttribute(name);
 			return string.IsNullOrEmpty(attr) ? null : attr;
 		}
-		
+
 		/// <summary>
 		/// Gets a boolean attribute value from the specified element.  The value should be 'true', 'false' or empty.
 		/// </summary>
@@ -105,7 +105,7 @@ namespace Eto
 		/// <param name="ignoreCase">True to ignore case when parsing, false to be case sensitive</param>
 		/// <returns>Value of the parsed enumeration, or null if it cannot be parsed</returns>
 		public static T? GetEnumAttribute<T>(this XmlElement element, string name, bool ignoreCase = true)
-			where T: struct
+			where T : struct
 		{
 			string val = element.GetAttribute(name);
 			T result;
@@ -122,7 +122,7 @@ namespace Eto
 		/// <param name="element">Element to read the attribute from</param>
 		/// <param name="name">Name of the attribute</param>
 		/// <returns>Integer value of the attribute, or null if it is invalid or missing</returns>
-		public static int? GetIntAttribute (this XmlElement element, string name)
+		public static int? GetIntAttribute(this XmlElement element, string name)
 		{
 			string attr = element.GetAttribute(name);
 			int result;
@@ -139,7 +139,7 @@ namespace Eto
 		/// <param name="element">Element to read the attribute from</param>
 		/// <param name="name">Name of the attribute</param>
 		/// <returns>Float value of the attribute, or null if it is invalid or missing</returns>
-		public static float? GetFloatAttribute (this XmlElement element, string name)
+		public static float? GetFloatAttribute(this XmlElement element, string name)
 		{
 			string attr = element.GetAttribute(name);
 			float result;
@@ -154,15 +154,15 @@ namespace Eto
 		/// <param name="name">Name of the attribute</param>
 		/// <param name="translate">Delegate used to translate the string value to the desired type</param>
 		/// <returns>Value returned by the translate delegate, or null if the translate delegate returned false</returns>
-		public static T? GetAttribute<T> (this XmlElement element, string name, XmlToValue<T> translate)
-			where T: struct
+		public static T? GetAttribute<T>(this XmlElement element, string name, XmlToValue<T> translate)
+			where T : struct
 		{
 			string attr = element.GetAttribute(name);
 			T result;
 			if (!string.IsNullOrEmpty(attr) && translate(attr, out result)) return result;
 			return null;
 		}
-		
+
 		/// <summary>
 		/// Sets an attribute of the specified element to a value
 		/// </summary>
@@ -179,7 +179,7 @@ namespace Eto
 			if (!string.IsNullOrEmpty(attrValue))
 				element.SetAttribute(name, attrValue);
 		}
-		
+
 		/// <summary>
 		/// Adds a new element as a child to the specified element, if the child value is not null
 		/// </summary>
@@ -212,7 +212,7 @@ namespace Eto
 		/// <param name="childElementName">Name of the child element to create</param>
 		/// <param name="child">Child value to translate to a new child element</param>
 		public static void WriteChildXml<T>(this XmlElement element, string childElementName, T child)
-			where T: IXmlReadable
+			where T : IXmlReadable
 		{
 			if (EqualityComparer<T>.Default.Equals(child, default(T))) return;
 			var childElement = element.OwnerDocument.CreateElement(childElementName);
@@ -257,9 +257,9 @@ namespace Eto
 		/// <param name="childElementName">Name of the child element to read</param>
 		/// <returns>A new instance of the specified type if the child element exists with properties read from xml, otherwise null</returns>
 		public static T ReadChildXml<T>(this XmlElement element, string childElementName)
-			where T: IXmlReadable, new()
+			where T : IXmlReadable, new()
 		{
-			return ReadChildXml<T>(element, childElementName, delegate { return new T();});
+			return ReadChildXml<T>(element, childElementName, delegate { return new T(); });
 		}
 
 		/// <summary>
@@ -313,8 +313,8 @@ namespace Eto
 		/// <param name="childElementName">Name of the child element to read</param>
 		/// <param name="create">Delegate to create the child object instance if needed</param>
 		/// <returns>A new instance of the specified type if the child element exists with properties read from xml, otherwise null</returns>
-		public static T ReadChildXml<T> (this XmlElement element, string childElementName, CreateFromXml<T> create)
-			where T: IXmlReadable
+		public static T ReadChildXml<T>(this XmlElement element, string childElementName, CreateFromXml<T> create)
+			where T : IXmlReadable
 		{
 			var childElement = element.SelectSingleNode(childElementName) as XmlElement;
 			if (childElement == null) return default(T);
@@ -361,14 +361,14 @@ namespace Eto
 		/// <param name="childElementName">Name of the child element to read</param>
 		/// <param name="child">Instance of the child object to read the XML into</param>
 		/// <returns>A new instance of the specified type if the child element exists with properties read from xml, otherwise null</returns>
-		public static void ReadChildXml<T> (this XmlElement element, string childElementName, T child)
-			where T: IXmlReadable
+		public static void ReadChildXml<T>(this XmlElement element, string childElementName, T child)
+			where T : IXmlReadable
 		{
 			var childElement = element.SelectSingleNode(childElementName) as XmlElement;
-			
+
 			if (childElement != null) child.ReadXml(childElement);
 		}
-		
+
 		/// <summary>
 		/// Writes a list of <see cref="IXmlReadable"/> objects as child elements of the specified element, with an optional child list element
 		/// </summary>
@@ -403,20 +403,23 @@ namespace Eto
 		/// <param name="childElement">Name of each child element to create</param>
 		/// <param name="listElement">Name of the list element to contain the child elements, or null to add the child elements directly to the specified <paramref name="element"/></param>
 		public static void WriteChildListXml<T>(this XmlElement element, IEnumerable<T> list, string childElement, string listElement = null)
-			where T: IXmlReadable
+			where T : IXmlReadable
 		{
-			XmlElement listNode = (!string.IsNullOrEmpty (listElement)) ? element.OwnerDocument.CreateElement (listElement) : element;
-			
-			foreach (T child in list) {
-				if (!EqualityComparer<T>.Default.Equals(child, default(T))) {
+			XmlElement listNode = (!string.IsNullOrEmpty(listElement)) ? element.OwnerDocument.CreateElement(listElement) : element;
+
+			foreach (T child in list)
+			{
+				if (!EqualityComparer<T>.Default.Equals(child, default(T)))
+				{
 					var childNode = element.OwnerDocument.CreateElement(childElement);
 					child.WriteXml(childNode);
-					listNode.AppendChild (childNode);
+					listNode.AppendChild(childNode);
 				}
 			}
 
-			if (listNode != element && !listNode.IsEmpty) {
-				element.AppendChild (listNode);
+			if (listNode != element && !listNode.IsEmpty)
+			{
+				element.AppendChild(listNode);
 			}
 		}
 
@@ -464,25 +467,48 @@ namespace Eto
 		/// <param name="create">Delegate to create the child object to add to the list</param>
 		/// <param name="childElement">Name of the child elements to read</param>
 		/// <param name="listElement">If specified, the list element where the child elements are to be read from, or null to read the child elements directly from the <paramref name="element"/></param>
-		public static void ReadChildListXml<T> (this XmlElement element, IList<T> list, CreateFromXml<T> create, string childElement, string listElement = null)
-			where T: IXmlReadable
+		public static void ReadChildListXml<T>(this XmlElement element, IList<T> list, CreateFromXml<T> create, string childElement, string listElement = null)
+			where T : IXmlReadable
 		{
 			XmlNodeList childNodes = null;
-			if (listElement != null) {
-				var listNode = element.SelectSingleNode (listElement);
+			if (listElement != null)
+			{
+				var listNode = element.SelectSingleNode(listElement);
 				if (listNode != null)
-					childNodes = listNode.SelectNodes (childElement);
+					childNodes = listNode.SelectNodes(childElement);
 			}
-			else 
-				childNodes = element.SelectNodes (childElement);
-			
-			if (childNodes != null) {
-				list.Clear ();
-				foreach (XmlElement childNode in childNodes) {
+			else
+				childNodes = element.SelectNodes(childElement);
+
+			if (childNodes != null)
+			{
+				if (!list.IsReadOnly)
+					list.Clear();
+				else
+				{
+					for (int i = 0; i < list.Count; i++)
+					{
+						list[i] = default(T);
+					}
+				}
+				int index = 0;
+				foreach (XmlElement childNode in childNodes)
+				{
 					var item = create(childNode);
-					if (!EqualityComparer<T>.Default.Equals(item, default(T))) {
+					if (!EqualityComparer<T>.Default.Equals(item, default(T)))
+					{
 						item.ReadXml(childNode);
-						list.Add (item);
+						if (list.IsReadOnly)
+						{
+							if (index < list.Count)
+								list[index++] = item;
+							else
+								break;
+						}
+						else
+						{
+							list.Add(item);
+						}
 					}
 				}
 			}
@@ -517,8 +543,8 @@ namespace Eto
 		/// <param name="list">List to add the child elements to</param>
 		/// <param name="childElement">Name of the child elements to read</param>
 		/// <param name="listElement">If specified, the list element where the child elements are to be read from, or null to read the child elements directly from the <paramref name="element"/></param>
-		public static void ReadChildListXml<T> (this XmlElement element, IList<T> list, string childElement, string listElement = null)
-			where T: IXmlReadable, new()
+		public static void ReadChildListXml<T>(this XmlElement element, IList<T> list, string childElement, string listElement = null)
+			where T : IXmlReadable, new()
 		{
 			ReadChildListXml<T>(element, list, delegate { return new T(); }, childElement, listElement);
 		}
@@ -529,13 +555,15 @@ namespace Eto
 		/// <param name="obj">Object to serialize to xml</param>
 		/// <param name="fileName">File to save as</param>
 		/// <param name="documentElementName">Document element name</param>
-		public static void SaveXml (this IXmlReadable obj, string fileName, string documentElementName = "object")
+		public static void SaveXml(this IXmlReadable obj, string fileName, string documentElementName = "object")
 		{
-			using (var stream = new MemoryStream ()) {
+			using (var stream = new MemoryStream())
+			{
 				SaveXml(obj, stream, documentElementName);
 				stream.Position = 0;
-				using (var fileStream = File.Create (fileName)) {
-					stream.WriteTo (fileStream);
+				using (var fileStream = File.Create(fileName))
+				{
+					stream.WriteTo(fileStream);
 				}
 			}
 		}
@@ -546,13 +574,13 @@ namespace Eto
 		/// <param name="obj">Object to serialize to xml</param>
 		/// <param name="stream">Stream to save as</param>
 		/// <param name="documentElementName">Document element name</param>
-		public static void SaveXml (this IXmlReadable obj, Stream stream, string documentElementName = "object")
+		public static void SaveXml(this IXmlReadable obj, Stream stream, string documentElementName = "object")
 		{
-			var doc = new XmlDocument ();
-			var topNode = doc.CreateElement (documentElementName);
-			obj.WriteXml (topNode);
-			doc.AppendChild (topNode);
-			doc.Save (stream);
+			var doc = new XmlDocument();
+			var topNode = doc.CreateElement(documentElementName);
+			obj.WriteXml(topNode);
+			doc.AppendChild(topNode);
+			doc.Save(stream);
 		}
 
 		/// <summary>
@@ -560,10 +588,11 @@ namespace Eto
 		/// </summary>
 		/// <param name="obj">Object to serialize from xml</param>
 		/// <param name="fileName">File to load from</param>
-		public static void LoadXml (this IXmlReadable obj, string fileName)
+		public static void LoadXml(this IXmlReadable obj, string fileName)
 		{
-			using (var fileStream = File.OpenRead (fileName)) {
-				LoadXml (obj, fileStream);
+			using (var fileStream = File.OpenRead(fileName))
+			{
+				LoadXml(obj, fileStream);
 			}
 		}
 
@@ -572,11 +601,11 @@ namespace Eto
 		/// </summary>
 		/// <param name="obj">Object to serialize from xml</param>
 		/// <param name="stream">Stream to load from</param>
-		public static void LoadXml (this IXmlReadable obj, Stream stream)
+		public static void LoadXml(this IXmlReadable obj, Stream stream)
 		{
 			var doc = new XmlDocument();
-			doc.Load (stream);
-			obj.ReadXml (doc.DocumentElement);
+			doc.Load(stream);
+			obj.ReadXml(doc.DocumentElement);
 		}
 	}
 }

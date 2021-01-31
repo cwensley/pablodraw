@@ -58,13 +58,7 @@ namespace Pablo.Formats.Character.Controls
 			var page = Handler.CurrentPage;
 			var font = page.Font;
 			var brush = this.tool.CurrentBrush;
-			Character[] characters;
-			if (brush != null)
-			{
-				characters = brush.GetCharacters(font.Encoding);
-			}
-			else
-				characters = new Character[0];
+			var characters = brush?.GetCharacters(font.Encoding) ?? new Character[0];
 
 			var length = Math.Max(CharacterDocumentInfo.MAX_BRUSH_SIZE, characters.Length);
 			var width = (38 / font.Width);

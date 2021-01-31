@@ -438,7 +438,7 @@ namespace Pablo.Formats.Character
 			if (AttributeDialogSize != null && AttributeDialogSize.Value == Size.Empty)
 				AttributeDialogSize = null;
 			AttributeDialogBounds = element.ReadChildRectangleXml("attribute-dialog-bounds");
-			//element.ReadChildListXml(brushes, "brushes", "brush");
+			element.ReadChildListXml(brushes, "brush", "brushes");
 
 			XmlNodeList charElements = element.SelectNodes("characterSets/characterSet");
 			if (charElements != null)
@@ -471,7 +471,7 @@ namespace Pablo.Formats.Character
 			element.WriteChildSizeXml("attribute-dialog", AttributeDialogSize);
 			element.WriteChildRectangleXml("attribute-dialog-bounds", AttributeDialogBounds);
 
-			element.WriteChildListXml(brushes, "brushes", "brush");
+			element.WriteChildListXml(brushes, "brush", "brushes");
 
 			XmlElement charElement = element.OwnerDocument.CreateElement("characterSets");
 			for (int set = 0; set < characterSets.GetLength(0); set++)
