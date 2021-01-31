@@ -53,7 +53,7 @@ namespace Pablo.Formats.Character
 		BrushInfo[] brushes = DefaultBrushes.Clone() as BrushInfo[];
 		bool use9x;
 		bool dosAspect;
-		bool iceColours = true;
+		bool iceColours;
 		bool insertMode;
 		bool shiftSelect = true;
 		int[,] characterSets = (int[,])DefaultCharacterSets.Clone();
