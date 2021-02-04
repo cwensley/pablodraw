@@ -340,12 +340,13 @@ namespace Pablo.Formats.Character
 			CanvasElement element;
 			if (endx == 0)
 				endx = this.Width - 1;
-			var defaultBackground = defaultElement.Attribute.BackgroundOnly;
+			var defaultBackground = defaultElement.Attribute.Background;
+			
 			for (int col = endx; col >= startx; col--)
 			{
 				element = this[col, y];
 				var ch = element.Character.character;
-				if ((ch != 32 && ch != 0) || (element.Attribute.BackgroundOnly != defaultBackground))
+				if ((ch != 32 && ch != 0) || (element.Attribute.Background != defaultBackground))
 				{
 					return col;
 				}
