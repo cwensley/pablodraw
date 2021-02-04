@@ -41,6 +41,8 @@ namespace Pablo.Formats.Character.Actions.Block
 			// Stamp the selected region
 			
 			Canvas canvas = tool.PasteCanvas;
+			if (canvas == null)
+				return;
 
 			Rectangle? clearRect = null;
 			if (tool.ClearSelected) {
