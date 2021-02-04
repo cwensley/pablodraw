@@ -7,20 +7,17 @@ namespace Pablo.Formats.Character
 	[StructLayout(LayoutKind.Sequential, Pack = 1)]
 	public struct CanvasElement
 	{
-		Character character;
-		Attribute attribute;
-
 		public static readonly CanvasElement Default = new CanvasElement (32, 7);
 
 		public CanvasElement (Character character, Attribute attribute)
 		{
-			this.character = character;
-			this.attribute = attribute;
+			this.Character = character;
+			this.Attribute = attribute;
 		}
 
-		public Character Character { get { return character; } set { character = value; } }
+		public Character Character;
 
-		public Attribute Attribute { get { return attribute; } set { attribute = value; } }
+		public Attribute Attribute;
 
 		public ushort Value {
 			get { return (ushort)((ushort)(Character + (byte)Attribute) << 8); }

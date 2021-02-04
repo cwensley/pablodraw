@@ -438,11 +438,39 @@ namespace Pablo.Interface
                     cmd.Execute();
                     e.Handled = true;
                 }
+				// winforms doesn't support shortcuts without modifiers.. hm.
+				if (Platform.IsWinForms && e.Modifiers == Keys.None)
+				{
+					var menuItem = FindMenu(args.Menu, e.KeyData);
+					if (menuItem != null)
+					{
+						menuItem.PerformClick();
+						e.Handled = true;
+					}
+				}
             }
             base.OnKeyDown(e);
         }
 
-        IEnumerable<MenuItem> AllItems(MenuItem item)
+		private MenuItem FindMenu(ISubmenu menu, Keys keyData)
+		{
+			foreach (var item in menu.Items)
+			{
+				if (item.Shortcut == keyData)
+				{
+					return item;
+				}
+				if (item is ISubmenu submenu)
+				{
+					var child = FindMenu(submenu, keyData);
+					if (child != null)
+						return child;
+				}
+			}
+			return null;
+		}
+
+		IEnumerable<MenuItem> AllItems(MenuItem item)
         {
             yield return item;
             var submenu = item as ISubmenu;

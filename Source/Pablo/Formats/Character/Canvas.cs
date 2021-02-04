@@ -217,7 +217,7 @@ namespace Pablo.Formats.Character
 		public virtual void FlipX(TranslateCharacter translate = null)
 		{
 			for (int y = 0; y < Height; y++)
-				for (int x = 0; x < Width / 2; x++)
+				for (int x = 0; x < (Width + 1) / 2; x++)
 				{
 					int right = Width - x - 1;
 					var vall = this[x, y];
@@ -234,7 +234,7 @@ namespace Pablo.Formats.Character
 
 		public virtual void FlipY(TranslateCharacter translate = null)
 		{
-			for (int y = 0; y < (Height + 0) / 2; y++)
+			for (int y = 0; y < (Height + 1) / 2; y++)
 			{
 				int bottom = Height - y - 1;
 				for (int x = 0; x < Width; x++)
@@ -340,12 +340,13 @@ namespace Pablo.Formats.Character
 			CanvasElement element;
 			if (endx == 0)
 				endx = this.Width - 1;
-			var defaultBackground = defaultElement.Attribute.BackgroundOnly;
+			var defaultBackground = defaultElement.Attribute.Background;
+			
 			for (int col = endx; col >= startx; col--)
 			{
 				element = this[col, y];
 				var ch = element.Character.character;
-				if ((ch != 32 && ch != 0) || (element.Attribute.BackgroundOnly != defaultBackground))
+				if ((ch != 32 && ch != 0) || (element.Attribute.Background != defaultBackground))
 				{
 					return col;
 				}

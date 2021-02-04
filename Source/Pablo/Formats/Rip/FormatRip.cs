@@ -42,7 +42,7 @@ namespace Pablo.Formats.Rip
 			var reader = new BinaryReader (stream);
 			var commands = document.Commands;
 			commands.Clear ();
-			bool lastEnableZoom = true;
+			// bool lastEnableZoom = true;
 			/*
 			 */
 			if (document.AnimateView && Application.Instance != null) {
