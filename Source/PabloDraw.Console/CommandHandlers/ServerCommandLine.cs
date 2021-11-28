@@ -29,6 +29,16 @@ namespace PabloDraw.Console.CommandHandlers
 			args.WriteOption("--backup", "Backup existing file before saving");
 		}
 
+		public ServerCommandLine(DocumentInfoCollection documentInfos, Document document, Handler handler, Client client, Server server, bool enableBackups)
+		{
+			this.DocumentInfos = documentInfos;
+			this.Document = document;
+			this.Handler = handler;
+			this.Client = client;
+			this.Server = server;
+			this.EnableBackups = enableBackups;
+
+		}
 		public DocumentInfoCollection DocumentInfos { get; private set; }
 
 		public Document Document { get; private set; }
@@ -76,10 +86,10 @@ namespace PabloDraw.Console.CommandHandlers
 			Handler.ClientDelegate = this;
 			if (Client != null)
 				Client.SetCommands(Commands);
-			
+
 			if (Server != null)
 				Server.SetCommands(ServerCommands);
-			
+
 			Handler.PreLoad(null, document.LoadedFormat);
 			Handler.Loaded();
 		}
@@ -88,7 +98,7 @@ namespace PabloDraw.Console.CommandHandlers
 		{
 			format = format ?? DocumentInfos.FindFormat(fileName) ?? DocumentInfos.DefaultFormat;
 			if (format == null)
-				throw new  ArgumentOutOfRangeException("fileName", "Could not find format of the file");
+				throw new ArgumentOutOfRangeException("fileName", "Could not find format of the file");
 			var doc = format.Info.Create();
 			doc.FileName = fileName;
 			doc.Load(stream, format, null);
@@ -106,12 +116,12 @@ namespace PabloDraw.Console.CommandHandlers
 				Headless = true
 			};
 			Client.SetCommands(Commands);
-			
+
 			Client.CurrentUser.Alias = "admin";
 			Client.CurrentUser.Level = UserLevel.Operator;
-			
+
 			Client.Message += (sender, e) => writer.WriteLine(e.DisplayMessage);
-			
+
 			Server = new Server
 			{
 				Port = port,
@@ -183,8 +193,8 @@ namespace PabloDraw.Console.CommandHandlers
 			args.Writer.WriteLine("Starting PabloDraw server on port {0}...", port);
 			StartServer(port, password, operatorPassword, nat, userLevel, args.Writer);
 
-			args.Writer.WriteLine("Started! Press any key to stop");
-			System.Console.Read();
+			args.Writer.WriteLine("Started!");
+			ConsoleHelper.Run(args);
 
 			args.Writer.WriteLine("Stopping...");
 			StopServer();

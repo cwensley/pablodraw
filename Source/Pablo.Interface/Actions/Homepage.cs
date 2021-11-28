@@ -16,7 +16,7 @@ namespace Pablo.Interface.Actions
 		protected override void OnExecuted(EventArgs e)
 		{
 			base.OnExecuted(e);
-			PabloApplication.Instance.Open("http://picoe.ca/products/pablodraw");
+			PabloApplication.Instance.Open("https://github.com/cwensley/pablodraw");
 		}
 	}
 }

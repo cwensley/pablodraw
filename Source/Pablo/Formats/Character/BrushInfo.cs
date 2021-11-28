@@ -72,11 +72,14 @@ namespace Pablo.Formats.Character
 		{
 			if (encoding != null)
 				element.SetAttribute("codepage", encoding.CodePage);
-			foreach (var ch in characters)
+			if (characters != null)
 			{
-				var childElement = element.OwnerDocument.CreateElement("char");
-				childElement.SetAttribute("value", (int)ch.character);
-				element.AppendChild(childElement);
+				foreach (var ch in characters)
+				{
+					var childElement = element.OwnerDocument.CreateElement("char");
+					childElement.SetAttribute("value", (int)ch.character);
+					element.AppendChild(childElement);
+				}
 			}
 		}
 	}

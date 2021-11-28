@@ -1,6 +1,6 @@
 ﻿<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Import Project="EmbedReferences.targets" />
+  <!-- <Import Project="EmbedReferences.targets" /> -->
   
   <UsingTask TaskName="_ParseVersion" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
     <ParameterGroup>

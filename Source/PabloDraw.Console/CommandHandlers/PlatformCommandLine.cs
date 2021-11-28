@@ -9,7 +9,7 @@ namespace PabloDraw.Console.CommandHandlers
 {
 	public class PlatformCommandLine : CommandLineHandler
 	{
-		public override string Name { get { return "Platform"; } }
+		public override string Name => "Platform";
 
 		public override void GetHelp(ProcessCommandLineArgs args)
 		{

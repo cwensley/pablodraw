@@ -11,7 +11,7 @@
     
     <BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == ''">$(ArtifactsDir)obj\$(OS)\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
     <OutputArtifactName Condition="$(OutputArtifactName) == ''">bin</OutputArtifactName>
-    <BaseOutputPath Condition="$(BaseOutputPath) == ''">$(ArtifactsDir)$(OutputArtifactName)\</BaseOutputPath>
+    <BaseOutputPath Condition="$(BaseOutputPath) == ''">$(ArtifactsDir)$(OutputArtifactName)\$(MSBuildProjectName)\</BaseOutputPath>
     <PackageOutputPath Condition="$(PackageOutputPath) == ''">$(ArtifactsDir)nuget\$(Configuration)\</PackageOutputPath>
     <RestoreProjectStyle Condition="'$(RestoreProjectStyle)' == ''">PackageReference</RestoreProjectStyle>
 
@@ -19,4 +19,11 @@
     <!-- <EtoBasePath>..\..\..\Eto\</EtoBasePath> -->
 
   </PropertyGroup>
+
+  <PropertyGroup Condition="$(BuildTarget) == ''">
+    <BuildTarget Condition="$([MSBuild]::IsOSPlatform(Windows))">Windows</BuildTarget>
+    <BuildTarget Condition="$([MSBuild]::IsOSPlatform(OSX))">Mac</BuildTarget>
+    <BuildTarget Condition="$([MSBuild]::IsOSPlatform(Linux))">Linux</BuildTarget>
+  </PropertyGroup>
+
 </Project>

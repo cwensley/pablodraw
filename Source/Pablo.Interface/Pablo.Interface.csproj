@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyTitle>Pablo.Interface</AssemblyTitle>
     <AssemblyDescription>Main Interface</AssemblyDescription>
   </PropertyGroup>
@@ -14,7 +14,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Eto.Forms" Version="2.5.10 " />
+    <PackageReference Include="Eto.Forms" Version="2.6.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Pablo\Pablo.csproj" />

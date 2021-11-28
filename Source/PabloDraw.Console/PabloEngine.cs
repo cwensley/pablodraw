@@ -58,11 +58,6 @@ namespace PabloDraw
 
 	public class PabloEngine
 	{
-		static PabloEngine()
-		{
-			Console.Startup.EnsureInternalAssemblies();
-		}
-
 		public PabloEngine(string platform = null, string defaultWindowsPlatform = "win")
 		{
 			EngineInternal.Initialize(platform, defaultWindowsPlatform);

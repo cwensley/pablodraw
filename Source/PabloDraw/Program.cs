@@ -17,7 +17,6 @@ namespace PabloDraw
 			try
 			{
 				AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionReporter;
-				Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 				var command = new CommandLine(Environment.CommandLine);
 
@@ -125,7 +124,7 @@ namespace PabloDraw
 			catch (FileNotFoundException ex)
 			{
 				Console.WriteLine($"FileNotFound: {ex.FileName}");
-				MessageBox.Show($"{ex.ToString()}");
+				ShowErrorDialog(ex);
 				throw;
 			}
 		}

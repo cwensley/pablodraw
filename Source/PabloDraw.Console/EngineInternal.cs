@@ -164,7 +164,7 @@ namespace PabloDraw
 			return GetFormat(parameters.InputFormat, parameters.InputFileName) != null;
 		}
 
-		public static void Initialize(string platform, string defaultWindowsPlatform = null)
+		public static void Initialize(string platform = null, string defaultWindowsPlatform = null)
 		{
 			if (Platform.Instance != null)
 				return;
@@ -175,11 +175,11 @@ namespace PabloDraw
 				switch (platform.ToLowerInvariant())
 				{
 					case "gtk":
+					case "gtk3":
+						Platform.Initialize(Platforms.Gtk);
+						break;
 					case "gtk2":
 						Platform.Initialize(Platforms.Gtk2);
-						break;
-					case "gtk3":
-						Platform.Initialize(Platforms.Gtk3);
 						break;
 					case "winforms":
 					case "win":
@@ -193,7 +193,15 @@ namespace PabloDraw
 						Platform.Initialize(Platforms.Mac);
 						break;
 					case "auto":
+#if MAC
+						Platform.Initialize(new Eto.Mac.Platform());
+#elif LINUX
+						Platform.Initialize(new Eto.GtkSharp.Platform());
+#elif WINDOWS
+						Platform.Initialize(new Eto.WinForms.Platform());
+#else
 						Platform.Initialize(Platform.Detect);
+#endif
 						break;
 					default:
 						throw new ArgumentException(string.Format("Platform '{0}' is not recognized. Must be one of (gtk|winforms|wpf)", platform));
@@ -201,7 +209,15 @@ namespace PabloDraw
 			}
 			else
 			{
+#if MAC
+				Platform.Initialize(new Eto.Mac.Platform());
+#elif LINUX
+				Platform.Initialize(new Eto.GtkSharp.Platform());
+#elif WINDOWS
+				Platform.Initialize(new Eto.WinForms.Platform());
+#else
 				Platform.Initialize(Platform.Detect);
+#endif
 			}
 		}
 
