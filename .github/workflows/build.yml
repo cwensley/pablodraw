@@ -23,15 +23,22 @@ jobs:
         dotnet-version: ${{ env.DotNetVersion }}
 
     - name: Build PabloDraw
-      run: dotnet publish Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }}
+      run: dotnet publish Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-windows.binlog
 
     - name: Build PabloDraw.Console
-      run: dotnet publish Source/PabloDraw.Console/PabloDraw.Console.csproj ${{ env.BuildParameters }}
+      run: dotnet publish Source/PabloDraw.Console/PabloDraw.Console.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw.console-windows.binlog
 
     - uses: actions/upload-artifact@v2
       with:
         name: pablodraw-windows-x64
         path: artifacts/bin/${{ env.BuildConfiguration }}/net6.0-windows/win-x64/publish/*
+
+    - name: Upload log files
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: log
+        path: artifacts/log/**/*
 
   build-linux:
     runs-on: ubuntu-latest
@@ -43,16 +50,23 @@ jobs:
         dotnet-version: ${{ env.DotNetVersion }}
 
     - name: Build PabloDraw
-      run: dotnet publish Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }}
+      run: dotnet publish Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-linux.binlog
 
     - name: Build PabloDraw.Console
-      run: dotnet publish Source/PabloDraw.Console/PabloDraw.Console.csproj ${{ env.BuildParameters }}
+      run: dotnet publish Source/PabloDraw.Console/PabloDraw.Console.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw.console-linux.binlog
 
     - uses: actions/upload-artifact@v2
       with:
         name: pablodraw-linux-x64
         path: artifacts/bin/${{ env.BuildConfiguration }}/net6.0/linux-x64/publish/*
-        
+
+    - name: Upload log files
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: log
+        path: artifacts/log/**/*
+
   build-mac:
     runs-on: macos-11
     steps:
@@ -86,16 +100,23 @@ jobs:
         echo "BuildParameters=${{ env.BuildParameters }} /p:EnableNotarizationBuild=True" >> $GITHUB_ENV
 
     - name: Build PabloDraw
-      run: dotnet build Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }}
+      run: dotnet build Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-mac.binlog
 
     - name: Build PabloDraw.Console
-      run: dotnet publish Source/PabloDraw.Console/PabloDraw.Console.csproj ${{ env.BuildParameters }}
+      run: dotnet publish Source/PabloDraw.Console/PabloDraw.Console.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw.console-mac.binlog
 
     - uses: actions/upload-artifact@v2
       with:
         name: pablodraw-mac
         path: artifacts/bin/${{ env.BuildConfiguration }}/net6.0/osx-x64/PabloDraw.dmg
 
+    - name: Upload log files
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: log
+        path: artifacts/log/**/*
+        
   update-release:
     needs: [ build-windows, build-mac, build-linux ]
     runs-on: ubuntu-latest
