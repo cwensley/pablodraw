@@ -31,9 +31,12 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: pablodraw-windows-x64
-        path: |
-          artifacts/bin/PabloDraw/${{ env.BuildConfiguration }}/net6.0-windows/win-x64/publish/*
-          artifacts/bin/PabloDraw.Console/${{ env.BuildConfiguration }}/net6.0-windows/win-x64/publish/*
+        path: artifacts/bin/PabloDraw/${{ env.BuildConfiguration }}/net6.0-windows/win-x64/publish/*
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: pablodraw-windows-x64
+        path: artifacts/bin/PabloDraw.Console/${{ env.BuildConfiguration }}/net6.0-windows/win-x64/publish/*
 
     - name: Upload log files
       if: ${{ failure() }}
@@ -60,9 +63,12 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: pablodraw-linux-x64
-        path: |
-          artifacts/bin/PabloDraw/${{ env.BuildConfiguration }}/net6.0/linux-x64/publish/*
-          artifacts/bin/PabloDraw.Console/${{ env.BuildConfiguration }}/net6.0/linux-x64/publish/*
+        path: artifacts/bin/PabloDraw/${{ env.BuildConfiguration }}/net6.0/linux-x64/publish/*
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: pablodraw-linux-x64
+        path: artifacts/bin/PabloDraw.Console/${{ env.BuildConfiguration }}/net6.0/linux-x64/publish/*
 
     - name: Upload log files
       if: ${{ failure() }}
@@ -112,9 +118,12 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: pablodraw-mac
-        path: |
-          artifacts/bin/PabloDraw/${{ env.BuildConfiguration }}/net6.0/osx-x64/PabloDraw.dmg
-          artifacts/bin/PabloDraw.Console/${{ env.BuildConfiguration }}/net6.0/osx-x64/publish/PabloDraw.Console
+        path: artifacts/bin/PabloDraw/${{ env.BuildConfiguration }}/net6.0/PabloDraw.dmg
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: pablodraw-mac
+        path: artifacts/bin/PabloDraw.Console/${{ env.BuildConfiguration }}/net6.0/osx-x64/publish/PabloDraw.Console
 
     - name: Upload log files
       if: ${{ failure() }}

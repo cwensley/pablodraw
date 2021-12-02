@@ -16,7 +16,7 @@ namespace PabloDraw
 		{
 			try
 			{
-				AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionReporter;
+				AppDomain.CurrentDomain.UnhandledException += (sender, e) => UnhandledExceptionReporter(e.ExceptionObject);
 
 				var command = new CommandLine(Environment.CommandLine);
 
@@ -81,6 +81,7 @@ namespace PabloDraw
 				}
 
 				var app = new Pablo.Interface.PabloApplication();
+				// app.UnhandledException += (sender, e) => UnhandledExceptionReporter(e.ExceptionObject);
 
 				string fileName = command.GetValue("file", "f") ?? command.GenericCommand;
 				bool? editMode = null;
@@ -121,20 +122,20 @@ namespace PabloDraw
 				}*/
 				app.Run();
 			}
-			catch (FileNotFoundException ex)
+			catch (Exception ex)
 			{
-				Console.WriteLine($"FileNotFound: {ex.FileName}");
+				Console.WriteLine($"An error occurred.  Please report this information to https://github.com/cwensley/pablodraw/issues:\n {ex}");
 				ShowErrorDialog(ex);
 				throw;
 			}
 		}
 
-		private static void UnhandledExceptionReporter(object sender, System.UnhandledExceptionEventArgs e)
+		private static void UnhandledExceptionReporter(object ex)
 		{
 			if (Application.Instance == null)
-				ShowErrorDialog(e.ExceptionObject);
+				ShowErrorDialog(ex);
 			else
-				Application.Instance.Invoke(() => ShowErrorDialog(e.ExceptionObject));
+				Application.Instance.Invoke(() => ShowErrorDialog(ex));
 		}
 
 		static void ShowErrorDialog(object exceptionObject)

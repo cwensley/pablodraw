@@ -26,12 +26,16 @@
     <TargetFramework>net6.0</TargetFramework>
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <DefineConstants>LINUX</DefineConstants>
+    <TrimMode>Link</TrimMode>
+    <PublishTrimmed>True</PublishTrimmed>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Mac'">
     <TargetFramework>net6.0</TargetFramework>
     <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
     <DefineConstants>MAC</DefineConstants>
+    <TrimMode>Link</TrimMode>
+    <PublishTrimmed>True</PublishTrimmed>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -41,8 +45,7 @@
   <PropertyGroup Condition="$(Configuration) == 'Release'">
     <PublishSingleFile>True</PublishSingleFile>
     <SelfContained>True</SelfContained>
-    <PublishTrimmed>True</PublishTrimmed>
-    <TrimMode>Link</TrimMode>
+    
     <DebuggerSupport>False</DebuggerSupport>
     <EnableUnsafeUTF7Encoding>False</EnableUnsafeUTF7Encoding>
     <EnableUnsafeBinaryFormatterSerialization>False</EnableUnsafeBinaryFormatterSerialization>

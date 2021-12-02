@@ -825,7 +825,7 @@ namespace Pablo.Interface
         {
             if (loadingStream != null)
             {
-                loadingStream.Dispose();
+                // loadingStream.Dispose();
                 loadingStream = null;
                 PabloApplication.Instance.Invoke(delegate
                 {

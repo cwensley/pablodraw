@@ -163,9 +163,6 @@ namespace Pablo
 			//Console.WriteLine("UpdateRegion {0}", rect);
 
 			rect = Rectangle.Ceiling((RectangleF)rect * ViewHandler.ZoomRatio);
-#if DESKTOP
-			rect.Restrict (viewerPane.VisibleRect);
-#endif
 			/*
 			 *
 			if (Current.IsWindows) {
@@ -191,6 +188,9 @@ namespace Pablo
 			{
 				// faster to invalidate and let main thread do drawing in gtk! (and works well in osx too)
 				Application.Instance.AsyncInvoke (delegate {
+#if DESKTOP
+					rect.Restrict (viewerPane.VisibleRect);
+#endif
 					Invalidate(rect);
 				});
 			}

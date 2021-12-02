@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <ApplicationIcon>PabloDraw.ico</ApplicationIcon>
     <AssemblyTitle>PabloDraw</AssemblyTitle>
     <AssemblyDescription>PabloDraw</AssemblyDescription>
@@ -16,6 +16,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <UseWindowsForms>True</UseWindowsForms>
     <!-- <PublishReadyToRun>True</PublishReadyToRun> -->
     <DefineConstants>WINDOWS</DefineConstants>
     <IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
@@ -26,12 +27,16 @@
     <TargetFramework>net6.0</TargetFramework>
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <DefineConstants>LINUX</DefineConstants>
+    <TrimMode>Link</TrimMode>
+    <PublishTrimmed>True</PublishTrimmed>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Mac'">
     <TargetFramework>net6.0</TargetFramework>
     <RuntimeIdentifiers>osx-x64</RuntimeIdentifiers>
     <DefineConstants>MAC</DefineConstants>
+    <TrimMode>Link</TrimMode>
+    <PublishTrimmed>True</PublishTrimmed>
   </PropertyGroup>
   <PropertyGroup Condition="$(BuildTarget) == 'Mac' and $(Configuration) == 'Release'">
     <EnableDmgBuild>True</EnableDmgBuild>
@@ -42,10 +47,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(Configuration) == 'Release'">
-    <PublishTrimmed>True</PublishTrimmed>
     <PublishSingleFile>True</PublishSingleFile>
     <EnableCompressionInSingleFile>True</EnableCompressionInSingleFile>
-    <TrimMode>Link</TrimMode>
     
     <DebuggerSupport>False</DebuggerSupport>
     <EnableUnsafeUTF7Encoding>False</EnableUnsafeUTF7Encoding>

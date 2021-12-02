@@ -59,14 +59,15 @@
         {
             "label": "run-published",
             "type": "shell",
+            "dependsOn": [ "publish-pablodraw" ], 
             "osx": {
-                "command": "${workspaceFolder}/artifacts/bin/Release/net6.0/osx-x64/PabloDraw.app/Contents/MacOS/PabloDraw",
+                "command": "${workspaceFolder}/artifacts/bin/PabloDraw/Release/net6.0/PabloDraw.app/Contents/MacOS/PabloDraw",
             },
             "windows": {
-                "command": "${workspaceFolder}/artifacts/bin/Release/net6.0-windows/win-x64/publish/PabloDraw.exe",
+                "command": "${workspaceFolder}/artifacts/bin/PabloDraw/Release/net6.0-windows/win-x64/publish/PabloDraw.exe",
             },
             "linux": {
-                "command": "${workspaceFolder}/artifacts/bin/Release/net6.0/linux-x64/publish/PabloDraw",
+                "command": "${workspaceFolder}/artifacts/bin/PabloDraw/Release/net6.0/linux-x64/publish/PabloDraw",
             },
             "problemMatcher": [ ]
         },
