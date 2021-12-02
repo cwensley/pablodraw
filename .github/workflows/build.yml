@@ -91,13 +91,13 @@ jobs:
 
     - name: Enable code signing
       if: github.event_name != 'pull_request'
-      run: echo "BuildParameters=${{ env.BuildParameters }} /p:EnableCodeSignBuild=True" >> $GITHUB_ENV
+      run: echo "BuildParameters=${{ env.BuildParameters }} /p:EnableCodeSigning=True" >> $GITHUB_ENV
 
     - name: Set notarization credentials
       if: startsWith(github.ref, 'refs/tags/')
       run: |
         xcrun altool --store-password-in-keychain-item "AC_PASSWORD" -u "${{ secrets.AC_USERNAME }}" -p "${{ secrets.AC_PASSWORD }}"
-        echo "BuildParameters=${{ env.BuildParameters }} /p:EnableNotarizationBuild=True" >> $GITHUB_ENV
+        echo "BuildParameters=${{ env.BuildParameters }} /p:EnableNotarization=True" >> $GITHUB_ENV
 
     - name: Build PabloDraw
       run: dotnet build Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-mac.binlog
