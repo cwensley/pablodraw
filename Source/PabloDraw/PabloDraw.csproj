@@ -1,11 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup Condition="$(BuildTarget) == ''">
-    <BuildTarget Condition="$([MSBuild]::IsOSPlatform(Windows))">Windows</BuildTarget>
-    <BuildTarget Condition="$([MSBuild]::IsOSPlatform(OSX))">Mac</BuildTarget>
-    <BuildTarget Condition="$([MSBuild]::IsOSPlatform(Linux))">Linux</BuildTarget>
-  </PropertyGroup>
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <ApplicationIcon>PabloDraw.ico</ApplicationIcon>
@@ -14,13 +8,15 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Generic'">
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <OutputPath>bin/$(Configuration)/generic</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Windows'">
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <UseWindowsForms>True</UseWindowsForms>
     <!-- <PublishReadyToRun>True</PublishReadyToRun> -->
     <DefineConstants>WINDOWS</DefineConstants>
     <IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
@@ -28,20 +24,22 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Linux'">
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <DefineConstants>LINUX</DefineConstants>
+    <TrimMode>Link</TrimMode>
+    <PublishTrimmed>True</PublishTrimmed>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Mac'">
-    <TargetFramework>net5.0</TargetFramework>
-    <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+    <TargetFramework>net6.0</TargetFramework>
+    <RuntimeIdentifiers>osx-x64</RuntimeIdentifiers>
     <DefineConstants>MAC</DefineConstants>
+    <TrimMode>Link</TrimMode>
+    <PublishTrimmed>True</PublishTrimmed>
   </PropertyGroup>
   <PropertyGroup Condition="$(BuildTarget) == 'Mac' and $(Configuration) == 'Release'">
     <EnableDmgBuild>True</EnableDmgBuild>
-    <!-- <EnableCodeSigning>True</EnableCodeSigning> -->
-    <!-- <EnableNotarization>True</EnableNotarization> -->
   </PropertyGroup>
 
   <PropertyGroup>
@@ -50,8 +48,16 @@
 
   <PropertyGroup Condition="$(Configuration) == 'Release'">
     <PublishSingleFile>True</PublishSingleFile>
-    <SelfContained>True</SelfContained>
-    <PublishTrimmed>True</PublishTrimmed>
+    <EnableCompressionInSingleFile>True</EnableCompressionInSingleFile>
+    
+    <DebuggerSupport>False</DebuggerSupport>
+    <EnableUnsafeUTF7Encoding>False</EnableUnsafeUTF7Encoding>
+    <EnableUnsafeBinaryFormatterSerialization>False</EnableUnsafeBinaryFormatterSerialization>
+    <EventSourceSupport>False</EventSourceSupport>
+    <!-- <InvariantGlobalization>True</InvariantGlobalization> -->
+    <UseSystemResourceKeys>True</UseSystemResourceKeys>
+    <HttpActivityPropagationSupport>False</HttpActivityPropagationSupport>
+    <StartupHookSupport>False</StartupHookSupport>
   </PropertyGroup>
 
   <ItemGroup Condition="$(BuildTarget) == 'Mac'">
@@ -66,15 +72,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Eto.Forms" Version="2.5.10" />
-    <PackageReference Include="Eto.Platform.Gtk" Version="2.5.10" Condition="$(BuildTarget) == 'Linux'" />
-    <!-- <PackageReference Include="Eto.Platform.Gtk2" Version="2.5.8" Condition="$(BuildTarget) == 'Linux'" /> -->
-    <PackageReference Include="Eto.Platform.Mac64" Version="2.5.10" Condition="$(BuildTarget) == 'Mac'" />
-    <PackageReference Include="Eto.Platform.Windows" Version="2.5.10" Condition="$(BuildTarget) == 'Windows'" />
-    <!-- <PackageReference Include="Eto.Platform.Wpf" Version="2.5.10" Condition="$(BuildTarget) == 'Windows'" /> -->
-    <PackageReference Include="Mono.Nat" Version="3.0.1" />
+    <PackageReference Include="Eto.Forms" Version="2.6.0" />
+    <PackageReference Include="Eto.Platform.Gtk" Version="2.6.0" Condition="$(BuildTarget) == 'Linux'" />
+    <PackageReference Include="Eto.Platform.Mac64" Version="2.6.0" Condition="$(BuildTarget) == 'Mac'" />
+    <PackageReference Include="Eto.Platform.Windows" Version="2.6.0" Condition="$(BuildTarget) == 'Windows'" />
+    <!-- <PackageReference Include="Eto.Platform.Gtk2" Version="2.6.0" Condition="$(BuildTarget) == 'Linux'" /> -->
+    <!-- <PackageReference Include="Eto.Platform.Wpf" Version="2.6.0" Condition="$(BuildTarget) == 'Windows'" /> -->
+    <PackageReference Include="Mono.Nat" Version="3.0.2" />
     <PackageReference Include="Lidgren.Network" Version="1.0.2" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DebDotNetDependencies Include="libc6" />
   </ItemGroup>
 
   <ItemGroup Condition="$(EtoBasePath) != ''">

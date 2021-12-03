@@ -17,7 +17,7 @@ namespace Pablo.Formats.Character
 		public const int EndCopy9 = 223;
 		public const int StandardCodePage = 437;
 		public const string StandardAmigaFontID = "amiga-topaz-500";
-		public static Encoding StandardEncoding = Encoding.GetEncoding(StandardCodePage);
+		public static Encoding StandardEncoding;
 		FontCharacter[] chars;
 		Encoding encoding;
 		readonly string resourceName;
@@ -72,6 +72,12 @@ namespace Pablo.Formats.Character
 		public float Aspect
 		{
 			get { return (float)Width / (float)Height; }
+		}
+
+		static BitFont()
+		{
+			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+			StandardEncoding = Encoding.GetEncoding(StandardCodePage);
 		}
 
 		public static BitFont FromResource(string resourceName, int numChars, int codePage, int width, int height)
@@ -169,7 +175,7 @@ namespace Pablo.Formats.Character
 		public int NumChars
 		{
 			get
-			{ 
+			{
 				return chars != null ? chars.Length : resourceNumChars;
 			}
 		}
@@ -200,7 +206,7 @@ namespace Pablo.Formats.Character
 				case 8:
 					return 480f / 400f;
 				case 14:
-					return  480f / 350f;
+					return 480f / 350f;
 				case 16:
 					return 480f / 400f;
 				default:
@@ -257,7 +263,7 @@ namespace Pablo.Formats.Character
 
 		public int Height { get; private set; }
 
-		public FontCharacter this [int index]
+		public FontCharacter this[int index]
 		{
 			get
 			{
@@ -514,13 +520,13 @@ namespace Pablo.Formats.Character
 			data = new int[(font.Width * font.Height + 31) / 32];
 		}
 
-		public bool this [int x, int y]
+		public bool this[int x, int y]
 		{
 			get { return this[y * font.Width + x]; }
 			set { Set(y * font.Width + x, value); }
 		}
 
-		public bool this [int index]
+		public bool this[int index]
 		{
 			get { return (data[index / 32] & 1 << index) != 0; }
 			set { Set(index, value); }

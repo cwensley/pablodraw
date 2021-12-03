@@ -1,23 +1,69 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net47</TargetFramework>
     <OutputType>Exe</OutputType>
-    <DefineConstants>DESKTOP</DefineConstants>
     <AssemblyTitle>PabloDraw Console</AssemblyTitle>
     <AssemblyDescription>PabloDraw Console</AssemblyDescription>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <StartupObject>PabloDraw.Console.Startup</StartupObject>
     <MacBuildBundle>False</MacBuildBundle>
-    <EmbedReferences>True</EmbedReferences>
   </PropertyGroup>
+
+  <PropertyGroup Condition="$(BuildTarget) == 'Generic'">
+    <TargetFramework>net6.0</TargetFramework>
+    <OutputPath>bin/$(Configuration)/generic</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(BuildTarget) == 'Windows'">
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <!-- <PublishReadyToRun>True</PublishReadyToRun> -->
+    <DefineConstants>WINDOWS</DefineConstants>
+    <IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(BuildTarget) == 'Linux'">
+    <TargetFramework>net6.0</TargetFramework>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <DefineConstants>LINUX</DefineConstants>
+    <TrimMode>Link</TrimMode>
+    <PublishTrimmed>True</PublishTrimmed>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(BuildTarget) == 'Mac'">
+    <TargetFramework>net6.0</TargetFramework>
+    <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+    <DefineConstants>MAC</DefineConstants>
+    <TrimMode>Link</TrimMode>
+    <PublishTrimmed>True</PublishTrimmed>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);DESKTOP</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(Configuration) == 'Release'">
+    <PublishSingleFile>True</PublishSingleFile>
+    <SelfContained>True</SelfContained>
+    
+    <DebuggerSupport>False</DebuggerSupport>
+    <EnableUnsafeUTF7Encoding>False</EnableUnsafeUTF7Encoding>
+    <EnableUnsafeBinaryFormatterSerialization>False</EnableUnsafeBinaryFormatterSerialization>
+    <EventSourceSupport>False</EventSourceSupport>
+    <!-- <InvariantGlobalization>True</InvariantGlobalization> -->
+    <UseSystemResourceKeys>True</UseSystemResourceKeys>
+    <HttpActivityPropagationSupport>False</HttpActivityPropagationSupport>
+    <StartupHookSupport>False</StartupHookSupport>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Pablo\Pablo.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Eto.Platform.Gtk" Version="2.5.8" />
-    <PackageReference Include="Eto.Platform.Windows" Version="2.5.8" />
-    <PackageReference Include="Eto.Platform.Mac64" Version="2.5.8" />
-    <PackageReference Include="Mono.Nat" Version="3.0.1" />
+    <PackageReference Include="Eto.Platform.Gtk" Version="2.5.11" Condition="$(BuildTarget) == 'Linux' OR $(BuildTarget) == 'Generic'" />
+    <PackageReference Include="Eto.Platform.Mac64" Version="2.6.0" Condition="$(BuildTarget) == 'Mac' OR $(BuildTarget) == 'Generic'" />
+    <PackageReference Include="Eto.Platform.Windows" Version="2.5.11" Condition="$(BuildTarget) == 'Windows' OR $(BuildTarget) == 'Generic'" />
+    <PackageReference Include="Mono.Nat" Version="3.0.2" />
     <PackageReference Include="Lidgren.Network" Version="1.0.2" />
   </ItemGroup>
 </Project>

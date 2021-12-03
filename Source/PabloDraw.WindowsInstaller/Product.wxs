@@ -6,7 +6,7 @@
 <!-- The manufacturer, for setup package publisher and folder info -->
 <?define Manufacturer = "Picoe Software Solutions" ?>
 <!-- The version number of this setup package-->
-<?define Version = "3.3.10" ?>
+<?define Version = "3.3.11" ?>
 <!-- UpgradeCode must be unique and not changed once the first version of the program is installed. -->
 <?define UpgradeCode = "dc30a6a5-e756-4440-b8cd-cc823d9de7a3" ?>
 <!-- The name of the Cabinet -->
@@ -121,9 +121,6 @@
         <!-- PabloDraw.Document.Zip ProgID -->
         <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\SystemFileAssociations\.zip\shell\view.PabloDraw.exe" Value="Open in PabloDraw" Type="string" />
         <RegistryValue Root="HKLM" Key="SOFTWARE\Classes\SystemFileAssociations\.zip\shell\view.PabloDraw.exe\command" Value="&quot;[APPLICATIONFOLDER]PabloDraw.exe&quot; &quot;%1&quot;" Type="string" />
-      </Component>
-      <Component Win64="yes">
-        <File Source="$(var.PabloDraw.TargetPath).config" ProcessorArchitecture="x64" />
       </Component>
     </ComponentGroup>
   </Fragment>

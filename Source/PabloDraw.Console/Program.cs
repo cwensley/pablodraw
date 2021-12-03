@@ -10,7 +10,9 @@ namespace PabloDraw.Console
 	{
 		public static IEnumerable<ICommandLineHandler> GetHandlers()
 		{
+#if UNIVERSAL
 			yield return new CommandHandlers.PlatformCommandLine();
+#endif
 			yield return new CommandHandlers.ServerCommandLine();
 			yield return new CommandHandlers.ConvertCommandLine();
 			yield return new CommandHandlers.HelpCommandLine();
@@ -18,6 +20,9 @@ namespace PabloDraw.Console
 
 		public static int Run ()
 		{
+#if !UNIVERSAL
+			EngineInternal.Initialize();
+#endif
 			var command = new CommandLine (Environment.CommandLine);
 
 			var args = new ProcessCommandLineArgs

@@ -12,6 +12,7 @@ using Pablo.Interface.Dialogs;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace Pablo.Interface
 {
@@ -439,13 +440,20 @@ namespace Pablo.Interface
                     e.Handled = true;
                 }
 				// winforms doesn't support shortcuts without modifiers.. hm.
-				if (Platform.IsWinForms && e.Modifiers == Keys.None)
+				if (Platform.IsWinForms)
 				{
 					var menuItem = FindMenu(args.Menu, e.KeyData);
 					if (menuItem != null)
 					{
-						menuItem.PerformClick();
-						e.Handled = true;
+						// hack, we need to validate the menu item
+						menuItem?.GetType().GetMethod("OnValidate", BindingFlags.NonPublic | BindingFlags.Instance)?.Invoke(menuItem, new object[] { EventArgs.Empty });
+
+						// winforms does not support shortcuts with no modifiers.. currently
+						if (menuItem != null && menuItem.Enabled && e.Modifiers == Keys.None)
+						{
+							menuItem.PerformClick();
+							e.Handled = true;
+						}
 					}
 				}
             }
@@ -817,7 +825,7 @@ namespace Pablo.Interface
         {
             if (loadingStream != null)
             {
-                loadingStream.Dispose();
+                // loadingStream.Dispose();
                 loadingStream = null;
                 PabloApplication.Instance.Invoke(delegate
                 {

@@ -10,8 +10,7 @@
             "args": [
                 "build",
                 "${workspaceFolder}/Source/Pablo Desktop.sln",
-                "/p:Configuration=Debug",
-                "/p:Platform=Mac",
+                "/p:Configuration=${config:var.BuildConfiguration}",
                 "/p:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -60,16 +59,52 @@
         {
             "label": "run-published",
             "type": "shell",
+            "dependsOn": [ "publish-pablodraw" ], 
             "osx": {
-                "command": "${workspaceFolder}/artifacts/bin/Release/net5.0/osx-x64/PabloDraw.app/Contents/MacOS/PabloDraw",
+                "command": "${workspaceFolder}/artifacts/bin/PabloDraw/Release/net6.0/PabloDraw.app/Contents/MacOS/PabloDraw",
             },
             "windows": {
-                "command": "${workspaceFolder}/artifacts/bin/Release/net5.0-windows/win-x64/publish/PabloDraw.exe",
+                "command": "${workspaceFolder}/artifacts/bin/PabloDraw/Release/net6.0-windows/win-x64/publish/PabloDraw.exe",
             },
             "linux": {
-                "command": "${workspaceFolder}/artifacts/bin/Release/net5.0/linux-x64/publish/PabloDraw",
+                "command": "${workspaceFolder}/artifacts/bin/PabloDraw/Release/net6.0/linux-x64/publish/PabloDraw",
             },
             "problemMatcher": [ ]
+        },
+        {
+            "label": "build-windows-installer",
+            "command": "msbuild",
+            "type": "shell",
+            "args": [
+                "/t:Build",
+                "${workspaceFolder}/Source/PabloDraw.WindowsInstaller/PabloDraw.WindowsInstaller.wixproj",
+                "/p:Configuration=${config:var.BuildConfiguration}",
+                "/p:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "group": "build",
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-pablodraw-console",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "publish",
+                "${workspaceFolder}/Source/PabloDraw.Console/PabloDraw.Console.csproj",
+                // "/p:BuildTarget=Linux",
+                "/p:Configuration=${config:var.BuildConfiguration}",
+                "/p:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "group": "build",
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": "$msCompile"
         }
     ]
 }
