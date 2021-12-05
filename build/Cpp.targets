@@ -1,0 +1,80 @@
+<Project>
+
+  <Import Sdk="Microsoft.Build.NoTargets" Project="Sdk.targets" Version="3.0.4" />
+
+  <PropertyGroup>
+    <EnableDefaultItems Condition="$(EnableDefaultItems) == ''">true</EnableDefaultItems>
+    <EnableDefaultCompileItems Condition="$(EnableDefaultCompileItems) == ''">$(EnableDefaultItems)</EnableDefaultCompileItems>
+    
+    <ConfigurationType Condition="$(ConfigurationType) == ''">Application</ConfigurationType>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(EnableDefaultCompileItems) == 'true'">
+    <ClCompile Include="**\*.cpp" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <AvailableItemName Include="ClCompile" />
+  </ItemGroup>
+  
+  <PropertyGroup>
+    <NativeBinDir>$(OutputPath)</NativeBinDir>
+    <NativeOutputName>$(AssemblyName)</NativeOutputName>
+
+    <NativePlatform>$(Platform)</NativePlatform>
+    <NativeObjDir>$(IntermediateOutputPath)cpp\</NativeObjDir>
+    <NativeHostDirectory>$(MSBuildProjectDirectory)</NativeHostDirectory>
+    
+    <BuildDependsOn>PrapareBuildProperties;BuildProject;$(BuildDependsOn)</BuildDependsOn>
+  </PropertyGroup>
+
+  <!-- Properties for MSVCFindCompilerPaths -->
+  <PropertyGroup Condition="$([MSBuild]::IsOsPlatform('Windows'))">
+    <MSVCPlatform>$(Platform)</MSVCPlatform>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <IncPaths Include="$(MSBuildProjectDirectory)" />
+    <PreprocessorDefines Include="WINDOWS" Condition="$([MSBuild]::IsOsPlatform('windows'))" />
+    <PreprocessorDefines Include="LINUX" Condition="$([MSBuild]::IsOsPlatform('linux'))" />
+    <PreprocessorDefines Include="MACOS" Condition="$([MSBuild]::IsOsPlatform('osx'))" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CompilerPaths" Version="[1.0.2, )" Condition="$([MSBuild]::IsOsPlatform('Windows'))" />
+  </ItemGroup>  
+
+    <!-- Targets to build the native project. The output goes directly to the bin directory -->
+  <Target Name="PrapareBuildProperties">
+    <PropertyGroup>
+      <NativeOutputExtension Condition="$([MSBuild]::IsOsPlatform('Linux')) AND $(ConfigurationType) == 'DynamicLibrary'">.so</NativeOutputExtension>
+      <NativeOutputExtension Condition="$([MSBuild]::IsOsPlatform('OSX')) AND $(ConfigurationType) == 'DynamicLibrary'">.dylib</NativeOutputExtension>
+      <NativeOutputExtension Condition="$([MSBuild]::IsOsPlatform('Windows')) AND $(ConfigurationType) == 'Application'">.exe</NativeOutputExtension>
+      <NativeOutputExtension Condition="$([MSBuild]::IsOsPlatform('Windows')) AND $(ConfigurationType) == 'DynamicLibrary'">.dll</NativeOutputExtension>
+      <NativeOutputFilePath>$(NativeObjDir)$(NativeOutputName)$(NativeOutputExtension)</NativeOutputFilePath>
+
+      <SourceFilesRsp>$(IntermediateOutputPath)sourcefiles.rsp</SourceFilesRsp>
+      <CompileOptionsRsp>$(IntermediateOutputPath)compile.rsp</CompileOptionsRsp>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <PreprocessorDefines Include="$(PreprocessorDefines)" />
+    </ItemGroup>
+    
+    <MakeDir Directories="$(NativeBinDir)" />
+    <MakeDir Directories="$(NativeObjDir)" />
+    
+    <WriteLinesToFile File="$(SourceFilesRsp)" Lines="@(ClCompile-> '&quot;%(RootDir)%(Directory)%(Filename)%(Extension)&quot;')" Overwrite="true" WriteOnlyWhenDifferent="True" />
+  </Target>
+  
+  <Target Name="SetOutputs" BeforeTargets="CopyFilesToOutputDirectory" DependsOnTargets="PrepareForBuild">
+    <ItemGroup>
+      <IntermediateAssembly Include="$(NativeOutputFilePath)" />
+    </ItemGroup>
+  </Target>
+
+
+  <Import Project="MSVC.targets" Condition="$([MSBuild]::IsOsPlatform('Windows'))" />
+  <Import Project="GCC.targets" Condition="$([MSBuild]::IsOsPlatform('Linux')) OR $([MSBuild]::IsOsPlatform('osx'))" />
+  
+</Project>

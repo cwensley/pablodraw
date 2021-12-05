@@ -26,7 +26,7 @@ jobs:
       run: dotnet publish Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-windows.binlog
 
     - name: Build PabloDraw.Console
-      run: dotnet publish Source/PabloDraw.Console/PabloDraw.Console.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw.console-windows.binlog
+      run: dotnet publish Source/PabloDraw.Console/PabloDraw.Console.cxproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw.console-windows.binlog
 
     - uses: actions/upload-artifact@v2
       with:
@@ -36,7 +36,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: pablodraw-windows-x64
-        path: artifacts/bin/PabloDraw.Console/${{ env.BuildConfiguration }}/net6.0-windows/win-x64/publish/*
+        path: artifacts/bin/PabloDraw.Console/x64/${{ env.BuildConfiguration }}/*
 
     - name: Upload log files
       if: ${{ failure() }}
@@ -57,18 +57,10 @@ jobs:
     - name: Build PabloDraw
       run: dotnet publish Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-linux.binlog
 
-    - name: Build PabloDraw.Console
-      run: dotnet publish Source/PabloDraw.Console/PabloDraw.Console.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw.console-linux.binlog
-
     - uses: actions/upload-artifact@v2
       with:
         name: pablodraw-linux-x64
         path: artifacts/bin/PabloDraw/${{ env.BuildConfiguration }}/net6.0/linux-x64/publish/*
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: pablodraw-linux-x64
-        path: artifacts/bin/PabloDraw.Console/${{ env.BuildConfiguration }}/net6.0/linux-x64/publish/*
 
     - name: Upload log files
       if: ${{ failure() }}
@@ -112,18 +104,10 @@ jobs:
     - name: Build PabloDraw
       run: dotnet build Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-mac.binlog
 
-    - name: Build PabloDraw.Console
-      run: dotnet publish Source/PabloDraw.Console/PabloDraw.Console.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw.console-mac.binlog
-
     - uses: actions/upload-artifact@v2
       with:
         name: pablodraw-mac
         path: artifacts/bin/PabloDraw/${{ env.BuildConfiguration }}/net6.0/PabloDraw.dmg
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: pablodraw-mac
-        path: artifacts/bin/PabloDraw.Console/${{ env.BuildConfiguration }}/net6.0/osx-x64/publish/PabloDraw.Console
 
     - name: Upload log files
       if: ${{ failure() }}

@@ -9,7 +9,7 @@ using Pablo.Network;
 using Eto;
 using Lidgren.Network;
 
-namespace PabloDraw.Console.Commands
+namespace PabloDraw.Commands
 {
 	class NewFile : ICommand
 	{

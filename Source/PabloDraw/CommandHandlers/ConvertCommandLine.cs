@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.CodeDom.Compiler;
 using System.Linq;
 
-namespace PabloDraw.Console.CommandHandlers
+namespace PabloDraw.CommandHandlers
 {
 	public class ConvertCommandLine : CommandLineHandler
 	{
@@ -57,8 +57,8 @@ namespace PabloDraw.Console.CommandHandlers
 			}
 			if (string.IsNullOrEmpty(outFile))
 			{
-				args.Writer.WriteLine("Output file name not specified");
-				return true;
+				// args.Writer.WriteLine("Output file name not specified");
+				return false;
 			}
 
 			var formats = DocumentInfoCollection.Default;
@@ -109,6 +109,8 @@ namespace PabloDraw.Console.CommandHandlers
 			sw2.Stop ();
 			args.Writer.WriteLine ("Convertion rate: {0}, total seconds: {1}", iters / sw2.Elapsed.TotalSeconds, sw2.Elapsed.TotalSeconds);
 			/**/
+			if (!Directory.Exists(Path.GetDirectoryName(outFile)))
+				Directory.CreateDirectory(Path.GetDirectoryName(outFile));
 
 			using (var destinationStream = new FileStream(outFile, FileMode.Create, FileAccess.Write))
 			{

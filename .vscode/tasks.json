@@ -21,6 +21,24 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "build-pablodraw-console",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "build",
+                "${workspaceFolder}/Source/PabloDraw.Console/PabloDraw.Console.cxproj",
+                // "/p:BuildTarget=Linux",
+                "/p:Configuration=${config:var.BuildConfiguration}",
+                "/p:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "group": "build",
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
             "label": "build-pablodraw",
             "command": "dotnet",
             "type": "shell",
@@ -78,24 +96,6 @@
             "args": [
                 "/t:Build",
                 "${workspaceFolder}/Source/PabloDraw.WindowsInstaller/PabloDraw.WindowsInstaller.wixproj",
-                "/p:Configuration=${config:var.BuildConfiguration}",
-                "/p:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "group": "build",
-            "presentation": {
-                "clear": true
-            },
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "build-pablodraw-console",
-            "command": "dotnet",
-            "type": "shell",
-            "args": [
-                "publish",
-                "${workspaceFolder}/Source/PabloDraw.Console/PabloDraw.Console.csproj",
-                // "/p:BuildTarget=Linux",
                 "/p:Configuration=${config:var.BuildConfiguration}",
                 "/p:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"

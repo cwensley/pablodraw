@@ -13,3 +13,5 @@ obj/
 .svn
 UpgradeLog.htm
 .vs
+compile_commands.json
+.cache

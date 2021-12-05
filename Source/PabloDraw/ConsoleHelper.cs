@@ -1,15 +1,10 @@
 using System;
 using System.Threading;
 
-namespace PabloDraw.Console
+namespace PabloDraw
 {
 	public static class ConsoleHelper
 	{
-		public static void Run()
-		{
-
-		}
-
 		internal static void Run(ProcessCommandLineArgs args)
 		{
 			args.Writer.WriteLine("Press Ctrl+C to stop...");

@@ -179,8 +179,7 @@ namespace PabloDraw
 						Platform.Initialize(Platforms.Gtk);
 						break;
 					case "gtk2":
-						Platform.Initialize(Platforms.Gtk2);
-						break;
+						throw new NotSupportedException("gtk2 is no longer a supported platform. Use gtk instead");
 					case "winforms":
 					case "win":
 						Platform.Initialize(Platforms.WinForms);

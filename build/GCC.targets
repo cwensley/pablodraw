@@ -1,0 +1,63 @@
+<Project>
+
+  <Target Name="PrepareForBuild">
+
+    <PropertyGroup>
+      <CompileCommandsOutput>$(IntermediateOutputPath)compile_commands.json</CompileCommandsOutput>
+      <CompileArgs>$(CompileArgs) -g -std=c++17</CompileArgs>
+      <CompileArgs Condition="$(GenerateCompileCommands) == 'True'">$(CompileArgs) -MJ&quot;$(CompileCommandsOutput)&quot;</CompileArgs>
+      <LinkArgs>$(LinkArgs) -ldl -lpthread</LinkArgs>
+    </PropertyGroup>
+    <PropertyGroup Condition="$([MSBuild]::IsOsPlatform('Linux'))">
+      <LinkArgs>$(LinkArgs) -Wl,-rpath,'$ORIGIN',--disable-new-dtags</LinkArgs>
+      <LinkArgs Condition="$(ConfigurationType) == 'DynamicLibrary'">$(LinkArgs) -shared -fPIC</LinkArgs>
+    </PropertyGroup>
+    <PropertyGroup Condition="$([MSBuild]::IsOsPlatform('OSX'))">
+      <LinkArgs>$(LinkArgs) -Wl,-rpath,'@loader_path'</LinkArgs>
+      <LinkArgs Condition="$(ConfigurationType) == 'DynamicLibrary'">$(LinkArgs) -dynamiclib -fPIC</LinkArgs>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="BuildResponseFiles" DependsOnTargets="PrepareForBuild">
+
+    <ItemGroup>
+      <LinkOptions Include="$(LinkArgs)" />
+      <LinkOptions Include="@(LibPaths-> '-L&quot;%(RootDir)%(Directory)%(Filename)&quot;')" />
+      <LinkOptions Include="-o &quot;$(NativeOutputFilePath)&quot;" />
+    </ItemGroup>
+    <ItemGroup>
+      <CompileOptionsRsp Include="@(IncPaths-> '-I&quot;%(Identity)&quot;')" />
+      <CompileOptionsRsp Include="$(CompileArgs)" />
+      <CompileOptionsRsp Include="@(PreprocessorDefines-> '-D %(Identity)')" />
+      <CompileOptionsRsp Include="@(LinkOptions)" />
+    </ItemGroup>
+
+    <WriteLinesToFile File="$(CompileOptionsRsp)" Lines="@(CompileOptionsRsp)" Overwrite="true" WriteOnlyWhenDifferent="True" />
+  </Target>
+
+  <Target Name="BuildProject" DependsOnTargets="BuildResponseFiles">
+    <Exec Command="g++ @&quot;$(CompileOptionsRsp)&quot; @&quot;$(SourceFilesRsp)&quot;" WorkingDirectory="$(NativeObjDir)" StandardOutputImportance="normal" ConsoleToMsBuild="true" />
+
+  </Target>
+
+  <Target Name="WriteCompileCommands" AfterTargets="BuildProject">
+    <ItemGroup>
+      <CompileCommands Include="$(CompileCommands)" />
+    </ItemGroup>
+
+    <ReadLinesFromFile File="$(CompileCommandsOutput)">
+      <Output TaskParameter="Lines" ItemName="CompileCommandsLines"/>
+    </ReadLinesFromFile>
+
+    <ItemGroup>
+      <!-- <CompileCommandsLines Include="$(CompileCommandsLines.TrimEnd(','))" /> -->
+    </ItemGroup>
+
+    <WriteLinesToFile File="@(CompileCommands)" Lines="[" Overwrite="True" />
+    <WriteLinesToFile File="@(CompileCommands)" Lines="@(CompileCommandsLines)" />
+    <WriteLinesToFile File="@(CompileCommands)" Lines="]" />
+
+  </Target>
+
+
+</Project>

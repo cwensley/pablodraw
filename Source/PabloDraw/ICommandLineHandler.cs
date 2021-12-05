@@ -1,12 +1,16 @@
+using Eto;
+using Microsoft.Win32.SafeHandles;
 using Pablo;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
-namespace PabloDraw.Console
+namespace PabloDraw
 {
 	public interface ICommandLineHandler
 	{
@@ -19,7 +23,20 @@ namespace PabloDraw.Console
 
 	public class ProcessCommandLineArgs
 	{
-		public IndentedTextWriter Writer { get; set; }
+		IndentedTextWriter _writer;
+		
+		public IndentedTextWriter Writer
+		{
+			get
+			{
+				if (_writer == null)
+				{
+					ShowConsole();
+					_writer = new IndentedTextWriter(System.Console.Out, "  ");
+				}
+				return _writer;
+			}
+		}
 		public CommandLine Command { get; set; }
 		public int MaxWidth { get; set; }
 		public IEnumerable<ICommandLineHandler> Handlers { get; set; }
@@ -32,8 +49,54 @@ namespace PabloDraw.Console
 			CommentPosition = 28;
 		}
 
+		private const int ATTACH_PARENT_PROCESS = -1;
+		private const int ERROR_INVALID_HANDLE = 6;
+		[DllImport("kernel32.dll", SetLastError = true)]
+		static extern bool AttachConsole(int dwProcessId);
+		[DllImport("kernel32.dll")]
+		static extern bool AllocConsole();
+		[DllImport("kernel32.dll")]
+		static extern bool FreeConsole();
+
+		static bool StartConsole()
+		{
+			if (!AttachConsole(ATTACH_PARENT_PROCESS)) // try connecting to an existing console  
+			{
+				if (Marshal.GetLastWin32Error() == ERROR_INVALID_HANDLE) // we don't have a console yet  
+				{
+					if (!AllocConsole()) // couldn't create a new console, either  
+						return false;
+				}
+				else
+					return false; // some other error
+			}
+			return true;
+		}
+		
+		static bool started;
+		public static void ShowConsole()
+		{
+			if (EtoEnvironment.Platform.IsWindows)
+			{
+				if (!started)
+				{
+					started = true;
+					StartConsole();
+					// AttachConsole(ATTACH_PARENT_PROCESS);
+				}
+				// AllocConsole();
+				// ShowWindow(GetConsoleWindow(), show ? 1 : 0);
+			}
+		}
+		public void Write(string message)
+		{
+			ShowConsole();
+			Writer.Write(message);
+		}
+
 		public void WriteOption(string option, string comment)
 		{
+			ShowConsole();
 			Writer.Write(option);
 			int offsetLen;
 			if (option.Length >= CommentPosition)
@@ -43,7 +106,7 @@ namespace PabloDraw.Console
 			}
 			else
 				offsetLen = CommentPosition - option.Length;
-	
+
 			for (int i = 0; i < offsetLen; i++)
 				Writer.Write(" ");
 
@@ -80,5 +143,8 @@ namespace PabloDraw.Console
 		public abstract void GetHelp(ProcessCommandLineArgs args);
 
 		public abstract bool Process(ProcessCommandLineArgs args);
+
+
+
 	}
 }

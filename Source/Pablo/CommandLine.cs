@@ -3,22 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Eto;
 
 namespace Pablo
 {
 	public class CommandLine
 	{
-		const string commandLineRegEx =
+		static string prefix => EtoEnvironment.Platform.IsWindows ? "((--)|-|/)" : "((--)|-)";
+		
+		static string commandLineRegEx =>
 			@"(?<=^|\s)(
-(((--)|-|/)(?<name>[^\s:=]+)((\s*:\s*)|(\s*=\s*)|(\s+(?=[^-])))
+(" + prefix + @"(?<name>[^\s:=]+)((\s*:\s*)|(\s*=\s*)|(\s+(?=[^-])))
 (([""""](?<value>(("""")|[^""])*)[""])|(?<value>[^\s]*))
 |
-([""""]((--)|-|/)(?<name>[^\s:=]+)((\s*:\s*)|(\s*=\s*)|(\s+(?=[^-])))
+([""""]" + prefix + @"(?<name>[^\s:=]+)((\s*:\s*)|(\s*=\s*)|(\s+(?=[^-])))
 (?<value>(("""")|[^""])*)[""]))
 |
-(((--)|-|/)(?<name>[^\s]+))
+(" + prefix + @"(?<name>[^\s]+))
 |
-([""]((--)|-|/)(?<name>[^""]+)[""])
+([""]" + prefix + @"(?<name>[^""]+)[""])
 )";
 
 		const string topLevel = @"
