@@ -1,0 +1,9 @@
+﻿<Project>
+  <Import Project="..\..\build\Cpp.props" />
+  
+  <PropertyGroup>
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  
+  <Import Project="..\..\build\Cpp.targets" />
+</Project>

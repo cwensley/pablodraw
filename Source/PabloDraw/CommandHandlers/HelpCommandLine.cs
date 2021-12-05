@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 
-namespace PabloDraw.Console.CommandHandlers
+namespace PabloDraw.CommandHandlers
 {
 	public class HelpCommandLine : CommandLineHandler
 	{
-		public override string Name { get { return "Help"; } }
+		public override string Name => "Help";
 
 		public override void GetHelp(ProcessCommandLineArgs args)
 		{
@@ -21,11 +21,13 @@ namespace PabloDraw.Console.CommandHandlers
 		{
 			var command = args.Command;
 			var version = Assembly.GetEntryAssembly().GetName();
-			args.Writer.WriteLine("{0} v{1}", version.Name, version.Version);
 
-			if (command.GetBool("help") ?? command.IsEmpty)
+			if (command.GetBool("help", "h", "?") == true)
 			{
-				args.Writer.WriteLine("Usage: PabloDraw.Console.exe [options] [input.ext] [output.ext]");
+				ProcessCommandLineArgs.ShowConsole();
+				args.Writer.WriteLine("{0} v{1}", version.Name, version.Version);
+				var ext = EtoEnvironment.Platform.IsWindows ? ".exe" : "";
+				args.Writer.WriteLine($"Usage: PabloDraw{ext} [options] [input.ext] [output.ext]");
 				foreach (var handler in args.Handlers)
 				{
 					args.Writer.WriteLine();
@@ -34,6 +36,7 @@ namespace PabloDraw.Console.CommandHandlers
 					handler.GetHelp(args);
 					args.Writer.Indent--;
 				}
+				return true;
 			}
 			return false;
 		}

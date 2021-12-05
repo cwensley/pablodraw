@@ -1,0 +1,43 @@
+<Project>
+
+  <Target Name="PrepareForBuild">
+    <PropertyGroup>
+      <CompileArgs>$(CompileArgs) /EHsc /Od /GS /sdl /Zi /std:c++17 /nologo</CompileArgs>
+      <CompileArgs Condition="$(Configuration) == 'Release'">$(CompileArgs) /GL /Os /GF /Gy /GA</CompileArgs>
+      <LibPaths>@(MSVCLibPaths-> '/LIBPATH:&quot;%(RootDir)%(Directory)%(Filename)&quot;', ' ')</LibPaths>
+    </PropertyGroup>
+  </Target>
+  
+  <Target Name="BuildResponseFiles" DependsOnTargets="PrepareForBuild;MSVCFindCompilerPaths">
+    
+    <ItemGroup>
+      <LinkOptions Include="@(MSVCLibPaths-> '/LIBPATH:&quot;%(RootDir)%(Directory)%(Filename)&quot;')" />
+      <LinkOptions Include="@(LibPaths-> '/LIBPATH:&quot;%(RootDir)%(Directory)%(Filename)&quot;')" />
+      <LinkOptions Include="/out:&quot;$(NativeOutputFilePath)&quot;" />
+    </ItemGroup>
+    
+    <PropertyGroup>
+      <LinkArgs>$(LinkArgs) @(LinkOptions-> '%(Identity)', ' ')</LinkArgs>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <CompileOptionsRsp Include="@(MSVCIncludePaths-> '/I &quot;%(RootDir)%(Directory)%(Filename)&quot;')" />
+      <CompileOptionsRsp Include="@(IncPaths-> '/I &quot;%(Identity)&quot;')" />
+      <CompileOptionsRsp Include="$(CompileArgs)" />
+      <CompileOptionsRsp Include="@(PreprocessorDefines-> '/D %(Identity)')" />
+      <CompileOptionsRsp Include="/link $(LinkArgs)" />
+    </ItemGroup>
+    
+    <WriteLinesToFile File="$(CompileOptionsRsp)" Lines="@(CompileOptionsRsp)" Overwrite="true" WriteOnlyWhenDifferent="True" />
+  </Target>
+
+  <Target Name="BuildProject" DependsOnTargets="BuildResponseFiles;MSVCFindCompilerPaths">
+
+    <Exec Command="&quot;$(MSVCCompilerPath)&quot; @&quot;$(SourceFilesRsp)&quot; @&quot;$(CompileOptionsRsp)&quot;"
+          WorkingDirectory="$(NativeObjDir)"
+          StandardOutputImportance="normal"
+          ConsoleToMsBuild="true" />
+  </Target>
+  
+  
+</Project>

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PabloDraw.Console.CommandHandlers
+namespace PabloDraw.CommandHandlers
 {
 	public class PlatformCommandLine : CommandLineHandler
 	{

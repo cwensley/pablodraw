@@ -52,20 +52,11 @@
     <string>PabloDraw</string>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.graphics-design</string>
-    <key>LSEnvironment</key>
-    <dict>
-      <key>MONO_IOMAP</key>
-      <string>case</string>
-    </dict>
     <key>LSMinimumSystemVersion</key>
-    <string>10.10</string>
+    <string>10.14</string>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
-    <key>CFBundleShortVersionString</key>
-    <string>3.3.0</string>
     <key>CFBundleIdentifier</key>
     <string>ca.picoe.pablodraw</string>
-    <key>CFBundleVersion</key>
-    <string>3.3.0</string>
   </dict>
 </plist>

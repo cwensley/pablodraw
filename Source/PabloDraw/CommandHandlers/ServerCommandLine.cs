@@ -8,13 +8,13 @@ using System.Collections.Generic;
 using System.CodeDom.Compiler;
 using System.Threading;
 
-namespace PabloDraw.Console.CommandHandlers
+namespace PabloDraw.CommandHandlers
 {
 	public class ServerCommandLine : CommandLineHandler, IClientDelegate
 	{
-		public override string Name { get { return "Server"; } }
+		public override string Name => "Server";
 
-		public bool EditMode { get { return true; } }
+		public bool EditMode => true;
 
 		public override void GetHelp(ProcessCommandLineArgs args)
 		{

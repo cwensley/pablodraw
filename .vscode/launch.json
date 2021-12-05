@@ -13,15 +13,43 @@
                 "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net6.0/PabloDraw.app/Contents/MacOS/PabloDraw",
             },
             "windows": {
-                "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net6.0-windows/win-x64/PabloDraw.dll",
+                "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net6.0-windows/win-x64/PabloDraw.exe",
             },
             "linux": {
                 "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net6.0/linux-x64/PabloDraw.dll",
             },
-            "args": [],
+            "args": [
+                // "--help"
+                // "${workspaceFolder}/Source/README.ans", "${workspaceFolder}/artifacts/convert/README.png"
+            ],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
             "console": "internalConsole"
+        },
+        {
+            "name": "PabloDraw.Console",
+            "type": "cppdbg",
+            "request": "launch",
+            "preLaunchTask": "build-pablodraw-console",
+            "program": "${workspaceRoot}/artifacts/bin/PabloDraw.Console/x64/Debug/PabloDraw.Console",
+            "MIMode": "lldb",
+            "cwd": ".",
+            "args": [
+                "--help"
+                // "${workspaceFolder}/Source/README.ans", "${workspaceFolder}/artifacts/convert/README.png"
+            ],
+        },
+        {
+            "name": "PabloDraw.Console-windows",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "preLaunchTask": "build-pablodraw-console",
+            "program": "${workspaceRoot}/artifacts/bin/PabloDraw.Console/x64/Debug/PabloDraw.Console.exe",
+            "cwd": ".",
+            "args": [
+                "--help"
+                // "${workspaceFolder}/Source/README.ans", "${workspaceFolder}/artifacts/convert/README.png"
+            ],
         }
     ]
 }

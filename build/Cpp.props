@@ -1,0 +1,24 @@
+<Project>
+
+  <Import Sdk="Microsoft.Build.NoTargets" Project="Sdk.props" Version="3.0.4" />
+
+  <PropertyGroup>
+    <Platform>x64</Platform>
+
+
+    <EnableDefaultItems />
+    <EnableDefaultCompileItems />
+    <EnableDefaultContentItems />
+
+    <CompileCommands>compile_commands.json</CompileCommands>
+    <GenerateCompileCommands>True</GenerateCompileCommands>
+    <TargetFrameworkIdentifier>cpp</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
+    
+    <DisableStandardFrameworkResolution>True</DisableStandardFrameworkResolution>
+    <SkipResolvePackageAssets>True</SkipResolvePackageAssets>
+
+  </PropertyGroup>
+
+
+</Project>

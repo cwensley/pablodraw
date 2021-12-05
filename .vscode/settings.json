@@ -4,5 +4,11 @@
     ],
     "var": {
         "BuildConfiguration": "Debug"
-    }
+    },
+    "files.associations": {
+        "chrono": "cpp",
+        "filesystem": "cpp",
+        "string": "cpp"
+    },
+    "clangd.path": "clangd"
 }
