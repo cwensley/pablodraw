@@ -12,15 +12,13 @@
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <DefineConstants>PublishDir=$(PublishDir)</DefineConstants>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
+    <OutputPath>$(ArtifactsDir)installer\$(Configuration)\$(BuildTarget)\</OutputPath>
+    <PublishReferences Condition="$(PublishReferences) == ''">True</PublishReferences>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>..\..\artifacts\bin\$(Configuration)\net6.0-windows</OutputPath>
-    <IntermediateOutputPath>..\..\artifacts\obj\$(OS)\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>..\..\artifacts\bin\$(Configuration)\net6.0-windows</OutputPath>
-    <IntermediateOutputPath>..\..\artifacts\obj\$(OS)\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>$(DefineConstants);Debug</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
@@ -28,15 +26,17 @@
   <ItemGroup>
     <ProjectReference Include="..\PabloDraw\PabloDraw.csproj">
       <Name>PabloDraw</Name>
-      <Project>{9a72b697-8da3-4a52-9e6b-05deeea23ad2}</Project>
-      <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
       <IsDotnetSDKProject>True</IsDotnetSDKProject>
-      <TargetFrameworkIdentifier>net6.0-windows</TargetFrameworkIdentifier>
-      <Runtime>win-x64</Runtime>
-      <OutputPath>..\..\artifacts\bin\$(Configuration)\net6.0-windows\win-x64\publish\</OutputPath>
+    </ProjectReference>
+    <ProjectReference Include="..\PabloDraw.Console\PabloDraw.Console.cxproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true">
+      <Name>PabloDraw.Console</Name>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+      <IsDotnetSDKProject>True</IsDotnetSDKProject>
     </ProjectReference>
   </ItemGroup>
   
@@ -46,22 +46,22 @@
     <Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
   </Target>
 
-  <Target Name="BeforeBuild">
-    <Message Importance="high" Text="Assembly Version: $(AssemblyVersion)" />
+  <Target Name="SetAssemblyVersion" BeforeTargets="BeforeBuild">
+    <Message Importance="high" Text="Building Version: $(AssemblyVersion)" />
     <PropertyGroup>
-      <DefineConstants>$(DefineConstants);AssemblyVersion=$(AssemblyVersion)</DefineConstants>
+      <DefineConstants>$(DefineConstants);Version=$(AssemblyVersion)</DefineConstants>
     </PropertyGroup>
   </Target>
 
-  <Target Name="BeforeBuild">
-    <Exec WorkingDirectory="%(ProjectReference.RootDir)%(ProjectReference.Directory)" Command="dotnet publish -c $(Configuration) -f %(ProjectReference.TargetFrameworkIdentifier) -r %(ProjectReference.Runtime)" Condition="'%(ProjectReference.IsDotnetSDKProject)' == 'True'" />
-    <ItemGroup>
-      <LinkerBindInputPaths Include="%(ProjectReference.OutputPath)" />
+  <Target Name="BeforeBuild" Condition="$(PublishReferences) == 'True'">
+    <Exec WorkingDirectory="%(ProjectReference.RootDir)%(ProjectReference.Directory)" Command="dotnet publish -c $(Configuration)" Condition="'%(ProjectReference.IsDotnetSDKProject)' == 'True'" />
+    <!-- <ItemGroup>
+      <LinkerBindInputPaths Include="%(ProjectReference.PublishDir)" />
     </ItemGroup>
     <HeatDirectory
-      DirectoryRefId="INSTALLFOLDER"
+      DirectoryRefId="%(ProjectReference.RefTargetDir)"
       OutputFile="obj\$(Configuration)\%(ProjectReference.Name).wxs"
-      Directory="%(ProjectReference.OutputPath)"
+      Directory="%(ProjectReference.PublishDir)"
       ComponentGroupName="SourceComponentGroup"
       ToolPath="$(WixToolPath)"
       AutogenerateGuids="true"
@@ -72,6 +72,6 @@
       Condition="'%(ProjectReference.IsDotnetSDKProject)' == 'True'"/>
     <ItemGroup>
       <Compile Include="obj\$(Configuration)\%(ProjectReference.Name).wxs" Condition="'%(ProjectReference.IsDotnetSDKProject)' == 'True'" />
-    </ItemGroup>
+    </ItemGroup> -->
   </Target>
 </Project>

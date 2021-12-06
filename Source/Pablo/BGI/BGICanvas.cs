@@ -2310,7 +2310,7 @@ namespace Pablo.BGI
 					return;
 
 				var platform = Platform.Instance;
-				if (true) //platform.IsWpf || platform.IsIos || platform.IsMac || platform.IsWinForms)
+				// if (platform.IsWpf || platform.IsIos || platform.IsMac || platform.IsWinForms)
 				{
 					Application.Instance.AsyncInvoke(delegate
 					{
@@ -2332,6 +2332,7 @@ namespace Pablo.BGI
 						}
 					});
 				}
+				#if disabled
 				else
 				{
 					/**/
@@ -2539,6 +2540,7 @@ namespace Pablo.BGI
 						}
 					});
 				}
+				#endif
 			}
 		}
 

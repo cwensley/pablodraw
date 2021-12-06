@@ -70,7 +70,13 @@
   <Target Name="SetOutputs" BeforeTargets="CopyFilesToOutputDirectory" DependsOnTargets="PrepareForBuild">
     <ItemGroup>
       <IntermediateAssembly Include="$(NativeOutputFilePath)" />
-    </ItemGroup>
+    </ItemGroup>    
+  </Target>
+
+  <Target Name="SetPublishOutput" BeforeTargets="ComputeFilesToPublish" DependsOnTargets="PrepareForBuild">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="$(NativeOutputFilePath)" RelativePath="$([System.IO.Path]::GetFileName($(NativeOutputFilePath)))" />
+    </ItemGroup>    
   </Target>
 
 
