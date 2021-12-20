@@ -5,8 +5,8 @@
     "tasks": [
         {
             "label": "build",
-            "command": "dotnet",
             "type": "shell",
+            "command": "dotnet",
             "args": [
                 "build",
                 "${workspaceFolder}/Source/Pablo Desktop.sln",
@@ -22,10 +22,10 @@
         },
         {
             "label": "build-pablodraw-console",
-            "command": "dotnet",
             "type": "shell",
+            "command": "dotnet",
             "args": [
-                "build",
+                "publish",
                 "${workspaceFolder}/Source/PabloDraw.Console/PabloDraw.Console.cxproj",
                 // "/p:BuildTarget=Linux",
                 "/p:Configuration=${config:var.BuildConfiguration}",
@@ -40,8 +40,8 @@
         },
         {
             "label": "build-pablodraw",
-            "command": "dotnet",
             "type": "shell",
+            "command": "dotnet",
             "args": [
                 "build",
                 "${workspaceFolder}/Source/PabloDraw/PabloDraw.csproj",
@@ -58,8 +58,8 @@
         },
         {
             "label": "publish-pablodraw",
-            "command": "dotnet",
             "type": "shell",
+            "command": "dotnet",
             "args": [
                 "publish",
                 "${workspaceFolder}/Source/PabloDraw/PabloDraw.csproj",
@@ -91,13 +91,14 @@
         },
         {
             "label": "build-windows-installer",
-            "command": "msbuild",
             "type": "shell",
+            "command": "${input:msbuild}",
             "args": [
                 "/t:Build",
                 "${workspaceFolder}/Source/PabloDraw.WindowsInstaller/PabloDraw.WindowsInstaller.wixproj",
                 "/p:Configuration=${config:var.BuildConfiguration}",
                 "/p:GenerateFullPaths=true",
+                "/v:Minimal",
                 "/consoleloggerparameters:NoSummary"
             ],
             "group": "build",
@@ -106,5 +107,16 @@
             },
             "problemMatcher": "$msCompile"
         }
+    ],
+    "inputs": [
+        {
+            "id": "msbuild",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "command": "\"%ProgramFiles(x86)%\\Microsoft Visual Studio\\Installer\\vswhere.exe\" -version \"[16,18)\" -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\\**\\Bin\\MSBuild.exe",
+                "useFirstResult": "true"
+            }
+        }        
     ]
 }

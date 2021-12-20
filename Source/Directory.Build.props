@@ -1,29 +1,32 @@
 ﻿<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Company>Picoe Software Solutions</Company>
-    <Copyright>(c) 2006-2021 by Curtis Wensley aka Eto</Copyright>
-    <Version>3.3.0-dev</Version>
-    
-    <BasePath>$(MSBuildThisFileDirectory)..\</BasePath>
-    <ArtifactsDir>$(BasePath)artifacts\</ArtifactsDir>
-
-    <DebugType>embedded</DebugType>
-    
-    <BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == ''">$(ArtifactsDir)obj\$(OS)\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-    <OutputArtifactName Condition="$(OutputArtifactName) == ''">bin</OutputArtifactName>
-    <BaseOutputPath Condition="$(BaseOutputPath) == ''">$(ArtifactsDir)$(OutputArtifactName)\$(MSBuildProjectName)\</BaseOutputPath>
-    <PackageOutputPath Condition="$(PackageOutputPath) == ''">$(ArtifactsDir)nuget\$(Configuration)\</PackageOutputPath>
-    <RestoreProjectStyle Condition="'$(RestoreProjectStyle)' == ''">PackageReference</RestoreProjectStyle>
-
-    <!-- Uncomment to use Eto from source -->
-    <!-- <EtoBasePath>..\..\..\Eto\</EtoBasePath> -->
-
-  </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == ''">
     <BuildTarget Condition="$([MSBuild]::IsOSPlatform(Windows))">Windows</BuildTarget>
     <BuildTarget Condition="$([MSBuild]::IsOSPlatform(OSX))">Mac</BuildTarget>
     <BuildTarget Condition="$([MSBuild]::IsOSPlatform(Linux))">Linux</BuildTarget>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <Company>Picoe Software Solutions</Company>
+    <Copyright>(c) 2006-2021 by Curtis Wensley aka Eto</Copyright>
+    <Version Condition="$(Version) == ''">3.3.11-dev</Version>
+    
+    <BasePath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))</BasePath>
+    <ArtifactsDir>$(BasePath)artifacts\</ArtifactsDir>
+
+    <DebugType>embedded</DebugType>
+    <NoWarn>NU1701</NoWarn>
+    
+    <BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == ''">$(ArtifactsDir)obj\$(BuildTarget)\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <BaseOutputPath Condition="$(BaseOutputPath) == ''">$(ArtifactsDir)bin\$(MSBuildProjectName)\</BaseOutputPath>
+    <PackageOutputPath Condition="$(PackageOutputPath) == ''">$(ArtifactsDir)nuget\$(Configuration)\</PackageOutputPath>
+    <RestoreProjectStyle Condition="'$(RestoreProjectStyle)' == ''">PackageReference</RestoreProjectStyle>
+    <PublishDir Condition="$(PublishDir) == ''">$(ArtifactsDir)publish\$(Configuration)\$(BuildTarget)\</PublishDir>
+
+    <!-- Uncomment to use Eto from source -->
+    <!-- <EtoBasePath>..\..\..\Eto\</EtoBasePath> -->
+
+  </PropertyGroup>
+
 
 </Project>

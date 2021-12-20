@@ -6,7 +6,6 @@
 <!-- The manufacturer, for setup package publisher and folder info -->
 <?define Manufacturer = "Picoe Software Solutions" ?>
 <!-- The version number of this setup package-->
-<?define Version = "3.3.11" ?>
 <!-- UpgradeCode must be unique and not changed once the first version of the program is installed. -->
 <?define UpgradeCode = "dc30a6a5-e756-4440-b8cd-cc823d9de7a3" ?>
 <!-- The name of the Cabinet -->
@@ -59,9 +58,12 @@
 
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="PabloDraw.Console.exe" Win64="yes" Guid="50602e08-d852-48d8-98bc-c5feaf0e4ad4">
+        <File Id="PabloDraw.Console.exe" Source="$(var.PublishDir)PabloDraw.Console.exe" ProcessorArchitecture="x64" />
+      </Component>
       <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-      <Component Id="PabloDraw.exe" Win64="yes">
-        <File Id="PabloDraw.exe" Source="$(var.PabloDraw.TargetPath)" ProcessorArchitecture="x64" />
+      <Component Id="PabloDraw.exe" Win64="yes" Guid="55b621c9-5f4f-47f9-a951-a8a2b816b572">
+        <File Id="PabloDraw.exe" Source="$(var.PublishDir)PabloDraw.exe" ProcessorArchitecture="x64" KeyPath="yes" />
 
         <Shortcut Id="startmenuShortcut" Directory="ProgramMenuFolder" Name="PabloDraw" Icon="PabloDraw.ico" IconIndex="0" WorkingDirectory="APPLICATIONFOLDER" Advertise="yes" />
 
