@@ -93,6 +93,7 @@ namespace Pablo.Formats.Character.Controls
 		public WidthDialog()
 		{
 			//this.ClientSize = new Size (350, 160);
+			Title = "Set canvas size";
 
 			var toplayout = new DynamicLayout();
 			toplayout.Padding = new Padding(10);

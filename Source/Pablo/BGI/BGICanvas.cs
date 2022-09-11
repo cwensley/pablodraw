@@ -108,7 +108,8 @@ namespace Pablo.BGI
 		byte fillcolor;
 		readonly int[] colors = new int[16];
 		Graphics graphics;
-		int totalrectcomplexity;
+		// int totalrectcomplexity;
+		// const int ComplexityMaximum = 1000;
 		FillStyle fillStyle;
 		LineStyle lineStyle = LineStyle.Solid;
 		Direction textDirection = Direction.Horizontal;
@@ -2292,7 +2293,6 @@ namespace Pablo.BGI
 		readonly object bitmapLock = new object();
 		public void UpdateRegion(IList<Rectangle> rects, Graphics graphics = null)
 		{
-			const int ComplexityMaximum = 1000;
 			if (Application.Instance == null)
 				return;
 			if (rects.Count > 0)

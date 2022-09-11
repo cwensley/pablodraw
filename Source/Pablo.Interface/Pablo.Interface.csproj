@@ -14,7 +14,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Eto.Forms" Version="2.6.0" />
+    <ProjectReference Include="$(EtoBasePath)src\Eto\Eto.csproj" Condition="$(EtoBasePath) != ''" />
+    <PackageReference Include="Eto.Forms" Version="2.7.1" Condition="$(EtoBasePath) == ''" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
