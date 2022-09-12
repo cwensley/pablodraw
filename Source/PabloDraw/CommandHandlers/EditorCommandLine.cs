@@ -104,6 +104,7 @@ namespace PabloDraw.CommandHandlers
 
 			var textArea = new TextArea { ReadOnly = true, Size = new Size(400, 300), Wrap = false };
 			textArea.Text = Convert.ToString(exceptionObject);
+			textArea.Selection = Eto.Forms.Range.FromLength(0, 0);
 
 			var quitButton = new Button { Text = "Quit" };
 			quitButton.Click += (sender, e) => dlg.Close();

@@ -8,7 +8,7 @@ namespace Pablo.Interface.Dialogs
 {
 	public class About : Dialog
 	{
-		const string CopyRightText = @"PabloDraw is © 2006-2021 by Curtis Wensley aka Eto
+		const string CopyRightText = @"PabloDraw is © 2006-2022 by Curtis Wensley aka Eto
 
 Amiga raw font versions are © dMG/t!s^dS!
 

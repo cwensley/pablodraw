@@ -25,7 +25,9 @@ namespace Pablo.Formats.Character.Actions
 			get { return Handler.AllowKeyboardEditing; }
 			set { base.Enabled = value; }
 		}
-		
+
+		public override bool AllowKeyboardFallback => true;
+
 		public override int CommandID {
 			get {
 				return (int)NetCommands.NewLine;

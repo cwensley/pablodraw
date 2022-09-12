@@ -334,9 +334,10 @@ namespace Pablo.Formats.Character.Tools
 			args.KeyboardCommands.Add(new Actions.Block.Deselect(this));
 
 			args.KeyboardCommands.Add(new Actions.Block.Delete(this) { Shortcut = Keys.E });
+			args.KeyboardCommands.Add(new Actions.Block.Delete(this));
+			
 			if (Platform.Instance.IsMac)
 			{
-				args.KeyboardCommands.Add(new Actions.Block.Delete(this)); // Keys.Delete doesn't map on OS X for some reason
 				control.MapPlatformCommand("cut", new Actions.Block.CutToClipboard(this));
 				control.MapPlatformCommand("copy", new Actions.Block.CopyToClipboard(this));
 				control.MapPlatformCommand("paste", new Actions.Block.PasteFromClipboard(this));

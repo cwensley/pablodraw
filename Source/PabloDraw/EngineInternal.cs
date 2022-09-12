@@ -189,7 +189,7 @@ namespace PabloDraw
 						break;
 					case "osx":
 					case "mac":
-						Platform.Initialize(Platforms.Mac);
+						Platform.Initialize(Platforms.Mac64);
 						break;
 					case "auto":
 #if MAC

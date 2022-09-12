@@ -14,8 +14,9 @@
 
   <PropertyGroup Condition="$(BuildTarget) == 'Windows'">
     <TargetFramework>net6.0-windows</TargetFramework>
-    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+    <!-- <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers> -->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <!-- <RuntimeIdentifier>win-arm64</RuntimeIdentifier> -->
     <UseWindowsForms>True</UseWindowsForms>
     <!-- <PublishReadyToRun>True</PublishReadyToRun> -->
     <DefineConstants>WINDOWS</DefineConstants>
@@ -33,13 +34,13 @@
 
   <PropertyGroup Condition="$(BuildTarget) == 'Mac'">
     <TargetFramework>net6.0</TargetFramework>
-    <RuntimeIdentifiers>osx-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>osx-x64;osx-arm64</RuntimeIdentifiers>
     <DefineConstants>MAC</DefineConstants>
-    <TrimMode>Link</TrimMode>
-    <PublishTrimmed>True</PublishTrimmed>
   </PropertyGroup>
   <PropertyGroup Condition="$(BuildTarget) == 'Mac' and $(Configuration) == 'Release'">
     <EnableDmgBuild>True</EnableDmgBuild>
+    <TrimMode>Link</TrimMode>
+    <PublishTrimmed>True</PublishTrimmed>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -72,14 +73,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Eto.Forms" Version="2.6.0" />
-    <PackageReference Include="Eto.Platform.Gtk" Version="2.6.0" Condition="$(BuildTarget) == 'Linux'" />
-    <PackageReference Include="Eto.Platform.Mac64" Version="2.6.0" Condition="$(BuildTarget) == 'Mac'" />
-    <PackageReference Include="Eto.Platform.Windows" Version="2.6.0" Condition="$(BuildTarget) == 'Windows'" />
-    <!-- <PackageReference Include="Eto.Platform.Gtk2" Version="2.6.0" Condition="$(BuildTarget) == 'Linux'" /> -->
-    <!-- <PackageReference Include="Eto.Platform.Wpf" Version="2.6.0" Condition="$(BuildTarget) == 'Windows'" /> -->
     <PackageReference Include="Mono.Nat" Version="3.0.2" />
     <PackageReference Include="Lidgren.Network" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(EtoBasePath) == ''">
+    <PackageReference Include="Eto.Forms" Version="2.7.1" />
+    <PackageReference Include="Eto.Platform.Gtk" Version="2.7.1" Condition="$(BuildTarget) == 'Linux'" />
+    <PackageReference Include="Eto.Platform.Mac64" Version="2.7.1" Condition="$(BuildTarget) == 'Mac'" />
+    <PackageReference Include="Eto.Platform.Windows" Version="2.7.1" Condition="$(BuildTarget) == 'Windows'" />
+    <!-- <PackageReference Include="Eto.Platform.Gtk2" Version="2.7.1" Condition="$(BuildTarget) == 'Linux'" /> -->
+    <!-- <PackageReference Include="Eto.Platform.Wpf" Version="2.7.1" Condition="$(BuildTarget) == 'Windows'" /> -->
   </ItemGroup>
 
   <ItemGroup>
@@ -92,7 +96,6 @@
     <ProjectReference Include="$(EtoBasePath)src\Eto.WinForms\Eto.WinForms.csproj" Condition="$(BuildTarget) == 'Windows'" />
     <ProjectReference Include="$(EtoBasePath)src\Eto.Mac\Eto.Mac64.csproj" Condition="$(BuildTarget) == 'Mac'" />
     <ProjectReference Include="$(EtoBasePath)lib\monomac\src\MonoMac.csproj" Condition="$(BuildTarget) == 'Mac'" />
-    <PackageReference Update="Eto.*" ExcludeAssets="all" />
   </ItemGroup>
 
   <Import Project="$(EtoBasePath)\build\Common.Mac.targets" Condition="$(BuildTarget) == 'Mac' and $(EtoBasePath) != ''" />

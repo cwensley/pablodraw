@@ -25,7 +25,7 @@ namespace Pablo.Formats.Character.Actions.Block
 		public override bool Enabled
 		{
 			get { return base.Enabled && tool.DrawMode == DrawMode.Selecting; }
-			set { base.Enabled = value; }
+			set { }
 		}
 
 		protected override void OnExecuted(EventArgs e)
@@ -49,7 +49,9 @@ namespace Pablo.Formats.Character.Actions.Block
 			
 			// save as text
 			var ascii = new Types.Ascii(handler.Info);
-			cb.Text = ascii.SaveToText(canvas, handler.CurrentPage.Font.Encoding);
+			var text = ascii.SaveToText(canvas, handler.CurrentPage.Font.Encoding);
+			if (!string.IsNullOrEmpty(text))
+				cb.Text = text;
 			
 			
 			// save as ansi

@@ -81,6 +81,8 @@ namespace Pablo
 
 		public string Name { get; set; }
 
+		public virtual bool AllowKeyboardFallback => false;
+
 		public IClientSource Handler
 		{
 			get { return handler; }

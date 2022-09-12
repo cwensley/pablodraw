@@ -132,7 +132,7 @@ jobs:
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
 
       - id: get_release
-        uses: bruceadams/get-release@v1.2.0
+        uses: bruceadams/get-release@v1.2.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -140,6 +140,7 @@ jobs:
 
       - uses: softprops/action-gh-release@v1
         with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           files: |
             **/*.msi
             **/*.dmg

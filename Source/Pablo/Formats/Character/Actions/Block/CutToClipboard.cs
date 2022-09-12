@@ -28,7 +28,7 @@ namespace Pablo.Formats.Character.Actions.Block
 		public override bool Enabled
 		{
 			get { return base.Enabled && tool.DrawMode == DrawMode.Selecting; }
-			set { base.Enabled = value; }
+			set { }
 		}
 
 		public override int CommandID { get { return (int)NetCommands.CutToClipboard; } }

@@ -11,7 +11,9 @@ namespace Pablo.Formats.Character.Actions.Block
 	{
 		Selection tool;
 		public new CharacterHandler Handler { get { return base.Handler as CharacterHandler; } }
-		
+
+		public override bool AllowKeyboardFallback => true;
+
 		public const string ActionID = "character_BlockDelete";
 		
 		public Delete (Selection tool) : base(tool.Handler)
