@@ -102,7 +102,7 @@ namespace Pablo
 		{
 			get
 			{
-				if (viewerControl == null)
+				if (viewerControl == null && !IsCommandLine)
 				{
 					viewerControl = CreateViewerControl();
 					viewer = viewerControl as IViewer;
@@ -412,6 +412,8 @@ namespace Pablo
 		}
 
 		public abstract bool CanEdit { get; }
+		
+		public bool IsCommandLine { get; set; }
 
 		public abstract void GenerateRegion(Graphics graphics, Rectangle rectSource, Rectangle rectDest);
 

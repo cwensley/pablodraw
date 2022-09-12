@@ -97,6 +97,8 @@ namespace PabloDraw.CommandHandlers
 					sourceDoc.Info.SetOption(option.ID, val);
 				}
 			}
+			sourceHandler.IsCommandLine = true;
+
 			/**
 			var iters = 300;
 			var sw2 = new Stopwatch ();
