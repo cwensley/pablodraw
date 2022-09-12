@@ -361,21 +361,28 @@ namespace Pablo.Interface
 		{
 			if (File.Exists(SettingsFile))
 			{
-				var doc = new XmlDocument();
-				doc.Load(SettingsFile);
-				var head = (XmlElement)doc.SelectSingleNode("pablo");
-
-				Settings.ReadXml(head);
-
-				var elem = (XmlElement)head.SelectSingleNode("main");
-				if (elem != null)
+				try
 				{
-					var dir = elem.GetAttribute("path");
-					if (Directory.Exists(dir))
-						FileList.Initialize(dir);
-				}
+					var doc = new XmlDocument();
+					doc.Load(SettingsFile);
+					var head = (XmlElement)doc.SelectSingleNode("pablo");
 
-				head.ReadChildXml("main-window", new WindowStateSaver(this));
+					Settings.ReadXml(head);
+
+					var elem = (XmlElement)head.SelectSingleNode("main");
+					if (elem != null)
+					{
+						var dir = elem.GetAttribute("path");
+						if (Directory.Exists(dir))
+							FileList.Initialize(dir);
+					}
+
+					head.ReadChildXml("main-window", new WindowStateSaver(this));
+				}
+				catch (XmlException)
+				{
+					// ignore config errors.
+				}
 			}
 		}
 
