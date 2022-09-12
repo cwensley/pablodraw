@@ -35,7 +35,7 @@ namespace PabloDraw.Handlers.Pix
 			
 			try
 			{
-				while (true)
+				while (!fs.IsEOF())
 				{
 					b = br.ReadByte();
 					switch ((char)b)

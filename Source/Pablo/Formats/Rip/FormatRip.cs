@@ -57,7 +57,7 @@ namespace Pablo.Formats.Rip
 		  
 			try {
 				var args = new WaitEventArgs ();
-				while (true) {
+				while (!stream.IsEOF()) {
 					if (document.AnimateView) {
 						document.OnWait (args);
 						if (args.Exit)

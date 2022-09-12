@@ -498,7 +498,7 @@ namespace Pablo.Formats.Character.Types
 				{
 					var args = new WaitEventArgs();
 					byte curByte = br.ReadByte();
-					while (true && (!fs.CanSeek || fs.Position < fs.Length))
+					while (!fs.IsEOF())
 					{
 						if (onWait != null)
 							onWait(this, args);

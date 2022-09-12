@@ -69,7 +69,7 @@ namespace Pablo.Formats.Character.Types
 			try
 			{
 				WaitEventArgs args = new WaitEventArgs();
-				while (true)
+				while (!fs.IsEOF())
 				{
 					doc.OnWait(args);
 					if (args.Exit)

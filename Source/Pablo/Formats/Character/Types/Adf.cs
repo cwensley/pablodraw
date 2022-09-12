@@ -54,7 +54,7 @@ namespace Pablo.Formats.Character.Types
 				page.Font.Load (br);
 
 				WaitEventArgs args = new WaitEventArgs ();
-				while (true) {
+				while (!fs.IsEOF()) {
 					p.X = rClip.Left;
 					for (int x=0; x<80; x++) {
 						byte ch = br.ReadByte ();

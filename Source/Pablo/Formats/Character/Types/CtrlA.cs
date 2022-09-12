@@ -167,7 +167,7 @@ namespace Pablo.Formats.Character.Types
 				p = rClip.Location;
 				attr = CanvasElement.Default.Attribute;
 				try {
-					while (true) {
+					while (!stream.IsEOF()) {
 						var b = br.ReadByte ();
 					
 						if (b == 1) {
