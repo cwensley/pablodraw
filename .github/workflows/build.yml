@@ -109,7 +109,7 @@ jobs:
           echo "BuildParameters=${{ env.BuildParameters }} /p:EnableNotarization=True" >> $GITHUB_ENV
 
       - name: Build PabloDraw
-        run: dotnet build Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-mac.binlog
+        run: sudo dotnet build Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-mac.binlog
 
       - uses: actions/upload-artifact@v2
         with:

@@ -78,7 +78,7 @@ mO'sOul is © Desoto/Mo'Soul";
 						VerticalAlignment = VerticalAlignment.Center
 
 					},
-					BackgroundColor = Colors.White
+					BackgroundColor = SystemColors.ControlBackground
 				}
 			});
 
