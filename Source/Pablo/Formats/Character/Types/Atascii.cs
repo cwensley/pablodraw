@@ -52,7 +52,7 @@ namespace Pablo.Formats.Character.Types
 			{
 
 				var br = new BinaryReader(stream);
-				while (true)
+				while (!stream.IsEOF())
 				{
 					byte b = br.ReadByte();
 					switch (b)
@@ -154,7 +154,7 @@ namespace Pablo.Formats.Character.Types
 				var ce = new CanvasElement(32, 7);
 				p = rClip.Location;
 				var args = new WaitEventArgs();
-				while (true)
+				while (!fs.IsEOF())
 				{
 					document.OnWait(args);
 					if (args.Exit)

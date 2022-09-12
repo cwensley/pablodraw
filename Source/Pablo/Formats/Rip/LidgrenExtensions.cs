@@ -34,7 +34,7 @@ namespace Pablo.Formats.Rip
 			var stream = message.ReadStream ();
 			var reader = new BinaryReader (stream);
 			try {
-				while (true) {
+				while (!stream.IsEOF()) {
 					char b = (char)reader.ReadRipByte ();
 					if (b == '|') {
 					

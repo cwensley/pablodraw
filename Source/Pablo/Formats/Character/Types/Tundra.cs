@@ -186,7 +186,7 @@ namespace Pablo.Formats.Character.Types
 			{
 				var br = new BinaryReader(stream);
 				var attr = new Attribute(0, 0);
-				while (true)
+				while (!stream.IsEOF())
 				{
 					var command = br.ReadByte();
 					

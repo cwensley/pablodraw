@@ -49,7 +49,7 @@ namespace Pablo.Formats.Character.Types
 				var bs = new BufferedStream (stream, 1024);
 				var br = new BinaryReader (bs);
 				int read = 0;
-				while (read < 2048 && true) {
+				while (read < 2048 && !stream.IsEOF()) {
 					byte curByte = br.ReadByte ();
 					read++;
 					if (curByte == 27) {

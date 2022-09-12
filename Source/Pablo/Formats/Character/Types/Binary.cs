@@ -111,7 +111,7 @@ namespace Pablo.Formats.Character.Types
 				CanvasElement ce = new CanvasElement(32, 7);
 				p = rClip.Location;
 				WaitEventArgs args = new WaitEventArgs();
-				while (true)
+				while (!fs.IsEOF())
 				{
 					doc.OnWait(args);
 					if (args.Exit)
