@@ -102,7 +102,7 @@ namespace Pablo
 		public virtual void Load(string fileName, Format format, Handler handler)
 		{
 			this.FileName = fileName;
-			var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read); // can't dispose here if we load in background!
+			var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read); // can't dispose here if we load in background!
 			Load(stream, format, handler);
 		}
 

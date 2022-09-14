@@ -47,12 +47,12 @@ namespace Pablo.Formats.Rip
 			 */
 			if (document.AnimateView && Application.Instance != null) {
 				document.BGI.DelayDraw = true; // for faster animation
-				Application.Instance.Invoke (delegate {
-					//lastEnableZoom = handler.EnableZoom;
-#if DESKTOP
-					//handler.EnableZoom = false;
-#endif
-				});
+// 				Application.Instance.Invoke (delegate {
+// 					//lastEnableZoom = handler.EnableZoom;
+// #if DESKTOP
+// 					//handler.EnableZoom = false;
+// #endif
+// 				});
 			}			
 		  
 			try {

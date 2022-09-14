@@ -111,8 +111,9 @@ namespace PabloDraw.CommandHandlers
 			sw2.Stop ();
 			args.Writer.WriteLine ("Convertion rate: {0}, total seconds: {1}", iters / sw2.Elapsed.TotalSeconds, sw2.Elapsed.TotalSeconds);
 			/**/
-			if (!Directory.Exists(Path.GetDirectoryName(outFile)))
-				Directory.CreateDirectory(Path.GetDirectoryName(outFile));
+			var outDir = Path.GetDirectoryName(outFile);
+			if (!string.IsNullOrEmpty(outDir) && !Directory.Exists(outDir))
+				Directory.CreateDirectory(outDir);
 
 			using (var destinationStream = new FileStream(outFile, FileMode.Create, FileAccess.Write))
 			{

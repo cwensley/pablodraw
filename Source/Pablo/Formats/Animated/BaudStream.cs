@@ -26,21 +26,12 @@ namespace Pablo.Formats.Animated
 				TickWait = (value > 0) ? (long)(((TimeSpan.TicksPerSecond * 1.2) / (value / 8))) : 0;
 			}
 		}
-		
-		public override bool CanRead
-		{
-			get { return true; }
-		}
 
-		public override bool CanSeek
-		{
-			get { return false; }
-		}
+		public override bool CanRead => stream.CanRead;
 
-		public override bool CanWrite
-		{
-			get { return false; }
-		}
+		public override bool CanSeek => stream.CanSeek;
+
+		public override bool CanWrite => false;
 		
 		public long TickWait
 		{
