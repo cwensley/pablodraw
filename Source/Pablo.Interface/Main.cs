@@ -805,7 +805,8 @@ namespace Pablo.Interface
 				/**
 				var bufferedStream = new MemoryStream();
 				stream.WriteTo(bufferedStream);
-				stream.Close ();
+				stream.Close();
+				bufferedStream.Position = 0;
 				/**/
 				var bufferedStream = new BufferedStream(stream, 20 * 1024);
 
@@ -840,7 +841,7 @@ namespace Pablo.Interface
 		{
 			if (loadingStream != null)
 			{
-				// loadingStream.Dispose();
+				loadingStream.Dispose();
 				loadingStream = null;
 				PabloApplication.Instance.Invoke(delegate
 				{
@@ -869,10 +870,9 @@ namespace Pablo.Interface
 
 			if (File.Exists(fileName))
 			{
-				using (var stream = File.OpenRead(fileName))
-				{
-					return LoadFile(fileName, stream, null, editMode ?? EditMode, setFileList, hasSavePermissions);
-				}
+				// do not dispose, we may need to load in the background for animated documents.
+				var stream = File.OpenRead(fileName);
+				return LoadFile(fileName, stream, null, editMode ?? EditMode, setFileList, hasSavePermissions);
 			}
 			return false;
 		}

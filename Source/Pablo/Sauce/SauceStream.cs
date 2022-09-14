@@ -22,20 +22,11 @@ namespace Pablo.Sauce
 			}
 			else Sauce = null;
 		}
-		public override bool CanRead
-		{
-			get { return true; }
-		}
+		public override bool CanRead => stream.CanRead;
 
-		public override bool CanSeek
-		{
-			get { return true; }
-		}
+		public override bool CanSeek => stream.CanSeek;
 
-		public override bool CanWrite
-		{
-			get { return false; }
-		}
+		public override bool CanWrite => false;
 
 		public override void Flush() { stream.Flush(); }
 

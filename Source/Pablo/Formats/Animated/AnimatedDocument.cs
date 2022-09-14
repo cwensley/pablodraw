@@ -151,8 +151,8 @@ namespace Pablo.Formats.Animated
 							{
 								if (bs != null)
 									bs.Close();
-								if (stream != null)
-									stream.Close();
+								// if (stream != null)
+								// 	stream.Close();
 								bs = null;
 								stream = null;
 							}
