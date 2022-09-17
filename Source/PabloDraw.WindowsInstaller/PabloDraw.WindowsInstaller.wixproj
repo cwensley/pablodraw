@@ -8,7 +8,7 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>38a42f6d-a417-45b0-8ec8-a700f31cbe26</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>PabloDraw</OutputName>
+    <OutputName>PabloDraw-Windows-x64</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>

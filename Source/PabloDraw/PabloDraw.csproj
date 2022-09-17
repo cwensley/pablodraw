@@ -41,6 +41,9 @@
     <EnableDmgBuild>True</EnableDmgBuild>
     <TrimMode>Link</TrimMode>
     <PublishTrimmed>True</PublishTrimmed>
+    <DmgName>PabloDraw-Mac</DmgName>
+    <DmgVolumeName>PabloDraw</DmgVolumeName>
+    <DmgOutputPath>$(PublishDir)</DmgOutputPath> <!-- Eto will use this by default if specified in 2.7.2 -->
   </PropertyGroup>
 
   <PropertyGroup>
@@ -73,7 +76,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mono.Nat" Version="3.0.2" />
+    <PackageReference Include="Mono.Nat" Version="3.0.3" />
     <PackageReference Include="Lidgren.Network" Version="1.0.2" />
   </ItemGroup>
 
@@ -100,5 +103,9 @@
 
   <Import Project="$(EtoBasePath)\build\Common.Mac.targets" Condition="$(BuildTarget) == 'Mac' and $(EtoBasePath) != ''" />
 
+  <Target Name="_CreateDmgOutputPath" BeforeTargets="MacCreateDmg" Condition="$(DmgOutputPath) != ''">
+    <!-- Should go into Eto 2.7.2 -->
+    <MakeDir Directories="$(DmgOutputPath)" />
+  </Target>
 
 </Project>
