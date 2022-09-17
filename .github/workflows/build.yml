@@ -64,12 +64,12 @@ jobs:
         run: dotnet publish Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-linux.binlog
         
       - name: Create gzip
-        run: tar -czvf pablodraw.tar.gz -C artifacts/publish/${{ env.BuildConfiguration }}/Linux .
+        run: tar -czvf pablodraw-linux-x64.tar.gz -C artifacts/publish/${{ env.BuildConfiguration }}/Linux .
 
       - uses: actions/upload-artifact@v2
         with:
           name: pablodraw-linux-binaries-x64
-          path: pablodraw.tar.gz
+          path: pablodraw-linux-x64.tar.gz
 
       - name: Upload log files
         if: ${{ failure() }}
@@ -114,7 +114,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: pablodraw-mac
-          path: artifacts/bin/PabloDraw/${{ env.BuildConfiguration }}/net6.0/PabloDraw.dmg
+          path: artifacts/publish/${{ env.BuildConfiguration }}/Mac/*.dmg
 
       - name: Upload log files
         if: ${{ failure() }}

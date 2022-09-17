@@ -106,7 +106,18 @@
                 "clear": true
             },
             "problemMatcher": "$msCompile"
-        }
+        },
+		{
+			"label": "check-outdated-dependencies",
+			"type": "shell",
+			"command": "dotnet tool restore && dotnet outdated \"${workspaceFolder}/Source/Pablo Desktop.sln\" ${input:outdated}",
+			"problemMatcher": [],
+			"presentation": {
+				"clear": true,
+				"focus": true
+			}
+		}
+        
     ],
     "inputs": [
         {
@@ -117,6 +128,11 @@
                 "command": "\"%ProgramFiles(x86)%\\Microsoft Visual Studio\\Installer\\vswhere.exe\" -version \"[16,18)\" -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\\**\\Bin\\MSBuild.exe",
                 "useFirstResult": "true"
             }
-        }        
+        },
+		{
+			"type": "promptString",
+			"id": "outdated",
+			"description": "Options for dotnet outdated. --help to see options, -u -inc <MyPackage> to update a single package, or leave blank to check for updates."
+		}
     ]
 }
