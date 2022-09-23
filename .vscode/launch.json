@@ -13,7 +13,7 @@
                 "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net6.0/PabloDraw.app/Contents/MacOS/PabloDraw",
             },
             "windows": {
-                "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net6.0-windows/PabloDraw.dll",
+                "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net6.0-windows/win-x64/PabloDraw.dll",
             },
             "linux": {
                 "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net6.0/linux-x64/PabloDraw.dll",
