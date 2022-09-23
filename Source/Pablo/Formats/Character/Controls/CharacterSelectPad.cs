@@ -62,7 +62,7 @@ namespace Pablo.Formats.Character.Controls
 				ReadOnly = true,
 				Bordered = true
 			};
-			preview.MouseDown += (sender, e) =>
+			preview.MouseUp += (sender, e) =>
 			{
 				SelectCharacter();
 				e.Handled = true;
