@@ -23,7 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="$(EtoBasePath)src\Eto\Eto.csproj" Condition="$(EtoBasePath) != ''" />
     <PackageReference Include="Eto.Forms" Version="2.7.1" Condition="$(EtoBasePath) == ''" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="sharpcompress" Version="0.32.2" />
     <PackageReference Include="Mono.Nat" Version="3.0.3" />
     <PackageReference Include="Lidgren.Network" Version="1.0.2" />
