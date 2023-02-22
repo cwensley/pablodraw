@@ -3,9 +3,9 @@ using System;
 
 namespace Pablo.Formats.Image
 {
-	public class Handler : Pablo.Handler
+	public class ImageHandler : Pablo.Handler
 	{
-		public Handler(ImageDocument doc) : base(doc)
+		public ImageHandler(ImageDocument doc) : base(doc)
 		{
 		}
 		

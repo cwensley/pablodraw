@@ -72,7 +72,7 @@ namespace Pablo.Sauce.Types.BaseFileType
 
 		protected virtual void CreateControls()
 		{
-			Layout = new DynamicLayout();
+			Layout = new DynamicLayout { DefaultSpacing = new Eto.Drawing.Size(4, 4) };
 			if (DataType.HasFileType && fileTypes.Count > 1)
 			{
 				Layout.BeginHorizontal();

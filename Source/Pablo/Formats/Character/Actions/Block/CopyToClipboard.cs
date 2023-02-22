@@ -44,7 +44,7 @@ namespace Pablo.Formats.Character.Actions.Block
 			
 			
 			// save to clipboard
-			var cb = new Clipboard();
+			using var cb = new Clipboard();
 			cb.Clear (); // clear out contents of clipboard
 			
 			// save as text

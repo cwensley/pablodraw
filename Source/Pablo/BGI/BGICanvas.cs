@@ -1813,15 +1813,15 @@ namespace Pablo.BGI
 				return;
 			lock (bitmapLock)
 			{
-				var innerRight = rect.InnerRight;
-				var innerBottom = rect.InnerBottom;
+				var right = rect.Right;
+				var bottom = rect.Bottom;
 				int ystart = rect.Top * bd.ScanWidth + rect.Left;
 				if (fillStyle == FillStyle.Solid)
 				{
-					for (int y = rect.Top; y <= innerBottom; y++)
+					for (int y = rect.Top; y < bottom; y++)
 					{
 						int xstart = ystart;
-						for (int x = rect.Left; x <= innerRight; x++)
+						for (int x = rect.Left; x < right; x++)
 						{
 							bits[xstart] = fillcolor;
 							xstart++;
@@ -1833,12 +1833,12 @@ namespace Pablo.BGI
 				{
 					byte[] pattern = fillStyles[(int)fillStyle];
 					int ypat = rect.Top % 8;
-					for (int y = rect.Top; y <= innerBottom; y++)
+					for (int y = rect.Top; y < bottom; y++)
 					{
 						int xstart = ystart;
 						byte xpatmask = (byte)(128 >> (rect.Left % 8));
 						byte pat = pattern[ypat];
-						for (int x = rect.Left; x <= innerRight; x++)
+						for (int x = rect.Left; x < right; x++)
 						{
 							bits[xstart] = ((pat & xpatmask) != 0) ? fillcolor : bkcolor;
 							xstart++;

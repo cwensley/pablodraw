@@ -9,45 +9,61 @@ namespace Pablo.Formats.Character.Tools
 {
 	public class LineTool : CenterAspectTool, ICharacterSelectSource
 	{
-		ScanLines lines = new ScanLines();
-		
-		public Character CurrentCharacter { get; set; }
-		
+		ScanLines _lines = new ScanLines();
+		Character _currentCharacter;
+
+		public Character CurrentCharacter
+		{
+			get => _currentCharacter;
+			set
+			{
+				_currentCharacter = value;
+				
+			}
+		}
+
 		bool shouldApplyCharacter;
 		public bool ApplyCharacter { get; set; }
-		
+
 		bool shouldApplyColour;
 		public bool ApplyColour { get; set; }
-		
-		public override Eto.Drawing.Image Image {
+
+		public override Eto.Drawing.Image Image
+		{
 			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Line.png"); }
 		}
 
-		public override Cursor MouseCursor {
-			get { return new Cursor (CursorType.Crosshair); }
+		public override Cursor MouseCursor
+		{
+			get { return new Cursor(CursorType.Crosshair); }
 		}
-		
-		public override string Description {
+
+		public override string Description
+		{
 			get { return "Line - Draw a line"; }
 		}
-		
-		public override Keys Accelerator {
-			get {
+
+		public override Keys Accelerator
+		{
+			get
+			{
 				return Keys.L | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
 			}
 		}
-		
+
 		public LineTool()
 		{
-			this.ApplyColour = true;
-			this.ApplyCharacter = true;
+			ApplyColour = true;
+			ApplyCharacter = true;
+			HalfMode = true;
 			CurrentCharacter = 219;
 		}
-		
-		protected override bool Apply ()
+
+		protected override bool Apply()
 		{
 			var rect = CurrentRectangle;
-			if (rect != null) {
+			if (rect != null)
+			{
 				// execute the command!
 				var action = new Actions.Drawing.DrawLine(Handler);
 				action.Start = rect.Value.Location;
@@ -55,57 +71,92 @@ namespace Pablo.Formats.Character.Tools
 				action.Element = new CanvasElement(CurrentCharacter, Handler.DrawAttribute);
 				action.ApplyColour = shouldApplyColour;
 				action.ApplyCharacter = shouldApplyCharacter;
+				action.HalfMode = HalfMode;
 				action.Execute();
 				return true;
 			}
 			return false;
 		}
-		
-		public override void Cancel ()
+
+		public override void Cancel()
 		{
 			var rect = CurrentRectangle;
-			base.Cancel ();
+			base.Cancel();
 			if (rect != null)
-				Handler.InvalidateCharacterRegion (rect.Value, false, false);
+				Handler.InvalidateCharacterRegion(rect.Value, false, false, HalfMode);
 		}
-		
-		protected override void Finish ()
+
+		protected override void Finish()
 		{
 			var rect = CurrentRectangle;
-			base.Finish ();
+			base.Finish();
 			if (rect != null)
-				Handler.InvalidateCharacterRegion (rect.Value, false, false);
+				Handler.InvalidateCharacterRegion(rect.Value, false, false, HalfMode);
 		}
-		
-		protected override void UpdateWithLocation (Rectangle rect, Keys modifiers, Point end)
+
+		protected override void UpdateWithLocation(Rectangle rect, Keys modifiers, Point end)
 		{
 			shouldApplyCharacter = ApplyCharacter; //modifiers.HasFlag (Key.Shift | Application.Instance.CommonModifier) ^ ApplyCharacter;
-			//applyInverted = modifiers.HasFlag (Key.Shift | Application.Instance.CommonModifier) ^ Inverted;
+												   //applyInverted = modifiers.HasFlag (Key.Shift | Application.Instance.CommonModifier) ^ Inverted;
 			shouldApplyColour = ApplyColour; //modifiers.HasFlag (Key.Alt | Application.Instance.CommonModifier) ^ ApplyColour;
 
 			var oldRect = CurrentRectangle;
-			lines.Clear ();
-			lines.AddLine (rect.Location, rect.EndLocation);
-			
+			_lines.Clear();
+			_lines.AddLine(rect.Location, rect.EndLocation);
+
 			if (oldRect != null)
-				rect = Rectangle.Union (rect, oldRect.Value);
+				rect = Rectangle.Union(rect, oldRect.Value);
 			UpdatingCursor = true;
+			if (HalfMode)
+				end.Y = end.Y /= 2;
 			Handler.CursorPosition = end;
 			UpdatingCursor = false;
-			Handler.InvalidateCharacterRegion (rect, false, false);
+			Handler.InvalidateCharacterRegion(rect, false, false, HalfMode);
 		}
-		
-		public override CanvasElement? GetElement (Point point, Canvas canvas)
+
+		public override CanvasElement? GetElement(Point point, Canvas canvas)
 		{
 			var rect = CurrentRectangle;
-			if (rect != null) {
-				if (lines.PointIsInside(point)) {
-					var ce = canvas[point];
-					if (shouldApplyColour)
-						ce.Attribute = Handler.DrawAttribute;
-					if (shouldApplyCharacter)
-						ce.Character = CurrentCharacter;
-					return ce;
+			if (rect != null)
+			{
+				if (HalfMode)
+				{
+					var halfPoint1 = point;
+					halfPoint1.Y *= 2;
+					var halfPoint2 = halfPoint1;
+					halfPoint2.Y += 1;
+					var halfpoint1Inside = _lines.PointIsInside(halfPoint1);
+					var halfpoint2Inside = _lines.PointIsInside(halfPoint2);
+					if (halfpoint1Inside && halfpoint2Inside)
+					{
+						var ce = canvas[point];
+						ce.Character = 219;
+						ce.Foreground = Handler.DrawAttribute.Foreground;
+						return ce;
+					}
+					if (halfpoint1Inside)
+					{
+						var ce = canvas[point];
+						return MemoryCanvas.UpdateHalfChar(Handler.DrawAttribute.Foreground, true, ce);
+					}
+					if (halfpoint2Inside)
+					{
+						var ce = canvas[point];
+						return MemoryCanvas.UpdateHalfChar(Handler.DrawAttribute.Foreground, false, ce);
+					}
+				}
+				else
+				{
+
+					if (_lines.PointIsInside(point))
+					{
+						var ce = canvas[point];
+						if (shouldApplyColour)
+							ce.Attribute = Handler.DrawAttribute;
+						if (shouldApplyCharacter)
+							ce.Character = CurrentCharacter;
+						return ce;
+					}
 				}
 			}
 			/*
@@ -114,12 +165,13 @@ namespace Pablo.Formats.Character.Tools
 				ce.Attribute = new Attribute (1, 2);
 				return ce;
 			}*/
-			return canvas [point];
+			return canvas[point];
 		}
-		
-		Control ApplyColourButton ()
+
+		Control ApplyColourButton()
 		{
-			var control = new ImageButton{
+			var control = new ImageButton
+			{
 				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.ApplyColour.png"),
 				Toggle = true,
 				Pressed = ApplyColour,
@@ -127,16 +179,18 @@ namespace Pablo.Formats.Character.Tools
 				ToolTip = "Draw with color"
 #endif
 			};
-			
-			control.Click += delegate {
+
+			control.Click += delegate
+			{
 				ApplyColour = control.Pressed;
 			};
 			return control;
 		}
-		
-		Control ApplyCharacterButton ()
+
+		Control ApplyCharacterButton()
 		{
-			var control = new ImageButton{
+			var control = new ImageButton
+			{
 				Image = ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Text-Horizontal.png"),
 				Toggle = true,
 				Pressed = ApplyCharacter,
@@ -144,28 +198,29 @@ namespace Pablo.Formats.Character.Tools
 				ToolTip = "Draw with character"
 #endif
 			};
-			
-			control.Click += delegate {
+
+			control.Click += delegate
+			{
 				ApplyCharacter = control.Pressed;
 			};
 			return control;
 		}
-	
-		public override Control GeneratePad ()
+
+		public override Control GeneratePad()
 		{
-			var layout = new DynamicLayout { Padding = Padding.Empty };
-			
-			layout.Add (Separator ());
-			layout.Add (base.GeneratePad ());
-			layout.BeginVertical (Padding.Empty, Eto.Drawing.Size.Empty);
-			layout.AddRow (ApplyCharacterButton (), ApplyColourButton ());
-			layout.EndVertical ();
-			
+			var layout = new DynamicLayout { Padding = Padding.Empty, Spacing = new Size(1, 1) };
+
+			layout.Add(base.GeneratePad());
+			layout.BeginVertical(Padding.Empty, new Size(1, 1));
+			layout.AddRow(ApplyCharacterButton(), ApplyColourButton());
+			layout.AddRow(HalfModeButton());
+			layout.EndVertical();
+
 			//layout.Add (new Controls.SizePad (this));
-			layout.Add (new CharacterSelectPad (this));
+			layout.Add(new CharacterSelectPad(this));
 			return layout;
 		}
-		
+
 	}
 }
 

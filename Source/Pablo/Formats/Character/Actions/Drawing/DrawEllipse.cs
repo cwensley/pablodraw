@@ -18,6 +18,8 @@ namespace Pablo.Formats.Character.Actions.Drawing
 		
 		public bool ApplyCharacter { get; set; }
 		
+		public bool HalfMode { get; set; }
+
 		public bool Filled { get; set; }
 		
 		public new CharacterHandler Handler { get { return base.Handler as CharacterHandler; } }
@@ -37,32 +39,35 @@ namespace Pablo.Formats.Character.Actions.Drawing
 		
 		protected override void Execute (CommandExecuteArgs args)
 		{
-			Do (Handler.CursorPosition, Rectangle, Element, ApplyColour, ApplyCharacter, Filled);
+			Do (Handler.CursorPosition, Rectangle, Element, ApplyColour, ApplyCharacter, Filled, HalfMode);
 		}
 		
-		public void Do (Point? cursorPosition, Rectangle rect, CanvasElement element, bool applyColour, bool applyCharacter, bool filled)
+		public void Do (Point? cursorPosition, Rectangle rect, CanvasElement element, bool applyColour, bool applyCharacter, bool filled, bool halfMode)
 		{
 			var canvas = Handler.CurrentPage.Canvas;
-			Handler.Undo.Save (cursorPosition, cursorPosition, rect);
+			Handler.Undo.Save (cursorPosition, cursorPosition, halfMode, rect);
 			
 			var lines = new ScanLines ();
 			lines.AddEllipse (rect);
-			
-			ScanLinesDrawDelegate draw = (linerect) => {
-					if (applyColour && applyCharacter)
-						canvas.Fill (linerect, element);
-					else if (applyColour)
-						canvas.Fill (linerect, element.Attribute);
-					else if (applyCharacter)
-						canvas.Fill (linerect, element.Character);
-				};
+
+			void Draw(Rectangle linerect)
+			{
+				if (halfMode)
+					canvas.FillHalfBlocks(linerect, element.Foreground);
+				else if (applyColour && applyCharacter)
+					canvas.Fill(linerect, element);
+				else if (applyColour)
+					canvas.Fill(linerect, element.Attribute);
+				else if (applyCharacter)
+					canvas.Fill(linerect, element.Character);
+			}
 			
 			if (filled)
-				lines.Fill (draw);
+				lines.Fill (Draw);
 			else
-				lines.Outline (draw);
-			
-			Handler.InvalidateCharacterRegion (rect, true, false);
+				lines.Outline (Draw);
+
+			Handler.InvalidateCharacterRegion(rect, true, false, halfMode);
 			Handler.Document.IsModified = true;
 		}
 		
@@ -72,6 +77,7 @@ namespace Pablo.Formats.Character.Actions.Drawing
 			args.Message.Write (Rectangle);
 			args.Message.Write (ApplyColour);
 			args.Message.Write (ApplyCharacter);
+			args.Message.Write (HalfMode);
 			args.Message.Write (Filled);
 			args.Message.Write (Element);
 			return true;
@@ -83,10 +89,11 @@ namespace Pablo.Formats.Character.Actions.Drawing
 			var rect = args.Message.ReadRectangle ();
 			var applyColour = args.Message.ReadBoolean ();
 			var applyCharacter = args.Message.ReadBoolean ();
+			var halfMode = args.Message.ReadBoolean();
 			var filled = args.Message.ReadBoolean ();
 			var element = args.Message.ReadCanvasElement ();
 			args.Invoke (delegate {
-				Do (null, rect, element, applyColour, applyCharacter, filled);
+				Do (null, rect, element, applyColour, applyCharacter, filled, halfMode);
 			});
 			
 		}

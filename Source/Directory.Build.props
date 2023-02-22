@@ -14,7 +14,8 @@
     <BasePath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))</BasePath>
     <ArtifactsDir>$(BasePath)artifacts\</ArtifactsDir>
 
-    <DebugType>embedded</DebugType>
+    <!-- <DebugType>embedded</DebugType> -->
+    <!-- <DebugType>portable</DebugType> -->
     <NoWarn>NU1701</NoWarn>
     
     <BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == ''">$(ArtifactsDir)obj\$(BuildTarget)\$(MSBuildProjectName)\</BaseIntermediateOutputPath>

@@ -1,4 +1,6 @@
 ﻿using Eto.Drawing;
+using Pablo.Formats.Character;
+using Pablo.Formats.Image;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +11,14 @@ namespace Pablo
 {
 	public static class ImageCache
 	{
-		static Dictionary<string, Image> cache = new Dictionary<string, Image>();
+		static Dictionary<string, object> cache = new Dictionary<string, object>();
 
 		public static Icon IconFromResource(string resource, Assembly assembly = null)
 		{
 			assembly = assembly ?? Assembly.GetCallingAssembly();
-			Image img;
-			if (cache.TryGetValue(resource, out img))
-				return (Icon)img;
-			var icon = Icon.FromResource(resource, assembly);
+			if (cache.TryGetValue(resource, out var val) && val is Icon icon)
+				return icon;
+			icon = Icon.FromResource(resource, assembly);
 			cache[resource] = icon;
 			return icon;
 		}
@@ -25,12 +26,26 @@ namespace Pablo
 		public static Bitmap BitmapFromResource(string resource, Assembly assembly = null)
 		{
 			assembly = assembly ?? Assembly.GetCallingAssembly();
-			Image img;
-			if (cache.TryGetValue(resource, out img))
-				return (Bitmap)img;
-			var bitmap = Bitmap.FromResource(resource, assembly);
+			if (cache.TryGetValue(resource, out var val) && val is Bitmap bitmap)
+				return bitmap;
+			bitmap = Bitmap.FromResource(resource, assembly);
 			cache[resource] = bitmap;
 			return bitmap;
+		}
+		
+		public static CharacterDocument CharacterFromResource(string resource, Assembly assembly = null)
+		{
+			assembly = assembly ?? Assembly.GetCallingAssembly();
+			if (cache.TryGetValue(resource, out var val) && val is CharacterDocument doc)
+				return doc;
+
+			var stream = assembly.GetManifestResourceStream(resource);
+
+			var format = DocumentInfoCollection.Default.FindFormat(resource);
+			doc = new CharacterDocument(format.Info);
+			doc.Load(stream, format, null);
+			cache[resource] = doc;
+			return doc;
 		}
 	}
 }

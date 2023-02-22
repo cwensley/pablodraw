@@ -69,8 +69,8 @@ namespace Pablo.Formats.Character.Actions.Drawing
 			if (!rect.IsEmpty) {
 				Handler.Undo.Save (cursorPosition, cursorPosition, rect);
 				var pt = new Point ();
-				for (pt.Y = rect.Top; pt.Y <= rect.InnerBottom; pt.Y ++)
-					for (pt.X = rect.Left; pt.X <= rect.InnerRight; pt.X ++) {
+				for (pt.Y = rect.Top; pt.Y < rect.Bottom; pt.Y ++)
+					for (pt.X = rect.Left; pt.X < rect.Right; pt.X ++) {
 						DrawCharacter (canvas, pt, attribute, gradient, inverse, applyColour);
 					}
 				Handler.InvalidateCharacterRegion(rect, true, false);

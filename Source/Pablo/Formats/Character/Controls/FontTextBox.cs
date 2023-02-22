@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using Eto.Drawing;
 using Eto.Forms;
+using Pablo.Drawing;
 
 namespace Pablo.Formats.Character.Controls
 {
@@ -174,7 +175,7 @@ namespace Pablo.Formats.Character.Controls
 			var currentPal = palette ?? handler.CurrentPage.Palette;
 			if (Bordered)
 			{
-				e.Graphics.DrawInsetRectangle(Colors.Gray, Colors.White, new Rectangle(Size));
+				e.Graphics.DrawButtonOutline(new Rectangle(Size));
 				//drawPoint.X = Math.Max (2, drawPoint.X);
 				//drawPoint.Y = Math.Max (2, drawPoint.Y);
 				rect.Offset(-2, -2);

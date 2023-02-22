@@ -37,7 +37,8 @@ namespace Pablo.Formats.Character
 		ChangeFont,
 		Toggle9x,
 		ToggleIceMode,
-		ToggleDosAspect
+		ToggleDosAspect,
+		HalfFill
 	}
 }
 

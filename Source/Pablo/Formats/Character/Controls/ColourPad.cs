@@ -4,6 +4,7 @@ using Eto.Drawing;
 using Eto;
 using System.Collections.Generic;
 using Pablo.Controls;
+using Pablo.Drawing;
 
 namespace Pablo.Formats.Character.Controls
 {
@@ -29,13 +30,12 @@ namespace Pablo.Formats.Character.Controls
 		{
 			public abstract Color Color { get; set; }
 
-			protected override void OnPaint (PaintEventArgs pe)
+			protected override void OnPaint(PaintEventArgs pe)
 			{
-				base.OnPaint (pe);
-				var rect = new Rectangle (Point.Empty, this.Size);
-				pe.Graphics.DrawInsetRectangle (Colors.Gray, Colors.White, rect);
-				rect.Inflate (-1, -1);
-				pe.Graphics.FillRectangle (Color, rect);
+				base.OnPaint(pe);
+				var rect = new Rectangle(Size);
+				pe.Graphics.FillRectangle(Color, rect);
+				pe.Graphics.DrawButtonOutline(rect);
 			}
 		}
 		

@@ -9,7 +9,7 @@ on:
     branches: [main]
 
 env:
-  DotNetVersion: "6.0.x"
+  DotNetVersion: "7.0.x"
   BuildConfiguration: "Release"
   BuildParameters: "/clp:NoSummary /p:Configuration=Release /p:BuildVersion=${{ github.run_id }} /p:BuildBranch=${{ github.ref }}"
 

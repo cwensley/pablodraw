@@ -59,7 +59,7 @@ namespace Pablo.Formats.Rip.Controls
 			};
 			button.Paint += delegate(object sender, PaintEventArgs pe)
 			{
-				pe.Graphics.FillPolygon(Colors.Black, new PointF[] { new Point(4, 2), new Point(16, 5), new Point(4, 8) });
+				pe.Graphics.FillPolygon(SystemColors.ControlText, new PointF[] { new Point(4, 2), new Point(16, 5), new Point(4, 8) });
 			};
 			button.Click += delegate
 			{
@@ -89,7 +89,7 @@ namespace Pablo.Formats.Rip.Controls
 			{
 				var pt = new Point(4, button.Size.Height / 2 - (thickness / 2));
 				var size = new Size(button.Size.Width - 8, thickness);
-				pe.Graphics.FillRectangle(Colors.Black, new Rectangle(pt, size));
+				pe.Graphics.FillRectangle(SystemColors.ControlText, new Rectangle(pt, size));
 			};
 
 			button.Click += delegate
@@ -126,7 +126,7 @@ namespace Pablo.Formats.Rip.Controls
 				for (pt.X = 4; pt.X < button.Size.Width - 4; pt.X++)
 				{
 					if (bits[i++ % bits.Length])
-						pe.Graphics.FillRectangle(Colors.Black, new Rectangle(pt, size));
+						pe.Graphics.FillRectangle(SystemColors.ControlText, new Rectangle(pt, size));
 				}
 			};
 

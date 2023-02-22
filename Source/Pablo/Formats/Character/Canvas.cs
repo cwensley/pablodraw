@@ -93,8 +93,8 @@ namespace Pablo.Formats.Character
 		{
 			if (rect.IsEmpty)
 				yield break;
-			for (int y = rect.Top; y <= rect.InnerBottom; y++)
-				for (int x = rect.Left; x <= rect.InnerRight; x++)
+			for (int y = rect.Top; y < rect.Bottom; y++)
+				for (int x = rect.Left; x < rect.Right; x++)
 				{
 					yield return this[x, y];
 				}
@@ -109,6 +109,10 @@ namespace Pablo.Formats.Character
 		protected abstract void SetLine(int x, int y, CanvasElement ce, int width);
 
 		protected abstract void SetLine(int x, int y, Attribute attrib, int width);
+		
+		protected abstract void SetHalfLine(int x, int y, int color, int width);
+		
+		protected abstract void ClearHalfLine(int x, int y, int backgroundColor, int width);
 
 		protected abstract void SetForeLine(int x, int y, int foreground, int width);
 
@@ -269,7 +273,7 @@ namespace Pablo.Formats.Character
 		public virtual void Fill(Rectangle rect, Character character)
 		{
 			rect.Restrict(new Rectangle(0, 0, Width, Height));
-			for (int y = rect.Top; y <= rect.InnerBottom; y++)
+			for (int y = rect.Top; y < rect.Bottom; y++)
 			{
 				SetLine(rect.Left, y, character, rect.Width);
 			}
@@ -284,7 +288,7 @@ namespace Pablo.Formats.Character
 		public void FillForeground(Rectangle rect, int foreground)
 		{
 			rect.Restrict(new Rectangle(0, 0, Width, Height));
-			for (int y = rect.Top; y <= rect.InnerBottom; y++)
+			for (int y = rect.Top; y < rect.Bottom; y++)
 			{
 				SetForeLine(rect.Left, y, foreground, rect.Width);
 			}
@@ -294,7 +298,7 @@ namespace Pablo.Formats.Character
 		public void FillBackground(Rectangle rect, int background)
 		{
 			rect.Restrict(new Rectangle(0, 0, Width, Height));
-			for (int y = rect.Top; y <= rect.InnerBottom; y++)
+			for (int y = rect.Top; y < rect.Bottom; y++)
 			{
 				SetBackLine(rect.Left, y, background, rect.Width);
 			}
@@ -313,7 +317,7 @@ namespace Pablo.Formats.Character
 		public virtual void Fill(Rectangle rect, CanvasElement ce)
 		{
 			rect.Restrict(new Rectangle(0, 0, Width, Height));
-			for (int y = rect.Top; y <= rect.InnerBottom; y++)
+			for (int y = rect.Top; y < rect.Bottom; y++)
 			{
 				SetLine(rect.Left, y, ce, rect.Width);
 			}
@@ -323,10 +327,44 @@ namespace Pablo.Formats.Character
 		public virtual void Fill(Rectangle rect, Attribute attrib)
 		{
 			rect.Restrict(new Rectangle(0, 0, Width, Height));
-			for (int y = rect.Top; y <= rect.InnerBottom; y++)
+			for (int y = rect.Top; y < rect.Bottom; y++)
 			{
 				SetLine(rect.Left, y, attrib, rect.Width);
 			}
+			OnUpdate(rect);
+		}
+
+		public virtual void FillHalfBlocks(Rectangle rect, int color)
+		{
+			rect.Restrict(new Rectangle(0, 0, Width, Height * 2));
+			
+			try
+			{
+				
+			for (int y = rect.Top; y < rect.Bottom; y++)
+			{
+				SetHalfLine(rect.Left, y, color, rect.Width);
+			}
+			}
+			catch
+			{
+				Console.WriteLine("blah");
+			}
+			
+			rect.Height /= 2;
+			OnUpdate(rect);
+		}
+
+		public virtual void ClearHalfBlocks(Rectangle rect, int backgroundColor)
+		{
+			rect.Restrict(new Rectangle(0, 0, Width, Height * 2));
+			
+			for (int y = rect.Top; y < rect.Bottom; y++)
+			{
+				ClearHalfLine(rect.Left, y, backgroundColor, rect.Width);
+			}
+			
+			rect.Height /= 2;
 			OnUpdate(rect);
 		}
 

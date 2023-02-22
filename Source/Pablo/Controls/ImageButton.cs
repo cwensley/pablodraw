@@ -22,6 +22,7 @@ namespace Pablo.Controls
 		
 		public ImageButton ()
 		{
+			Padding = new Padding(2);
 		}
 		
 		protected override void OnLoad (EventArgs e)
@@ -29,7 +30,7 @@ namespace Pablo.Controls
 			base.OnLoad (e);
 			if (Image != null) {
 				if (!sizeSet)
-					this.Size = Image.Size + 4;
+					this.Size = Image.Size + Padding.Size;
 			}
 		}
 		
@@ -66,7 +67,7 @@ namespace Pablo.Controls
 			base.OnPaint (pe);
 			
 			var image = this.Enabled ? Image : DisabledImage;
-			var size = image.Size.FitTo (this.Size - 2);
+			var size = image.Size.FitTo (this.Size - Padding.Size);
 			var xoffset = (this.Size.Width - size.Width) / 2;
 			var yoffset = (this.Size.Height - size.Height) / 2;
 			pe.Graphics.DrawImage (image, xoffset, yoffset, size.Width, size.Height);
