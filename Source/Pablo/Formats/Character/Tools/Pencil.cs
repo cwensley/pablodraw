@@ -1,10 +1,11 @@
 using System;
 using System.Reflection;
 using Eto.Drawing;
-using Pablo.Formats.Character.Actions.Block;
 using Pablo.Formats.Character.Controls;
 using Eto.Forms;
 using Pablo.Controls;
+using Pablo.Formats.Character.Actions.Drawing;
+using Pablo.Formats.Character.Actions.Block;
 
 namespace Pablo.Formats.Character.Tools
 {
@@ -43,33 +44,57 @@ namespace Pablo.Formats.Character.Tools
 		{
 			ApplyColour = true;
 			CurrentCharacter = 177; // shaded character
+			HalfMode = true;
 		}
 
 		protected override void Draw(Point location, Eto.Forms.MouseEventArgs e)
 		{
 			if (e.Buttons == MouseButtons.Primary)
 			{
-				var action = new Actions.Block.Fill(Handler);
-				var rect = new Rectangle(location, new Size(this.Size, this.Size));
-				var attribs = action.Attributes = new FillAttributes
-				{
-					Rectangle = rect,
-					Mode = Controls.FillMode.Character
-				};
-				
 				var inverted = e.Modifiers.HasFlag(Keys.Shift) ^ Inverted;
-				attribs.Character = new Character((inverted) ? (Character)32 : CurrentCharacter);
-				
-				if (e.Modifiers.HasFlag(Keys.Alt) ^ ApplyColour)
+
+				if (HalfMode)
 				{
-					attribs.Mode |= Controls.FillMode.Attribute;
-					attribs.Attribute = Handler.DrawAttribute;
+					// half mode!
+					var action = new HalfFill(Handler);
+					var rect = new Rectangle(location, new Size(Size, Size));
+					// Console.WriteLine($"Location: {location}");
+					action.Attributes = new HalfFillAttributes
+					{
+						HalfRectangle = rect,
+						Color = Handler.DrawAttribute,
+						Invert = inverted
+					};
+
+					action.Execute();
+					
+					var middle = (Size - 1) / 2;
+				
+					UpdateCursorPosition(new Point(location.X + middle, location.Y + middle), rect);
 				}
-				action.Execute();
+				else
+				{
+					var action = new Fill(Handler);
+					var rect = new Rectangle(location, new Size(this.Size, this.Size));
+					var attribs = action.Attributes = new FillAttributes
+					{
+						Rectangle = rect,
+						Mode = Controls.FillMode.Character
+					};
+
+					attribs.Character = new Character((inverted) ? (Character)32 : CurrentCharacter);
+
+					if (e.Modifiers.HasFlag(Keys.Alt) ^ ApplyColour)
+					{
+						attribs.Mode |= Controls.FillMode.Attribute;
+						attribs.Attribute = Handler.DrawAttribute;
+					}
+					action.Execute();
+					
+					var middle = (Size - 1) / 2;
 				
-				var middle = (Size - 1) / 2;
-				
-				UpdateCursorPosition(new Point(location.X + middle, location.Y + middle), rect);
+					UpdateCursorPosition(new Point(location.X + middle, location.Y + middle), rect);
+				}
 			}
 		}
 
@@ -115,9 +140,9 @@ namespace Pablo.Formats.Character.Tools
 		{
 			var layout = new DynamicLayout { Padding = Padding.Empty };
 			
-			layout.Add(Separator());
-			layout.BeginVertical(Padding.Empty, Eto.Drawing.Size.Empty);
+			layout.BeginVertical(Padding.Empty, new Size(1, 1));
 			layout.AddRow(InvertButton(), ColourButton());
+			layout.AddRow(HalfModeButton());
 			layout.EndVertical();
 			
 			layout.Add(base.GeneratePad());

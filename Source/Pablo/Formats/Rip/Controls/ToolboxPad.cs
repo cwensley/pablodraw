@@ -39,7 +39,7 @@ namespace Pablo.Formats.Rip.Controls
 					ToolTip = tool.Description,
 #endif
 					Tag = tool, 
-					Size = new Size(20, 18),
+					Size = new Size(20, 20),
 					Pressed = handler.SelectedTool == tool
 				};
 				tool.Tag = button;

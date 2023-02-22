@@ -80,7 +80,6 @@ namespace PabloDraw.CommandHandlers
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"An error occurred.  Please report this information to https://github.com/cwensley/pablodraw/issues:\n {ex}");
 				ShowErrorDialog(ex);
 				throw;
 			}
@@ -98,37 +97,45 @@ namespace PabloDraw.CommandHandlers
 
 		static void ShowErrorDialog(object exceptionObject)
 		{
-			var dlg = new Dialog();
-			dlg.Resizable = true;
-			dlg.Title = "Error";
+			Console.WriteLine($"An error occurred.  Please report this information to https://github.com/cwensley/pablodraw/issues:\n{exceptionObject}");
+			
+			if (System.Diagnostics.Debugger.IsAttached)
+				return;
+			
+			Application.Instance.Invoke(() =>
+			{
+				var dlg = new Dialog();
+				dlg.Resizable = true;
+				dlg.Title = "Error";
 
-			var textArea = new TextArea { ReadOnly = true, Size = new Size(400, 300), Wrap = false };
-			textArea.Text = Convert.ToString(exceptionObject);
-			textArea.Selection = Eto.Forms.Range.FromLength(0, 0);
+				var textArea = new TextArea { ReadOnly = true, Size = new Size(400, 300), Wrap = false };
+				textArea.Text = Convert.ToString(exceptionObject);
+				textArea.Selection = Eto.Forms.Range.FromLength(0, 0);
 
-			var quitButton = new Button { Text = "Quit" };
-			quitButton.Click += (sender, e) => dlg.Close();
+				var quitButton = new Button { Text = "Quit" };
+				quitButton.Click += (sender, e) => dlg.Close();
 
-			var copyButton = new Button { Text = "Copy to clipboard" };
-			copyButton.Click += (sender, e) => new Clipboard().Text = textArea.Text;
+				var copyButton = new Button { Text = "Copy to clipboard" };
+				copyButton.Click += (sender, e) => new Clipboard().Text = textArea.Text;
 
-			var reportButton = new Button { Text = "Report Issue" };
-			reportButton.Click += (sender, e) => Application.Instance.Open("https://github.com/cwensley/pablodraw/issues/new/choose");
+				var reportButton = new Button { Text = "Report Issue" };
+				reportButton.Click += (sender, e) => Application.Instance.Open("https://github.com/cwensley/pablodraw/issues/new/choose");
 
-			var label = new Label { Text = "PabloDraw encountered an error and will now close.\nPlease report this by copying the error below and pasting into an issue on GitHub.", TextAlignment = TextAlignment.Center };
+				var label = new Label { Text = "PabloDraw encountered an error and will now close.\nPlease report this by copying the error below and pasting into an issue on GitHub.", TextAlignment = TextAlignment.Center };
 
-			var layout = new DynamicLayout { Padding = 10, Spacing = new Size(5, 5) };
+				var layout = new DynamicLayout { Padding = 10, Spacing = new Size(5, 5) };
 
-			layout.AddSeparateRow(label);
-			layout.Add(textArea, yscale: true);
+				layout.AddSeparateRow(label);
+				layout.Add(textArea, yscale: true);
 
-			dlg.Content = layout;
+				dlg.Content = layout;
 
-			dlg.PositiveButtons.Add(quitButton);
-			dlg.PositiveButtons.Add(reportButton);
-			dlg.PositiveButtons.Add(copyButton);
+				dlg.PositiveButtons.Add(quitButton);
+				dlg.PositiveButtons.Add(reportButton);
+				dlg.PositiveButtons.Add(copyButton);
 
-			dlg.ShowModal();
+				dlg.ShowModal();
+			});
 		}
 	}
 }

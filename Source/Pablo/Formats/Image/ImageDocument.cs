@@ -15,7 +15,7 @@ namespace Pablo.Formats.Image
 
 		public override Pablo.Handler CreateHandler()
 		{
-			return new Handler(this);
+			return new ImageHandler(this);
 		}
 
 		protected override void Dispose(bool disposing)

@@ -6,6 +6,11 @@ namespace Pablo.Formats.Character
 {
 	public class MemoryCanvas : Canvas
 	{
+		const int spaceCharacter = 32;
+		const int topChar = 0xdf;
+		const int bottomChar = 0xdc;
+		const int fullCharacter = 0xdb;
+
 		CanvasElement ceDefault;
 		CanvasElement[][] canvas;
 
@@ -76,6 +81,109 @@ namespace Pablo.Formats.Character
 			{
 				line[i].Attribute = attrib;
 			}
+		}
+
+		protected override void SetHalfLine(int x, int y, int color, int width)
+		{
+			var line = GetLine(y / 2);
+			var top = (y % 2) == 0;
+
+			for (int i = x; i < x + width; i++)
+			{
+				var ch = line[i];
+				ch = UpdateHalfChar(color, top, ch);
+				line[i] = ch;
+			}
+		}
+
+		protected override void ClearHalfLine(int x, int y, int backgroundColor, int width)
+		{
+			var line = GetLine(y / 2);
+			var top = (y % 2) == 0;
+
+			for (int i = x; i < x + width; i++)
+			{
+				var ce = line[i];
+				var color = ce.Foreground;
+				var ch = ce.Character;
+				ce.Background = backgroundColor;
+				if (top)
+				{
+					if (ch == fullCharacter)
+						ce.Character = bottomChar;
+					else if (ch != bottomChar)
+						ce.Character = spaceCharacter;
+				}
+				else
+				{
+					if (ch == fullCharacter)
+						ce.Character = topChar;
+					else if (ch != topChar)
+						ce.Character = spaceCharacter;
+				}
+
+				line[i] = ce;
+			}
+		}
+
+		public static CanvasElement UpdateHalfChar(int color, bool top, CanvasElement ch)
+		{
+			var background = ch.Background;
+			var foreground = ch.Foreground;
+			int character = ch.Character;
+
+			switch ((int)ch.Character)
+			{
+				case fullCharacter:
+					if (foreground != color)
+					{
+						background = foreground;
+						foreground = color;
+						character = top ? topChar : bottomChar;
+					}
+					break;
+				case topChar:
+					if (top)
+					{
+						foreground = color;
+						character = topChar;
+					}
+					else
+					{
+						character = foreground == color ? fullCharacter : bottomChar;
+						if (foreground != color) background = color;
+					}
+					break;
+				case bottomChar:
+					if (top)
+					{
+						character = foreground == color ? fullCharacter : bottomChar;
+						if (foreground != color) background = color;
+					}
+					else
+					{
+						foreground = color;
+						character = bottomChar;
+					}
+					break;
+				default:
+					foreground = color;
+					character = top ? topChar : bottomChar;
+					break;
+			}
+
+			// prefer non-blinking background color if possible..
+			if (background >= 8 && foreground < 8)
+			{
+				var tmp = background;
+				background = foreground;
+				foreground = background;
+				character = character == topChar ? bottomChar : topChar;
+			}
+			ch.Background = background;
+			ch.Foreground = foreground;
+			ch.Character = new Character(character);
+			return ch;
 		}
 
 		protected override void SetForeLine(int x, int y, int foreground, int width)

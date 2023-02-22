@@ -140,7 +140,7 @@ namespace Pablo.Formats.Rip.Controls
 			};
 			button.Paint += delegate(object sender, PaintEventArgs pe)
 			{
-				pe.Graphics.FillPolygon(Colors.Black, new PointF[] { new Point(4, 2), new Point(16, 5), new Point(4, 8) });
+				pe.Graphics.FillPolygon(SystemColors.ControlText, new PointF[] { new Point(4, 2), new Point(16, 5), new Point(4, 8) });
 			};
 			button.Click += delegate
 			{

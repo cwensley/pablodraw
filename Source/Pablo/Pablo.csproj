@@ -5,6 +5,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblyTitle>Pablo core</AssemblyTitle>
     <AssemblyDescription>Pablo</AssemblyDescription>
+    <LangVersion>11.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="BGI\Fonts\*.*" />

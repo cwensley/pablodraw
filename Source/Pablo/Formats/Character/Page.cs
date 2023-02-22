@@ -111,7 +111,7 @@ namespace Pablo.Formats.Character
 				return null;
 			}
 
-			public void TranslateColour(Point point, ref int foreColour, ref int backColour)
+			public void TranslateColour(Point point, ref CanvasElement ce, ref int foreColour, ref int backColour)
 			{
 			}
 		}
@@ -129,8 +129,8 @@ namespace Pablo.Formats.Character
 
 				rect.Width = (rect.Width + fontSize.Width);
 				rect.Height = rect.Height + fontSize.Height;
-				var endCanvas = new Point((rect.InnerRight + 1) / fontSize.Width, (rect.InnerBottom + 1) / fontSize.Height);
-				var endFont = new Point((((rect.InnerRight + 1) % fontSize.Width) * font.Width) / fontSize.Width, (((rect.InnerBottom + 1) % fontSize.Height) * font.Height) / fontSize.Height);
+				var endCanvas = new Point(rect.Right / fontSize.Width, rect.Bottom / fontSize.Height);
+				var endFont = new Point(((rect.Right % fontSize.Width) * font.Width) / fontSize.Width, ((rect.Bottom % fontSize.Height) * font.Height) / fontSize.Height);
 
 				var rDraw = new Rectangle(startCanvas.X, startCanvas.Y, endCanvas.X - startCanvas.X, endCanvas.Y - startCanvas.Y);
 				if (endFont.X == 0 && rDraw.Width > 1)
@@ -176,7 +176,7 @@ namespace Pablo.Formats.Character
 					scanWidth = -scanWidth;
 				}
 				var pt = new Point();
-				for (pt.Y = rDraw.Top; pt.Y <= rDraw.InnerBottom; pt.Y++)
+				for (pt.Y = rDraw.Top; pt.Y < rDraw.Bottom; pt.Y++)
 				{
 					pCharStart = (uint*)pRow;
 					int charStartX;
@@ -187,21 +187,23 @@ namespace Pablo.Formats.Character
 					}
 					else
 						charStartX = startFont.X;
-					if (pt.Y == rDraw.InnerBottom)
+					if (pt.Y == rDraw.Bottom - 1)
 						fontHeight = endFont.Y;
 					if (pt.Y >= 0 && pt.Y < canvas.Height)
 					{
-						for (pt.X = rDraw.Left; pt.X <= rDraw.InnerRight; pt.X++)
+						for (pt.X = rDraw.Left; pt.X < rDraw.Right; pt.X++)
 						{
-							var charEndX = pt.X == rDraw.InnerRight ? endFont.X : font.Width;
+							var charEndX = pt.X == rDraw.Right - 1 ? endFont.X : font.Width;
 							if (pt.X >= 0 && pt.X < canvas.Width)
 							{
 								ce = generator.GetElement(pt, canvas) ?? canvas[pt];
 								/*
-							 */
+							 	*/
+								if (ce.Foreground >= pal.Count)
+									throw new InvalidOperationException();
 								foreColor = pal.GetRGBColor(ce.Foreground);
 								backColor = pal.GetRGBColor(iceColor ? ce.Background : ce.Attribute.BackgroundOnly);
-								generator.TranslateColour(pt, ref foreColor, ref backColor);
+								generator.TranslateColour(pt, ref ce, ref foreColor, ref backColor);
 								bool cursor = false;
 								if (cursorPosition != null && cursorPosition.Value == pt)
 								{

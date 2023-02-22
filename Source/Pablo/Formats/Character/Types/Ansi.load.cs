@@ -31,7 +31,7 @@ namespace Pablo.Formats.Character.Types
 
 			void ReadChar(int curChar)
 			{
-				if (ptCur.X >= rClip.Left && ptCur.X <= rClip.InnerRight)
+				if (ptCur.X >= rClip.Left && ptCur.X < rClip.Right)
 					canvas[ptCur] = new CanvasElement((byte)curChar, rgbAttribute);
 				ptCur.X++;
 				lastLineHasData = true;

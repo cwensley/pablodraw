@@ -1,6 +1,7 @@
 using System;
 using Eto.Forms;
 using Eto.Drawing;
+using Pablo.Drawing;
 
 namespace Pablo.Controls
 {
@@ -10,7 +11,7 @@ namespace Pablo.Controls
 		bool hover;
 		bool mouseDown;
 		public static Color DisabledColor = Color.FromGrayscale(0.4f, 0.3f);
-		public static Color EnabledColor = Colors.Black;
+		public static Color EnabledColor = SystemColors.ControlText;
 
 		public override bool Enabled
 		{
@@ -40,9 +41,12 @@ namespace Pablo.Controls
 					mouseDown = false;
 					if (Loaded)
 						Invalidate();
+					PressedChanged?.Invoke(this, EventArgs.Empty);
 				}
 			}
 		}
+
+		public event EventHandler<EventArgs> PressedChanged;
 
 		public Color DrawColor
 		{
@@ -104,11 +108,11 @@ namespace Pablo.Controls
 			if (mouseDown && rect.Contains((Point)e.Location))
 			{
 				if (Toggle)
-					pressed = !pressed;
+					Pressed = !Pressed;
 				else if (Persistent)
-					pressed = true;
+					Pressed = true;
 				else
-					pressed = false;
+					Pressed = false;
 				mouseDown = false;
 
 				this.Invalidate();
@@ -125,18 +129,7 @@ namespace Pablo.Controls
 		protected override void OnPaint(PaintEventArgs pe)
 		{
 			var rect = new Rectangle(this.Size);
-			var col = Color.FromGrayscale(hover && Enabled ? 0.95f : 0.8f);
-			if (Enabled && (pressed || mouseDown))
-			{
-				pe.Graphics.FillRectangle(col, rect);
-				pe.Graphics.DrawInsetRectangle(Colors.Gray, Colors.White, rect);
-			}
-			else if (hover && Enabled)
-			{
-				pe.Graphics.FillRectangle(col, rect);
-				pe.Graphics.DrawInsetRectangle(Colors.White, Colors.Gray, rect);
-			}
-			
+			pe.Graphics.DrawButton(rect, Enabled, hover, pressed || mouseDown);
 			base.OnPaint(pe);
 		}
 	}

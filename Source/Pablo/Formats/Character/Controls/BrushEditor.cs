@@ -41,9 +41,10 @@ namespace Pablo.Formats.Character.Controls
 			layout.Add(Brushes());
 			layout.Add(Characters());
 			layout.BeginVertical(Padding.Empty);
-			layout.AddRow(null, CancelButton(), OkButton());
+			layout.AddRow(ResetButton(), null, CancelButton(), OkButton());
 
 			Content = layout;
+			Load(CharacterHandler.Info.Brushes);
 		}
 
 		void Save()
@@ -56,6 +57,25 @@ namespace Pablo.Formats.Character.Controls
 				CharacterHandler.Info.Brushes[i] = brush;
 			}
 		}
+		
+		void Load(BrushInfo[] brushes)
+		{
+			for (int i = 0; i < brushCanvases.Count; i++)
+			{
+				var canvas = brushCanvases[i];
+				var brush = (i < brushes.Length) ? brushes[i] : new BrushInfo();
+				if (brush != null)
+				{
+					var characters = brush.GetCharacters(CharacterHandler.CurrentPage.Font.Encoding) ?? new Character[0];
+					for (int c = 0; c < characters.Length; c++)
+					{
+						var ce = canvas[c, 0];
+						ce.Character = characters[c];
+						canvas[c, 0] = ce;
+					}
+				}
+			}
+		}
 
 		Control Brushes()
 		{
@@ -65,25 +85,13 @@ namespace Pablo.Formats.Character.Controls
 			layout.SetColumnScale(5);
 
 			RadioButton master = null;
-			var brushes = CharacterHandler.Info.Brushes;
 			for (int i = 0; i < CharacterDocumentInfo.MAX_BRUSHES; i++)
 			{
-				var brush = (i < brushes.Length) ? brushes[i] : new BrushInfo();
 				var control = new FontTextBox(CharacterHandler, new Size(CharacterDocumentInfo.MAX_BRUSH_SIZE, 1));
 				control.ReadOnly = false;
 				control.SetAttribute(CharacterHandler.DrawAttribute);
 				brushCanvases.Add(control.Canvas);
 
-				if (brush != null)
-				{
-					var characters = brush.GetCharacters(CharacterHandler.CurrentPage.Font.Encoding) ?? new Character[0];
-					for (int c = 0; c < characters.Length; c++)
-					{
-						var ce = control.Canvas[c, 0];
-						ce.Character = characters[c];
-						control.Canvas[c, 0] = ce;
-					}
-				}
 				control.GotFocus += delegate
 				{
 					lastSet = control;
@@ -161,7 +169,7 @@ namespace Pablo.Formats.Character.Controls
 			return control;
 		}
 
-		Control CancelButton()
+		Button CancelButton()
 		{
 			var control = new Button
 			{
@@ -178,7 +186,7 @@ namespace Pablo.Formats.Character.Controls
 			return control;
 		}
 
-		Control OkButton()
+		Button OkButton()
 		{
 			var control = new Button
 			{
@@ -193,6 +201,21 @@ namespace Pablo.Formats.Character.Controls
 			};
 
 			DefaultButton = control;
+
+			return control;
+		}
+
+		Button ResetButton()
+		{
+			var control = new Button
+			{
+				Text = "Set Defaults"
+			};
+
+			control.Click += delegate
+			{
+				Load(CharacterDocumentInfo.DefaultBrushes);
+			};
 
 			return control;
 		}

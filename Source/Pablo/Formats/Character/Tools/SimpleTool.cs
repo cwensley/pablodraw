@@ -9,40 +9,41 @@ namespace Pablo.Formats.Character.Tools
 {
 	public abstract class SimpleTool : CharacterTool, IGenerateRegion
 	{
-		public virtual void Cancel ()
+		public virtual void Cancel()
 		{
 		}
 
-		protected virtual void Finish ()
+		protected virtual void Finish()
 		{
 		}
-		
-		public override void OnMouseUp (MouseEventArgs e)
+
+		public override void OnMouseUp(MouseEventArgs e)
 		{
-			switch (e.Buttons) {
-			case MouseButtons.Alternate:
-				Cancel ();
-				break;
-			default:
-				base.OnMouseUp (e);
-				break;
+			switch (e.Buttons)
+			{
+				case MouseButtons.Alternate:
+					Cancel();
+					break;
+				default:
+					base.OnMouseUp(e);
+					break;
 			}
 		}
-		
-		public override IGenerateRegion GetGenerator ()
+
+		public override IGenerateRegion GetGenerator()
 		{
 			return this;
 		}
-		
-		public virtual CanvasElement? GetElement (Point point, Canvas canvas)
+
+		public virtual CanvasElement? GetElement(Point point, Canvas canvas)
 		{
-			return canvas [point];
+			return canvas[point];
 		}
-		
-		public virtual void TranslateColour (Point point, ref int foreColour, ref int backColour)
+
+		public virtual void TranslateColour(Point point, ref CanvasElement ce, ref int foreColour, ref int backColour)
 		{
 		}
-		
+
 	}
 }
 

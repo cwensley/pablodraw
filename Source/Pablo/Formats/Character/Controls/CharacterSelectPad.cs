@@ -10,6 +10,7 @@ namespace Pablo.Formats.Character.Controls
 	{
 		CharacterHandler Handler { get; }
 		Character CurrentCharacter { get; set; }
+		bool HalfMode { get; set; }
 	}
 
 	public class CharacterSelectPad : Panel
@@ -80,6 +81,7 @@ namespace Pablo.Formats.Character.Controls
 			if (result == DialogResult.Ok)
 			{
 				this.tool.CurrentCharacter = dlg.SelectedCharacter;
+				this.tool.HalfMode = false;
 				this.Update();
 			}
 		}

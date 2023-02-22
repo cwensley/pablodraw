@@ -74,7 +74,7 @@ namespace Pablo.Formats.Rip.Controls
 				Size = new Size (20, 12)
 			};
 			button.Paint += delegate(object sender, PaintEventArgs pe) {
-				pe.Graphics.FillPolygon (Colors.Black, new PointF[] { new Point (4, 2), new Point (16, 5), new Point (4, 8)});
+				pe.Graphics.FillPolygon (SystemColors.ControlText, new PointF[] { new Point (4, 2), new Point (16, 5), new Point (4, 8)});
 			};
 			button.Click += delegate {
 				var dialog = new FillStyleEditor (handler);
@@ -107,7 +107,7 @@ namespace Pablo.Formats.Rip.Controls
 						if (bits.Length > 0) {
 							for (int x = 2; x < button.Size.Width - 2; x++) {
 								if (bits [bits.Length - ((x - 2) % bits.Length) - 1]) {
-									pe.Graphics.FillRectangle (Colors.Black, new Rectangle (x, y, 1, 1));
+									pe.Graphics.FillRectangle (SystemColors.ControlText, new Rectangle (x, y, 1, 1));
 								}
 							}
 						}

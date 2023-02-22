@@ -104,9 +104,7 @@ namespace Pablo.Formats.Character.Tools
 				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.Erase.png"),
 				Toggle = true,
 				Pressed = Inverted,
-#if DESKTOP
 				ToolTip = "Erase mode (shift)"
-#endif
 			};
 			
 			control.Click += delegate
@@ -123,9 +121,7 @@ namespace Pablo.Formats.Character.Tools
 				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.ApplyColour.png"),
 				Toggle = true,
 				Pressed = ApplyColour,
-#if DESKTOP
 				ToolTip = "Draw with color (alt)"
-#endif
 			};
 			
 			control.Click += delegate
@@ -139,8 +135,7 @@ namespace Pablo.Formats.Character.Tools
 		{
 			var layout = new DynamicLayout { Padding = Padding.Empty };
 			
-			layout.Add(Separator());
-			layout.BeginVertical(Padding.Empty, Eto.Drawing.Size.Empty);
+			layout.BeginVertical(Padding.Empty, new Size(1, 1));
 			layout.AddRow(InvertButton(), ColourButton());
 			layout.EndVertical();
 			

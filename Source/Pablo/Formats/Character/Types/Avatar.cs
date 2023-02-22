@@ -38,12 +38,12 @@ namespace Pablo.Formats.Character.Types
 
 		private void ReadChar(byte curChar)
 		{
-			if (ptCur.X >= rClip.Left && ptCur.X <= rClip.InnerRight)
+			if (ptCur.X >= rClip.Left && ptCur.X < rClip.Right)
 				canvas[ptCur] = new CanvasElement(curChar, attribute);
 			
 			ptCur.X++;
 
-			if (ptCur.X > rClip.InnerRight)
+			if (ptCur.X >= rClip.Right)
 			{
 				ptCur.Y++;
 				if (ptCur.Y > rClip.InnerBottom)
@@ -121,8 +121,8 @@ namespace Pablo.Formats.Character.Types
 										break;
 									case 4:
 										ptCur.Y++;
-										if (ptCur.Y > rClip.InnerBottom)
-											ptCur.Y = rClip.InnerBottom;
+										if (ptCur.Y >= rClip.Bottom)
+											ptCur.Y = rClip.Bottom - 1;
 										break;
 									case 5:
 										ptCur.X--;
@@ -131,8 +131,8 @@ namespace Pablo.Formats.Character.Types
 										break;
 									case 6:
 										ptCur.X++;
-										if (ptCur.X > rClip.InnerRight)
-											ptCur.X = rClip.InnerRight;
+										if (ptCur.X >= rClip.Right)
+											ptCur.X = rClip.Right - 1;
 										break;
 									case 7:
 										canvas.Fill(new Rectangle(ptCur, new Size(rClip.Width - ptCur.X, 1)), new CanvasElement(32, attribute));

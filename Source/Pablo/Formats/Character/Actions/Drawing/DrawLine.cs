@@ -13,77 +13,87 @@ namespace Pablo.Formats.Character.Actions.Drawing
 		public Point Start { get; set; }
 
 		public Point End { get; set; }
-		
+
 		public CanvasElement Element { get; set; }
 
 		public bool ApplyColour { get; set; }
-		
+
 		public bool ApplyCharacter { get; set; }
 		
+		public bool HalfMode { get; set; }
+
 		public new CharacterHandler Handler { get { return base.Handler as CharacterHandler; } }
-		
-		public DrawLine (CharacterHandler handler)
+
+		public DrawLine(CharacterHandler handler)
 			: base(handler)
 		{
 		}
-		
-		public override int CommandID {
+
+		public override int CommandID
+		{
 			get { return (int)NetCommands.DrawLine; }
 		}
-		
-		public override UserLevel Level {
+
+		public override UserLevel Level
+		{
 			get { return UserLevel.Editor; }
 		}
-		
-		protected override void Execute (CommandExecuteArgs args)
+
+		protected override void Execute(CommandExecuteArgs args)
 		{
-			Do (Handler.CursorPosition, Start, End, Element, ApplyColour, ApplyCharacter);
+			Do(Handler.CursorPosition, Start, End, Element, ApplyColour, ApplyCharacter, HalfMode);
 		}
-		
-		public void Do (Point? cursorPosition, Point start, Point end, CanvasElement element, bool applyColour, bool applyCharacter)
+
+		public void Do(Point? cursorPosition, Point start, Point end, CanvasElement element, bool applyColour, bool applyCharacter, bool halfMode)
 		{
-			var lines = new ScanLines ();
-			lines.AddLine (start, end);
+			var lines = new ScanLines();
+			lines.AddLine(start, end);
 			var canvas = Handler.CurrentPage.Canvas;
-			Handler.Undo.Save (cursorPosition, cursorPosition, new Rectangle(start, end));
-			foreach (var row in lines.Values) {
-				var minx = row.Min ();
-				var width = row.Max () - minx + 1;
+			Handler.Undo.Save(cursorPosition, cursorPosition, halfMode, new Rectangle(start, end));
+			foreach (var row in lines.Values)
+			{
+				var minx = row.Min();
+				var width = row.Max() - minx + 1;
 				var rect = new Rectangle(minx, row.Row, width, 1);
-				if (applyColour && applyCharacter)
-					canvas.Fill (rect, element);
+				if (halfMode)
+					canvas.FillHalfBlocks(rect, element.Foreground);
+				else if (applyColour && applyCharacter)
+					canvas.Fill(rect, element);
 				else if (applyColour)
-					canvas.Fill (rect, element.Attribute);
+					canvas.Fill(rect, element.Attribute);
 				else if (applyCharacter)
-					canvas.Fill (rect, element.Character);
+					canvas.Fill(rect, element.Character);
 			}
-			Handler.InvalidateCharacterRegion(new Rectangle(start, end), true, false);
+			Handler.InvalidateCharacterRegion(new Rectangle(start, end), true, false, halfMode);
 			Handler.Document.IsModified = true;
 		}
-		
-		public override bool Send (Pablo.Network.SendCommandArgs args)
+
+		public override bool Send(Pablo.Network.SendCommandArgs args)
 		{
-			base.Send (args);
-			args.Message.Write (Start);
-			args.Message.Write (End);
-			args.Message.Write (ApplyColour);
-			args.Message.Write (ApplyCharacter);
-			args.Message.Write (Element);
+			base.Send(args);
+			args.Message.Write(Start);
+			args.Message.Write(End);
+			args.Message.Write(ApplyColour);
+			args.Message.Write(ApplyCharacter);
+			args.Message.Write(HalfMode);
+			args.Message.Write(Element);
 			return true;
 		}
-		
-		public override void Receive (Pablo.Network.ReceiveCommandArgs args)
+
+		public override void Receive(Pablo.Network.ReceiveCommandArgs args)
 		{
-			base.Receive (args);
-			var start = args.Message.ReadPoint ();
-			var end = args.Message.ReadPoint ();
-			var applyColour = args.Message.ReadBoolean ();
-			var applyCharacter = args.Message.ReadBoolean ();
+			base.Receive(args);
+			var start = args.Message.ReadPoint();
+			var end = args.Message.ReadPoint();
+			var applyColour = args.Message.ReadBoolean();
+			var applyCharacter = args.Message.ReadBoolean();
+			var halfMode = args.Message.ReadBoolean();
 			var element = args.Message.ReadCanvasElement();
-			args.Invoke (delegate {
-				Do (null, start, end, element, applyColour, applyCharacter);
+			args.Invoke(delegate
+			{
+				Do(null, start, end, element, applyColour, applyCharacter, halfMode);
 			});
-			
+
 		}
 	}
 }

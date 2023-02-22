@@ -47,7 +47,9 @@ namespace Pablo.Formats.Character.Tools
 		bool SetColor (Eto.Forms.MouseEventArgs e)
 		{
 			var location = GetLocation ((Point)e.Location);
-			var newAttr = Handler.CurrentPage.Canvas[location].Attribute;
+			var canvas = Handler.CurrentPage.Canvas;
+			location.Restrict(new Rectangle(canvas.Size));
+			var newAttr = canvas[location].Attribute;
 			var curAttr = Handler.DrawAttribute;
 			switch (e.Buttons) {
 			case MouseButtons.Primary:

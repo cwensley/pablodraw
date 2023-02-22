@@ -2,6 +2,7 @@ using System;
 using Eto.Forms;
 using Eto.Drawing;
 using System.Collections.Generic;
+using Pablo.Controls;
 
 namespace Pablo.Formats.Character
 {
@@ -52,7 +53,7 @@ namespace Pablo.Formats.Character
 
 		protected virtual Point GetLocation(Point location)
 		{
-			return Handler.ScreenToCharacter(location);
+			return Handler.ScreenToCharacter(location, HalfMode);
 		}
 
 		public virtual void OnSetCursorPosition(Point old, Point cursorPosition, bool invalidate)
@@ -68,9 +69,31 @@ namespace Pablo.Formats.Character
 			}
 		}
 
+		bool _halfMode;
+
+		public bool HalfMode
+		{
+			get => _halfMode;
+			set
+			{
+				if (_halfMode != value)
+				{
+					_halfMode = value;
+					HalfModeChanged?.Invoke(this, EventArgs.Empty);
+				}
+			}
+		}
+
+		public event EventHandler<EventArgs> HalfModeChanged;
+
 		public void UpdateCursorPosition(Point newCursor, Rectangle excludeRectangle)
 		{
 			var oldCursor = Handler.CursorPosition;
+			if (HalfMode)
+			{
+				newCursor.Y /= 2;
+				excludeRectangle = excludeRectangle.FromHalfMode();
+			}
 			Handler.SetCursorPosition(newCursor, false);
 			if (!excludeRectangle.Contains(oldCursor))
 				Handler.InvalidateCharacterRegion(new Rectangle(oldCursor, new Size(1, 1)), false, false);
@@ -104,21 +127,22 @@ namespace Pablo.Formats.Character
 		public virtual void GenerateCommands(GenerateCommandArgs args)
 		{
 		}
-
-		protected Control Separator()
+		
+		protected Control HalfModeButton()
 		{
-			var control = new Drawable
+			var control = new AnsiButton
 			{
-				Size = new Size(1, 2)
+				Document = ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.HalfMode.ans"),
+				Toggle = true,
+				Pressed = HalfMode,
+				ToolTip = "Draw with half blocks"
 			};
 
-			control.Paint += (sender, pe) =>
-			{
-				pe.Graphics.FillRectangle(Colors.White, 0, 0, control.Size.Width, 0);
-				pe.Graphics.DrawInsetRectangle(Colors.Gray, Colors.White, new Rectangle(0, 0, control.Size.Width, 2));
-			};
+			control.Bind(c => c.Pressed, this, c => c.HalfMode);
+
 			return control;
 		}
+
 
 		public virtual Control GeneratePad()
 		{

@@ -14,122 +14,137 @@ namespace Pablo.Formats.Character.Tools
 
 		protected bool IsCentered { get; private set; }
 
-		protected abstract void UpdateWithLocation (Rectangle rect, Keys modifiers, Point end);
-		
-		protected override Rectangle? CurrentRectangle {
-			get {
+		protected abstract void UpdateWithLocation(Rectangle rect, Keys modifiers, Point end);
+
+		protected override Rectangle? CurrentRectangle
+		{
+			get
+			{
 				return currentRect ?? base.CurrentRectangle;
 			}
 		}
-		
-		protected Rectangle? ResolvedRectangle {
+
+		protected Rectangle? ResolvedRectangle
+		{
 			get { return currentRect; }
 			set { currentRect = value; }
 		}
-		
-		public override void Cancel ()
+
+		public override void Cancel()
 		{
-			base.Cancel ();
+			base.Cancel();
 			currentRect = null;
 		}
-		
-		protected override void Finish ()
+
+		protected override void Finish()
 		{
-			base.Finish ();
+			base.Finish();
 			currentRect = null;
 		}
-		
-		protected sealed override void Update (Point start, Point end, Keys modifiers, Point location)
+
+		protected sealed override void Update(Point start, Point end, Keys modifiers, Point location)
 		{
-			var rect = new Rectangle ();
+			var rect = new Rectangle();
 			var aspect = Handler.CurrentPage.Font.Aspect / Handler.Aspect;
+			if (HalfMode)
+				aspect *= 2;
 			var size = new Size(end - start);
-			
-			var shouldBeSquare = (!modifiers.HasFlag (PabloCommand.CommonModifier) && modifiers.HasFlag (Keys.Shift)) ^ IsSquare;
-			var shouldBeCentered = modifiers.HasFlag (Keys.Alt) ^ IsCentered;
-			
-			
-			if (shouldBeSquare) {
-				int diameter = Math.Max (Math.Abs (size.Width), (int)Math.Round (Math.Abs (size.Height) / aspect));
-				if (shouldBeCentered) {
-					rect.Location = start - new Size (diameter * (size.Width >= 0 ? 1 : -1), (int)Math.Round (diameter * aspect) * (size.Height >= 0 ? 1 : -1));
+
+			var shouldBeSquare = (!modifiers.HasFlag(PabloCommand.CommonModifier) && modifiers.HasFlag(Keys.Shift)) ^ IsSquare;
+			var shouldBeCentered = modifiers.HasFlag(Keys.Alt) ^ IsCentered;
+
+
+			if (shouldBeSquare)
+			{
+				int diameter = Math.Max(Math.Abs(size.Width), (int)Math.Round(Math.Abs(size.Height) / aspect));
+				if (shouldBeCentered)
+				{
+					rect.Location = start - new Size(diameter * (size.Width >= 0 ? 1 : -1), (int)Math.Round(diameter * aspect) * (size.Height >= 0 ? 1 : -1));
 					diameter *= 2;
-				} else {
+				}
+				else
+				{
 					rect.Location = start;
 				}
-				rect.Size = new Size (
+				rect.Size = new Size(
 					(diameter + ((size.Width >= 0) ? 1 : 0)) * (size.Width >= 0 ? 1 : -1),
-					((int)Math.Round (diameter * aspect) + ((size.Height >= 0) ? 1 : 0)) * (size.Height >= 0 ? 1 : -1)
+					((int)Math.Round(diameter * aspect) + ((size.Height >= 0) ? 1 : 0)) * (size.Height >= 0 ? 1 : -1)
 				);
-				
-			} else {
-				if (shouldBeCentered) {
+
+			}
+			else
+			{
+				if (shouldBeCentered)
+				{
 					rect.Location = start - size;
-					size *= new Size (2, 2);
+					size *= new Size(2, 2);
 					if (size.Width >= 0)
-						size.Width ++;
+						size.Width++;
 					if (size.Height >= 0)
-						size.Height ++;
+						size.Height++;
 					rect.Size = size;
-				} else {
+				}
+				else
+				{
 					if (size.Width >= 0)
-						size.Width ++;
+						size.Width++;
 					if (size.Height >= 0)
-						size.Height ++;
+						size.Height++;
 					rect.Size = size;
 					rect.Location = start;
 				}
 			}
-			if (currentRect == null || currentRect.Value != rect) {
-				UpdateWithLocation (rect, modifiers, end);
+			if (currentRect == null || currentRect.Value != rect)
+			{
+				UpdateWithLocation(rect, modifiers, end);
 				currentRect = rect;
 			}
-			base.Update (start, end, modifiers, location);
+			base.Update(start, end, modifiers, location);
 		}
-		
-		Control SquareButton ()
+
+		Control SquareButton()
 		{
-			var control = new ImageButton{
-				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.Square.png"),
+			var control = new AnsiButton
+			{
+				Document = ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.Square.ans"),
 				Toggle = true,
 				Pressed = IsSquare,
-#if DESKTOP
 				ToolTip = "Square aspect (shift)"
-#endif
 			};
-			
-			control.Click += delegate {
+
+			control.Click += delegate
+			{
 				IsSquare = control.Pressed;
 			};
 			return control;
 		}
 
-		Control CenteredButton ()
+		Control CenteredButton()
 		{
-			var control = new ImageButton{
-				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.Centered.png"),
+			var control = new ImageButton
+			{
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.Centered.png").WithSize(16, 16),
 				Toggle = true,
 				Pressed = IsCentered,
-#if DESKTOP
 				ToolTip = "Centered (alt)"
-#endif
 			};
-			
-			control.Click += delegate {
+
+			control.Click += delegate
+			{
 				IsCentered = control.Pressed;
 			};
 			return control;
 		}
-		
-		public override Control GeneratePad ()
+
+		public override Control GeneratePad()
 		{
 			var layout = new DynamicLayout { Padding = Padding.Empty };
-			
-			layout.BeginVertical (Padding.Empty, Size.Empty);
-			layout.AddRow (SquareButton (), CenteredButton ());
-			layout.EndVertical ();
+
+			layout.BeginVertical(Padding.Empty, new Size(1, 1));
+			layout.AddRow(SquareButton(), CenteredButton());
+			layout.EndVertical();
 			//layout.Add (base.GeneratePad ());
-			
+
 			return layout;
 		}
 	}

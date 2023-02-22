@@ -8,12 +8,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Generic'">
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <OutputPath>bin/$(Configuration)/generic</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Windows'">
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <!-- <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers> -->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <!-- <RuntimeIdentifier>win-arm64</RuntimeIdentifier> -->
@@ -25,7 +25,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Linux'">
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <DefineConstants>LINUX</DefineConstants>
     <TrimMode>Link</TrimMode>
@@ -33,7 +33,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Mac'">
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RuntimeIdentifiers>osx-x64;osx-arm64</RuntimeIdentifiers>
     <DefineConstants>MAC</DefineConstants>
   </PropertyGroup>

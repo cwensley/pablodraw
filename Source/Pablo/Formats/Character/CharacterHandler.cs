@@ -79,9 +79,9 @@ namespace Pablo.Formats.Character
 					tools = new List<CharacterTool>();
 					tools.Add(new Tools.Selection { Handler = this });
 					tools.Add(new Tools.Brush { Handler = this });
-					tools.Add(new Tools.Pencil { Handler = this });
-					tools.Add(new Tools.ColourBrush { Handler = this });
 					tools.Add(new Tools.InkDropper { Handler = this });
+					tools.Add(new Tools.ColourBrush { Handler = this });
+					tools.Add(new Tools.Pencil { Handler = this });
 					tools.Add(new Tools.LineTool { Handler = this });
 					tools.Add(new Tools.RectangleTool { Handler = this });
 					tools.Add(new Tools.EllipseTool { Handler = this });
@@ -299,6 +299,7 @@ namespace Pablo.Formats.Character
 				yield return new Actions.Drawing.DrawLine(this);
 				yield return new Actions.Drawing.DrawRect(this);
 				yield return new Actions.Drawing.DrawEllipse(this);
+				yield return new Actions.Drawing.HalfFill(this);
 				yield return new ChangeFont(this);
 				yield return new ToggleUse9x(this);
 				yield return new ToggleIceMode(this);
@@ -447,14 +448,18 @@ namespace Pablo.Formats.Character
 				SelectedTool.OnMouseMove(e);
 		}
 
-		public Point ScreenToCharacter(Point point)
+		public Point ScreenToCharacter(Point point, bool half = false)
 		{
 			BitFont font = CurrentPage.Font;
 			PointF ptf = point;
+			if (half)
+				ptf.Y *= 2;
 			ptf /= font.Size;
 			ptf /= ZoomRatio;
+			
 
-			return new Point(ptf);
+			var p = new Point(ptf);
+			return p;
 		}
 
 		public override void OnKeyDown(KeyEventArgs e)
@@ -593,6 +598,10 @@ namespace Pablo.Formats.Character
 					control.MapPlatformCommand("undo", s_DisabledCommand);
 					control.MapPlatformCommand("redo", s_DisabledCommand);
 				}
+
+				var file = args.Menu.Items.GetSubmenu("&File");
+				file.Items.Add(new ExportAsIcon(this), 500);
+
 
 				var edit = args.Menu.Items.GetSubmenu("&Edit", 200);
 				var view = args.Menu.Items.GetSubmenu("&View", 500);
@@ -748,11 +757,11 @@ namespace Pablo.Formats.Character
 			rect.Restrict(new Rectangle(canvas.Size));
 			if (rect.Width > 0 && rect.Height > 0)
 			{
-				for (int y = rect.Top; y <= rect.InnerBottom; y++)
+				for (int y = rect.Top; y < rect.Bottom; y++)
 				{
 					//var line = canvas.GetLine (y);
 					int? startx = null;
-					for (int x = rect.Left; x <= rect.InnerRight; x++)
+					for (int x = rect.Left; x < rect.Right; x++)
 					{
 						var ce = canvas[x, y];
 						if (ce.Attribute.Blink)
@@ -771,7 +780,7 @@ namespace Pablo.Formats.Character
 
 					if (startx != null)
 					{
-						InvalidateCharacterRegion(new Rectangle(startx.Value, y, rect.InnerRight - startx.Value + 1, 1), false);
+						InvalidateCharacterRegion(new Rectangle(startx.Value, y, rect.Right - startx.Value, 1), false);
 					}
 				}
 			}
@@ -813,11 +822,15 @@ namespace Pablo.Formats.Character
 				preview.UpdateRegion(rect);
 		}
 
-		public void InvalidateCharacterRegion(Rectangle rect, bool includePreview, bool previewOnly = false)
+		public void InvalidateCharacterRegion(Rectangle rect, bool includePreview, bool previewOnly = false, bool halfMode = false)
 		{
 			rect.Normalize();
-			if (!previewOnly)
+			if (halfMode)
 			{
+				rect = rect.FromHalfMode();
+			}
+			if (!previewOnly)
+			{ 
 				BitFont font = CurrentPage.Font;
 				RectangleF rectf = rect;
 				rectf *= font.Size;

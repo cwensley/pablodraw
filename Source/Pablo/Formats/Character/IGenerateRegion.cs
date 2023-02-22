@@ -7,7 +7,7 @@ namespace Pablo.Formats.Character
 	{
 		CanvasElement? GetElement(Point point, Canvas canvas);
 		
-		void TranslateColour(Point point, ref int foreColour, ref int backColour);
+		void TranslateColour(Point point, ref CanvasElement ce, ref int foreColour, ref int backColour);
 	}
 }
 

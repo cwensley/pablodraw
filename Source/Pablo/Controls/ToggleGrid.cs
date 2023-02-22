@@ -40,7 +40,7 @@ namespace Pablo.Controls
 		protected override void OnPaint (PaintEventArgs pe)
 		{
 			base.OnPaint (pe);
-			pe.Graphics.FillRectangle (Color.FromGrayscale (0.8f), pe.ClipRectangle);
+			pe.Graphics.FillRectangle (Color.FromGrayscale (0.8f, .8f), pe.ClipRectangle);
 			if (Bits == null)
 				return;
 			var size = this.Size / this.GridSize;
@@ -48,7 +48,7 @@ namespace Pablo.Controls
 				for (int x = 0; x < GridSize.Width; x++) {
 					var xofs = Invert ? x / 8 * 8 + (7 - x % 8) : x;
 					if (Bits [y * GridSize.Width + xofs]) {
-						pe.Graphics.FillRectangle (Colors.Black, new Rectangle (new Point (x, y) * size, size));
+						pe.Graphics.FillRectangle (SystemColors.ControlText, new Rectangle (new Point (x, y) * size, size));
 					}
 				}
 			}

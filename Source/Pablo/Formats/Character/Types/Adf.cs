@@ -62,7 +62,7 @@ namespace Pablo.Formats.Character.Types
 						doc.OnWait (args);
 						if (args.Exit)
 							break;
-						if (p.X <= rClip.InnerRight)
+						if (p.X < rClip.Right)
 							canvas [p.X - rClip.Left, p.Y] = new CanvasElement (ch, attr);
 						p.X++;
 					}

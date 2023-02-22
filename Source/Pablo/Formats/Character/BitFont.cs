@@ -192,7 +192,7 @@ namespace Pablo.Formats.Character
 			Is9xFont = Width == 8 && width == 9 && copy9;
 			for (int ch = 0; ch < chars.Length; ch++)
 			{
-				chars[ch].Resize(width, height, scale, IsCopy9(ch));
+				chars[ch].Resize(width, height, scale, IsCopy9(ch), ch);
 			}
 			LegacyRatio = LegacyRatio * width / Width; // adjust ratio
 			Width = width;
@@ -481,7 +481,7 @@ namespace Pablo.Formats.Character
 			return data[index];
 		}
 
-		internal void Resize(int newWidth, int newHeight, bool scale, bool copy9)
+		internal void Resize(int newWidth, int newHeight, bool scale, bool copy9, int charIndex)
 		{
 			int oldWidth = font.Width;
 			int oldHeight = font.Height;
@@ -494,7 +494,41 @@ namespace Pablo.Formats.Character
 				{
 					if (scale)
 					{
-						Set(newdata, newrow + x, this[oldrow + x * oldWidth / newWidth]);
+						if (oldWidth > newWidth && oldHeight > newHeight)
+						{
+							bool current = false;
+							if (x < oldWidth && (y < oldHeight) && charIndex >= 176 && charIndex <= 178)
+							{
+								current = this[y * oldWidth + x];
+							}
+							else
+							{
+								int pixelCount = 0;
+								int totalCount = 0;
+								int srcCharYStart = y * oldHeight / newHeight;
+								int srcCharYEnd = (y + 1) * oldHeight / newHeight;
+								if (srcCharYEnd >= oldHeight) srcCharYEnd = oldHeight - 1;
+
+
+								int srcCharXStart = x * oldWidth / newWidth;
+								int srcCharXEnd = (x + 1) * oldWidth / newWidth;
+								if (srcCharXEnd >= oldWidth) srcCharXEnd = oldWidth - 1;
+
+								// now, go through the source font to find what we need for this pixel
+								for (int iSrcCharY = srcCharYStart; iSrcCharY < srcCharYEnd; iSrcCharY++)
+								{
+									for (int iSrcCharX = srcCharXStart; iSrcCharX < srcCharXEnd; iSrcCharX++)
+									{
+										if (this[iSrcCharY * oldWidth + iSrcCharX]) pixelCount++;
+										totalCount++;
+									}
+								}
+								current = (pixelCount > 0 && (pixelCount >= (totalCount / 2)));
+							}
+							Set(newdata, newrow + x, current);
+						}
+						else
+							Set(newdata, newrow + x, this[oldrow + x * oldWidth / newWidth]);
 					}
 					else
 					{

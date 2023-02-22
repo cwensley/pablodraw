@@ -405,7 +405,7 @@ namespace Pablo.Formats.Character.Tools
 			
 		}
 
-		public override void TranslateColour(Point point, ref int foreColour, ref int backColour)
+		public override void TranslateColour(Point point, ref CanvasElement ce, ref int foreColour, ref int backColour)
 		{
 			if (selectedRegion != null && !inPaste && selectedRegion.Value.Contains(point))
 			{
@@ -454,7 +454,6 @@ namespace Pablo.Formats.Character.Tools
 		{
 			var layout = new DynamicLayout { Padding = Padding.Empty };
 			
-			layout.Add(Separator());
 			layout.Add(base.GeneratePad());
 			
 			return layout;

@@ -49,12 +49,20 @@ namespace Pablo.Formats.Character.Undo
 			undo.Push (item);
 			redo.Clear ();
 		}
-		
+
 		public UndoBuffer Save (Point? cursorLocation, Point? nextLocation, params Rectangle[] rects)
+		{
+			return Save(cursorLocation, nextLocation, false, rects);
+		}
+		
+		public UndoBuffer Save (Point? cursorLocation, Point? nextLocation, bool halfMode, params Rectangle[] rects)
 		{
 			var item = new UndoBuffer{ CursorLocation = cursorLocation, NextLocation = nextLocation };
 			foreach (var rect in rects) {
-				item.Add (new UndoRect (Handler, rect));
+				var r = rect;
+				if (halfMode)
+					r = r.FromHalfMode();
+				item.Add (new UndoRect (Handler, r));
 			}
 			Save (item);
 			return item;

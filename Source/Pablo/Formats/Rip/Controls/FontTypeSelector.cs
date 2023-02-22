@@ -141,7 +141,7 @@ namespace Pablo.Formats.Rip.Controls
 			{
 				var textSize = Size.Round(pe.Graphics.MeasureString(font, size.ToString()));
 				textSize = (control.Size - textSize) / 2;
-				pe.Graphics.DrawText(font, Colors.Black, textSize.Width, textSize.Height, size.ToString());
+				pe.Graphics.DrawText(font, SystemColors.ControlText, textSize.Width, textSize.Height, size.ToString());
 			};
 
 			sizeButtons.Add(control);

@@ -72,9 +72,9 @@ namespace Pablo.Formats.Rip.Tools
 			layout.BeginHorizontal ();
 			
 			var b = new ImageButton{
-				Image = ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Pixel-Multi.png"),
+				Image = ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Pixel-Multi.png").WithSize(16, 16),
 				Toggle = true,
-				Pressed = enableMulti
+				Pressed = enableMulti,
 			};
 			b.Click += delegate {
 				enableMulti = b.Pressed;

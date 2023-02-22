@@ -599,7 +599,7 @@ namespace Pablo.Interface
 			if (Platform.IsMac)
 			{
 				args.ToolBar.Items.AddSeparator(800, SeparatorToolItemType.FlexibleSpace);
-				args.ToolBar.Items.Add(new Actions.ViewFile(this), 900);
+				// args.ToolBar.Items.Add(new Actions.ViewFile(this), 900);
 				args.ToolBar.Items.Add(new Actions.EditFileRadio(this), 900);
 			}
 			else
