@@ -10,6 +10,7 @@ using System.Threading;
 using Eto.Forms;
 using Eto.Drawing;
 using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace PabloDraw.CommandHandlers
 {
@@ -109,7 +110,8 @@ namespace PabloDraw.CommandHandlers
 				dlg.Title = "Error";
 
 				var textArea = new TextArea { ReadOnly = true, Size = new Size(400, 300), Wrap = false };
-				textArea.Text = Convert.ToString(exceptionObject);
+				var version = Assembly.GetEntryAssembly().GetName().Version;;
+				textArea.Text = $"Platform: {Platform.Instance.ID}\nVersion:{version}\n\n```\n{exceptionObject}\n```";
 				textArea.Selection = Eto.Forms.Range.FromLength(0, 0);
 
 				var quitButton = new Button { Text = "Quit" };
