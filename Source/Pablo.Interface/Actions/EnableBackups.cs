@@ -4,7 +4,7 @@ using Pablo.Network;
 
 namespace Pablo.Interface.Actions
 {
-	public class EnableBackups : RadioCommand
+	public class EnableBackups : CheckCommand
 	{
 		readonly IClientDelegate clientDelegate;
 		public const string ActionID = "EnableBackups";
