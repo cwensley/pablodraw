@@ -72,24 +72,21 @@ namespace Pablo.Formats.Rip.Controls
 				Size = new Size(40, 40)
 			};
 
-			drawable.MouseUp += delegate
-			{
-				SelectFont();
-			};
+			drawable.MouseUp += (sender, e) => SelectFont();
 
-			drawable.Paint += delegate(object sender, PaintEventArgs pe)
-			{
-				if (canvas != null)
-					canvas.DrawRegion(pe.Graphics, new Rectangle(Point.Empty, canvas.WindowSize));
-			};
-
-			drawable.LoadComplete += delegate // Shown?
+			drawable.Paint += (sender, e) =>
 			{
 				if (drawable.Size.IsEmpty)
 					return;
-				canvas = new BGICanvas(drawable, drawable.Size);
-				DrawCanvas();
+				if (canvas == null || canvas.WindowSize != drawable.Size)
+				{
+					canvas = new BGICanvas(drawable, drawable.Size);
+					DrawCanvas();
+				}
+				
+				canvas?.DrawRegion(e.Graphics, new Rectangle(Point.Empty, canvas.WindowSize));
 			};
+
 			return drawable;
 		}
 
