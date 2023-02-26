@@ -150,15 +150,19 @@ namespace Pablo.Formats.Character
 					}
 					else
 					{
-						character = foreground == color ? fullCharacter : bottomChar;
-						if (foreground != color) background = color;
+						if (foreground == color)
+							character = fullCharacter;
+						else
+							background = color;
 					}
 					break;
 				case bottomChar:
 					if (top)
 					{
-						character = foreground == color ? fullCharacter : bottomChar;
-						if (foreground != color) background = color;
+						if (foreground == color)
+							character = fullCharacter;
+						else
+							background = color;
 					}
 					else
 					{
@@ -175,10 +179,28 @@ namespace Pablo.Formats.Character
 			// prefer non-blinking background color if possible..
 			if (background >= 8 && foreground < 8)
 			{
-				var tmp = background;
-				background = foreground;
-				foreground = background;
-				character = character == topChar ? bottomChar : topChar;
+				bool swap = false;
+				switch (character)
+				{
+					case topChar:
+						character = bottomChar;
+						swap = true;
+						break;
+					case bottomChar:
+						character = topChar;
+						swap = true;
+						break;
+					case spaceCharacter:
+						character = fullCharacter;
+						swap = true;
+						break;
+				}
+				if (swap)
+				{
+					var tmp = background;
+					background = foreground;
+					foreground = tmp;
+				}
 			}
 			ch.Background = background;
 			ch.Foreground = foreground;
