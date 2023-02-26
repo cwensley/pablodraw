@@ -3,7 +3,7 @@ using Eto.Forms;
 
 namespace Pablo.Actions
 {
-	public class FitWidth : CheckCommand
+	public class FitWidth : CheckCommand, IUpdatableCommand
 	{
 		public const string ActionID = "zoomFitWidth";
 		
@@ -23,6 +23,11 @@ namespace Pablo.Actions
 			base.OnExecuted(e);
 			ViewerPane.ZoomInfo.FitWidth = this.Checked;
 			ViewerPane.UpdateSizes ();
+		}
+
+		public void UpdateState()
+		{
+			Checked = ViewerPane.ZoomInfo.FitWidth;
 		}
 	}
 }

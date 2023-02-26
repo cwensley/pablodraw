@@ -3,13 +3,13 @@ using Eto.Forms;
 
 namespace Pablo.Actions
 {
-	public class AllowGrow : CheckCommand
+	public class AllowGrow : CheckCommand, IUpdatableCommand
 	{
 		public const string ActionID = "zoomAllowGrow";
-		
+
 		public ViewerPane ViewerPane { get; private set; }
-		
-		public AllowGrow (ViewerPane viewerPane)
+
+		public AllowGrow(ViewerPane viewerPane)
 		{
 			this.ViewerPane = viewerPane;
 			this.ID = ActionID;
@@ -22,7 +22,12 @@ namespace Pablo.Actions
 		{
 			base.OnExecuted(e);
 			ViewerPane.ZoomInfo.AllowGrow = this.Checked;
-			ViewerPane.UpdateSizes ();
+			ViewerPane.UpdateSizes();
+		}
+
+		public void UpdateState()
+		{
+			Checked = ViewerPane.ZoomInfo.AllowGrow;
 		}
 	}
 }
