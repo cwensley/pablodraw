@@ -4,21 +4,24 @@ using Eto.Forms;
 using Pablo;
 using System.Collections.Generic;
 using System.Timers;
+using System.Linq;
 
 namespace Pablo
 {
+	public interface IUpdatableCommand
+	{
+		void UpdateState();
+	}
+	
 	public class ViewerPane : Scrollable, IViewer
 	{
 		const float MinZoom = 0.125f;
-		static readonly float[] ZOOM_LEVELS = { 2, 1.5F, 1, .75F, .50F, .25F, .125F };
+		public static readonly float[] ZOOM_LEVELS = { 7, 6.5F, 6, 5.5F, 5, 4.5F, 4, 3.5F, 3, 2, 1.5F, 1, .75F, .50F, .25F, .125F };
 
 		#region Members
 
 		readonly ImageViewer viewer;
-		CheckCommand actionZoomFitWidth;
-		CheckCommand actionZoomFitHeight;
-		CheckCommand actionAllowGrow;
-		readonly Dictionary<float, RadioCommand> zoomLevels = new Dictionary<float, RadioCommand>();
+		readonly List<IUpdatableCommand> updatableCommands = new List<IUpdatableCommand>();
 		readonly PixelLayout layout;
 		UITimer scrollTimer;
 		Point oldScrollPosition;
@@ -281,19 +284,11 @@ namespace Pablo
 			scrollTimer.Start();
 		}
 
-		void UpdateUI()
+		internal void UpdateMenuItems()
 		{
-			if (actionAllowGrow != null)
-				actionAllowGrow.Checked = ZoomInfo.AllowGrow;
-			if (actionZoomFitWidth != null)
-				actionZoomFitWidth.Checked = ZoomInfo.FitWidth;
-			if (actionZoomFitHeight != null)
-				actionZoomFitHeight.Checked = ZoomInfo.FitHeight;
-			if (zoomLevels != null)
+			foreach (var item in updatableCommands)
 			{
-				RadioCommand raction;
-				if (zoomLevels.TryGetValue(ZoomInfo.Zoom, out raction))
-					raction.Checked = true;
+				item.UpdateState();
 			}
 		}
 
@@ -314,31 +309,36 @@ namespace Pablo
 
 			var smZoom = smView.Items.GetSubmenu("&Zoom", 500);
 
-			smZoom.Items.Add(actionZoomFitWidth = new Actions.FitWidth(this), 500);
-			smZoom.Items.Add(actionZoomFitHeight = new Actions.FitHeight(this), 500);
-			smZoom.Items.Add(actionAllowGrow = new Actions.AllowGrow(this), 500);
+			updatableCommands.Clear();
+			CreateZoomMenu(smZoom);
+			
+			UpdateMenuItems();
+		}
 
-			smZoom.Items.AddSeparator(500);
 
+		private void CreateZoomMenu(ButtonMenuItem menu)
+		{
+			menu.Items.Add(new Actions.ZoomIn(this));
+			menu.Items.Add(new Actions.ZoomOut(this));
+			menu.Items.Add(new Actions.ZoomReset(this));
 
-			RadioCommand controller = null;
-			zoomLevels.Clear();
+			menu.Items.AddSeparator();
+
+			Actions.ZoomLevel controller = null;
 			foreach (float zoomLevel in ZOOM_LEVELS)
 			{
-				var raction = new RadioCommand { Controller = controller, ID = "zoom" + zoomLevel, MenuText = string.Format("{0}%", zoomLevel * 100) };
-				raction.Executed += (sender, e) =>
-				{
-					var action = sender as RadioCommand;
-					ZoomInfo.Zoom = (float)action.Tag;
-					UpdateSizes();
-				};
+				var zoomLevelCommand = new Actions.ZoomLevel(controller, this, zoomLevel);
 				if (controller == null)
-					controller = raction;
-				raction.Tag = zoomLevel;
-				smZoom.Items.Add(raction);
-				zoomLevels.Add(zoomLevel, raction);
+					controller = zoomLevelCommand;
+				menu.Items.Add(zoomLevelCommand);
 			}
-			UpdateUI();
+			menu.Items.AddSeparator();
+
+			menu.Items.Add(new Actions.FitWidth(this));
+			menu.Items.Add(new Actions.FitHeight(this));
+			menu.Items.Add(new Actions.AllowGrow(this));
+			
+			updatableCommands.AddRange(menu.Items.Select(r => r.Command).OfType<IUpdatableCommand>());
 		}
 
 		protected override void Dispose(bool disposing)
