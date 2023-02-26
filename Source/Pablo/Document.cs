@@ -17,13 +17,15 @@ namespace Pablo
 	public delegate void WaitEventHandler(object sender,WaitEventArgs args);
 	public abstract class Document : IDisposable, INetworkReadWrite
 	{
-		readonly DocumentInfo info;
-		bool converted;
+		readonly DocumentInfo _info;
+		bool _converted;
+		string _fileName;
 
 		public event EventHandler<EventArgs> StartLoad;
 		public event EventHandler<EventArgs> Initialized;
 		public event EventHandler<EventArgs> Loaded;
 		public event EventHandler<EventArgs> Saved;
+		public event EventHandler<EventArgs> FileNameChanged;
 
 		public bool IsNew { get; set; }
 
@@ -36,34 +38,35 @@ namespace Pablo
 		protected void OnStartLoad(EventArgs e)
 		{
 			IsLoading = true;
-			if (StartLoad != null)
-				StartLoad(this, e);
+			StartLoad?.Invoke(this, e);
 		}
 
 		protected void OnLoaded(EventArgs e)
 		{
 			IsLoading = false;
-			if (Loaded != null)
-				Loaded(this, e);
+			Loaded?.Invoke(this, e);
 		}
 
-		protected void OnSaved(EventArgs e)
-		{
-			if (Saved != null)
-				Saved(this, e);
-		}
-
-		protected virtual void OnInitialized(EventArgs e)
-		{
-			if (Initialized != null)
-				Initialized(this, e);
-		}
+		protected virtual void OnSaved(EventArgs e) => Saved?.Invoke(this, e);
+		protected virtual void OnInitialized(EventArgs e) => Initialized?.Invoke(this, e);
+		protected virtual void OnFileNameChanged(EventArgs e) => FileNameChanged?.Invoke(this, e);
 
 		public Platform Generator { get; set; }
 
 		public Format LoadedFormat { get; set; }
 
-		public string FileName { get; set; }
+		public string FileName
+		{
+			get => _fileName;
+			set
+			{
+				if (_fileName != value)
+				{
+					_fileName = value;
+					OnFileNameChanged(EventArgs.Empty);
+				}
+			}
+		}
 
 		public abstract Size Size { get; }
 
@@ -71,7 +74,7 @@ namespace Pablo
 
 		protected Document(DocumentInfo info)
 		{
-			this.info = info;
+			this._info = info;
 		}
 
 		public abstract Handler CreateHandler();
@@ -80,7 +83,7 @@ namespace Pablo
 
 		public DocumentInfo Info
 		{
-			get { return info; }
+			get { return _info; }
 		}
 
 		~Document()
@@ -149,10 +152,10 @@ namespace Pablo
 
 		public virtual void Save(Stream stream, Format format, Handler handler)
 		{
-			var doc = converted ? null : ConvertDocument(format.Info, handler);
+			var doc = _converted ? null : ConvertDocument(format.Info, handler);
 			if (doc != null)
 			{
-				doc.converted = true;
+				doc._converted = true;
 				doc.Save(stream, format, handler);
 				doc.Dispose();
 			}
