@@ -37,6 +37,7 @@ namespace Pablo.Formats.Character
 		CharacterTool selectedTool;
 		CanvasElement drawElement = CanvasElement.Default;
 		//Hashtable characterCache = new Hashtable();
+		Panel previewHolder;
 
 		#endregion
 
@@ -78,10 +79,10 @@ namespace Pablo.Formats.Character
 				{
 					tools = new List<CharacterTool>();
 					tools.Add(new Tools.Selection { Handler = this });
-					tools.Add(new Tools.Brush { Handler = this });
+					tools.Add(new Tools.BrushTool { Handler = this });
 					tools.Add(new Tools.InkDropper { Handler = this });
 					tools.Add(new Tools.ColourBrush { Handler = this });
-					tools.Add(new Tools.Pencil { Handler = this });
+					tools.Add(new Tools.PencilTool { Handler = this });
 					tools.Add(new Tools.LineTool { Handler = this });
 					tools.Add(new Tools.RectangleTool { Handler = this });
 					tools.Add(new Tools.EllipseTool { Handler = this });
@@ -809,6 +810,14 @@ namespace Pablo.Formats.Character
 			}
 		}
 
+		protected override void OnZoomChanged(EventArgs e)
+		{
+			base.OnZoomChanged(e);
+			
+			if (previewHolder != null)
+				previewHolder.Visible = preview != null && Zoom > preview.Zoom;
+		}
+
 		public void UpdateRegion(Rectangle rect)
 		{
 			BitFont font = CurrentPage.Font;
@@ -923,11 +932,14 @@ namespace Pablo.Formats.Character
 				if (preview == null)
 				{
 					preview = new CharacterHandler(CharacterDocument, false);
+					preview.AllowEditing = false;
 					preview.AllowToolSelection = false;
-					var v = (ViewerPane)preview.ViewerControl;
-					var zi = new ZoomInfo { Zoom = 0.25F, FitWidth = true };
-					v.ZoomInfo = zi;
-					preview.ViewerControl.ID = "preview";
+					if (preview.ViewerControl is ViewerPane v)
+					{
+						v.ID = "preview";
+						v.ZoomInfo = new ZoomInfo { Zoom = 0.25F, FitWidth = true };
+						v.Viewer.CanFocus = false;
+					}
 					/*CurrentPage.Canvas.Update += delegate(object sender, Rectangle rect) {
 						h2.InvalidateCharacterRegion (rect);
 					};*/
@@ -939,8 +951,8 @@ namespace Pablo.Formats.Character
 					preview.PostLoad();
 				}
 				
-				var dl = new Panel { Size = new Size(165, 100), Padding = new Padding(5, 0, 0, 0), Content = preview.ViewerControl };
-				args.RightPads.Add(dl);
+				previewHolder = new Panel { Size = new Size(165, 100), Padding = new Padding(5, 0, 0, 0), Content = preview.ViewerControl };
+				args.RightPads.Add(previewHolder);
 				/**/
              
 			}

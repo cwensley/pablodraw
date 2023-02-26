@@ -12,9 +12,9 @@ namespace Pablo.Drawing
 		{
 			rect.Size -= 1;
 			var col = hover 
-				? new Color(Colors.Gray, 0.4f)
+				? SystemColors.Highlight // new Color(Colors.Gray, 0.4f)
 				: new Color(Colors.Gray, 0.8f);
-			graphics.DrawRectangle(new Color(Colors.Gray, 0.8f), rect);
+			graphics.DrawRectangle(col, rect);
 			// graphics.DrawInsetRectangle(Colors.Gray, Colors.White, rect);
 		}
 		
@@ -24,13 +24,13 @@ namespace Pablo.Drawing
 				return;
 			if (selected)
 			{
-				var col = Color.FromGrayscale(0.8f, 0.8f);
+				var col = Color.FromGrayscale(0.6f, 0.8f);
 				graphics.FillRectangle(col, rect);
-				graphics.DrawButtonOutline(rect);
+				graphics.DrawButtonOutline(rect, hover);
 			}
 			else if (hover)
 			{
-				var col = Color.FromGrayscale(0.8f, 0.4f);
+				var col = Color.FromGrayscale(0.6f, 0.4f);
 				graphics.FillRectangle(col, rect);
 				graphics.DrawButtonOutline(rect, hover);
 			}

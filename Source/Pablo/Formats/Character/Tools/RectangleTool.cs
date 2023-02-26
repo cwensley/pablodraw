@@ -12,28 +12,13 @@ namespace Pablo.Formats.Character.Tools
 	{
 		ScanLines lines = new ScanLines();
 
-		public override Eto.Drawing.Image Image
-		{
-			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Rectangle.png"); }
-		}
+		public override CharacterDocument DocumentImage => ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.Rectangle.ans");
 
-		public override string Description
-		{
-			get { return "Rectangle - Draw a box"; }
-		}
+		public override string Description => "Rectangle - Draw a box";
 
-		public override Keys Accelerator
-		{
-			get
-			{
-				return Keys.R | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
-			}
-		}
+		public override Keys Accelerator => Keys.R | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
 
-		public override Cursor MouseCursor
-		{
-			get { return new Cursor(CursorType.Crosshair); }
-		}
+		public override Cursor MouseCursor => new Cursor(CursorType.Crosshair);
 
 		public Character CurrentCharacter { get; set; }
 
@@ -160,9 +145,7 @@ namespace Pablo.Formats.Character.Tools
 				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.ApplyColour.png"),
 				Toggle = true,
 				Pressed = ApplyColour,
-#if DESKTOP
 				ToolTip = "Draw with color"
-#endif
 			};
 
 			control.Click += delegate
@@ -193,14 +176,12 @@ namespace Pablo.Formats.Character.Tools
 
 		Control FilledButton()
 		{
-			var control = new ImageButton
+			var control = new AnsiButton
 			{
-				Image = ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.FilledRectangle.png"),
+				Document = ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.RectangleFill.ans"),
 				Toggle = true,
 				Pressed = Filled,
-#if DESKTOP
 				ToolTip = "Filled rectangle"
-#endif
 			};
 
 			control.Click += delegate

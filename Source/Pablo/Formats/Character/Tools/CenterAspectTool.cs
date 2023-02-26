@@ -121,9 +121,9 @@ namespace Pablo.Formats.Character.Tools
 
 		Control CenteredButton()
 		{
-			var control = new ImageButton
+			var control = new AnsiButton
 			{
-				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.Centered.png").WithSize(16, 16),
+				Document = ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.Centered.ans"),
 				Toggle = true,
 				Pressed = IsCentered,
 				ToolTip = "Centered (alt)"

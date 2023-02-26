@@ -9,7 +9,7 @@ using Pablo.Formats.Character.Actions.Block;
 
 namespace Pablo.Formats.Character.Tools
 {
-	public class Pencil : SizeTool, ICharacterSelectSource
+	public class PencilTool : SizeTool, ICharacterSelectSource
 	{
 		public bool Inverted { get; set; }
 
@@ -17,10 +17,7 @@ namespace Pablo.Formats.Character.Tools
 
 		public Character CurrentCharacter { get; set; }
 
-		public override Eto.Drawing.Image Image
-		{
-			get { return Eto.Drawing.Bitmap.FromResource("Pablo.Formats.Rip.Icons.Pixel.png"); }
-		}
+		public override CharacterDocument DocumentImage => ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.Pencil.ans", false);
 
 		public override string Description
 		{
@@ -40,11 +37,12 @@ namespace Pablo.Formats.Character.Tools
 			get { return new Cursor(CursorType.Crosshair); }
 		}
 
-		public Pencil()
+		public PencilTool()
 		{
 			ApplyColour = true;
 			CurrentCharacter = 177; // shaded character
 			HalfMode = true;
+			Size = 2;
 		}
 
 		protected override void Draw(Point location, Eto.Forms.MouseEventArgs e)

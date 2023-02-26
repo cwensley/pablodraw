@@ -8,7 +8,8 @@ namespace Pablo.Formats.Character
 {
 	public abstract class CharacterTool
 	{
-		public abstract Eto.Drawing.Image Image { get; }
+		public virtual Eto.Drawing.Image Image { get; }
+		public virtual CharacterDocument DocumentImage { get; }
 
 		public virtual CharacterHandler Handler { get; set; }
 

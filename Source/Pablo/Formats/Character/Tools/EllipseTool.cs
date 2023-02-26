@@ -12,23 +12,11 @@ namespace Pablo.Formats.Character.Tools
 		ScanLines lines = new ScanLines();
 		Rectangle? currentRect;
 
-		public override Eto.Drawing.Image Image
-		{
-			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Oval.png"); }
-		}
+		public override CharacterDocument DocumentImage => ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.Ellipse.ans");
 
-		public override string Description
-		{
-			get { return "Circle - Draw an ellipse or circle"; }
-		}
+		public override string Description => "Circle - Draw an ellipse or circle";
 
-		public override Keys Accelerator
-		{
-			get
-			{
-				return Keys.O | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
-			}
-		}
+		public override Keys Accelerator => Keys.O | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
 
 		public Character CurrentCharacter { get; set; }
 
@@ -42,10 +30,7 @@ namespace Pablo.Formats.Character.Tools
 
 		public bool Filled { get; set; }
 
-		public override Cursor MouseCursor
-		{
-			get { return new Cursor(CursorType.Crosshair); }
-		}
+		public override Cursor MouseCursor => new Cursor(CursorType.Crosshair);
 
 		public EllipseTool()
 		{
@@ -200,14 +185,12 @@ namespace Pablo.Formats.Character.Tools
 
 		Control FilledButton()
 		{
-			var control = new ImageButton
+			var control = new AnsiButton
 			{
-				Image = ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.FilledOval.png"),
+				Document = ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.EllipseFill.ans"),
 				Toggle = true,
 				Pressed = Filled,
-#if DESKTOP
 				ToolTip = "Filled ellipse"
-#endif
 			};
 
 			control.Click += delegate
