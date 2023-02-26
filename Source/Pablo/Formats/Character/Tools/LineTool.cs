@@ -28,28 +28,13 @@ namespace Pablo.Formats.Character.Tools
 		bool shouldApplyColour;
 		public bool ApplyColour { get; set; }
 
-		public override Eto.Drawing.Image Image
-		{
-			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Line.png"); }
-		}
+		public override CharacterDocument DocumentImage => ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.Line.ans");
 
-		public override Cursor MouseCursor
-		{
-			get { return new Cursor(CursorType.Crosshair); }
-		}
+		public override Cursor MouseCursor => new Cursor(CursorType.Crosshair);
 
-		public override string Description
-		{
-			get { return "Line - Draw a line"; }
-		}
+		public override string Description => "Line - Draw a line";
 
-		public override Keys Accelerator
-		{
-			get
-			{
-				return Keys.L | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
-			}
-		}
+		public override Keys Accelerator => Keys.L | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
 
 		public LineTool()
 		{

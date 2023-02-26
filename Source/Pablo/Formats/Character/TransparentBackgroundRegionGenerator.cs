@@ -4,6 +4,7 @@ namespace Pablo.Formats.Character
 {
 	class TransparentBackgroundRegionGenerator : IGenerateRegion
 	{
+		public static readonly TransparentBackgroundRegionGenerator Instance = new TransparentBackgroundRegionGenerator();
 		public CanvasElement? GetElement(Point point, Canvas canvas)
 		{
 			return null;

@@ -5,7 +5,7 @@ using Pablo.Controls;
 
 namespace Pablo.Formats.Character.Tools
 {
-	public class Brush : SizeTool
+	public class BrushTool : SizeTool
 	{
 		Actions.Drawing.Brush action;
 		int currentBrushIndex;
@@ -58,25 +58,13 @@ namespace Pablo.Formats.Character.Tools
 			}
 		}
 
-		public override Eto.Drawing.Image Image
-		{
-			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Brush.png"); }
-		}
+		public override CharacterDocument DocumentImage => ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.Brush.ans");
 
-		public override string Description
-		{
-			get { return "Brush - Paint with character gradients"; }
-		}
+		public override string Description => "Brush - Paint with character gradients";
 
-		public override Keys Accelerator
-		{
-			get
-			{
-				return (Handler.Generator.IsMac ? Keys.Control : Keys.Alt) | Keys.B;
-			}
-		}
+		public override Keys Accelerator => (Handler.Generator.IsMac ? Keys.Control : Keys.Alt) | Keys.B;
 
-		public Brush()
+		public BrushTool()
 		{
 			ApplyColour = true;
 		}

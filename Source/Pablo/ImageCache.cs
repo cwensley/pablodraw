@@ -33,7 +33,7 @@ namespace Pablo
 			return bitmap;
 		}
 		
-		public static CharacterDocument CharacterFromResource(string resource, Assembly assembly = null)
+		public static CharacterDocument CharacterFromResource(string resource, bool adjustPalette = true, Assembly assembly = null)
 		{
 			assembly = assembly ?? Assembly.GetCallingAssembly();
 			if (cache.TryGetValue(resource, out var val) && val is CharacterDocument doc)
@@ -44,6 +44,7 @@ namespace Pablo
 			var format = DocumentInfoCollection.Default.FindFormat(resource);
 			doc = new CharacterDocument(format.Info);
 			doc.Load(stream, format, null);
+			doc.AdjustPaletteForDarkMode = adjustPalette;
 			cache[resource] = doc;
 			return doc;
 		}

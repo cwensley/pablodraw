@@ -8,7 +8,7 @@ namespace Pablo.Formats.Character.Controls
 {
 	public class BrushPad : Panel
 	{
-		Tools.Brush tool;
+		Tools.BrushTool tool;
 		FontTextBox preview;
 		CustomButton upButton;
 		CustomButton downButton;
@@ -18,7 +18,7 @@ namespace Pablo.Formats.Character.Controls
 			get { return this.tool.Handler; }
 		}
 
-		public BrushPad(Tools.Brush tool)
+		public BrushPad(Tools.BrushTool tool)
 		{
 			this.tool = tool;
 			var page = Handler.CurrentPage;

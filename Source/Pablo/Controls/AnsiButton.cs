@@ -63,6 +63,8 @@ namespace Pablo.Controls
 			}
 		}
 
+		BitFont resizedFont;
+
 		protected override void OnPaint(Eto.Forms.PaintEventArgs pe)
 		{
 			base.OnPaint(pe);
@@ -70,19 +72,22 @@ namespace Pablo.Controls
 			var page = Document.Pages.First();
 			
 			var oldFont = page.Font;
-			var bitFont = new BitFont(page.Font);
-			var pixelSize = ParentWindow?.LogicalPixelSize ?? 1f;
-			bitFont.Resize((int)Math.Round(pixelSize), (int)Math.Round(bitFont.Height / bitFont.Width * pixelSize), true, true);
-			page.Font = bitFont;
+			if (resizedFont == null)
+			{
+				resizedFont = new BitFont(page.Font);
+				var pixelSize = ParentWindow?.LogicalPixelSize ?? 1f;
+				resizedFont.Resize((int)Math.Round(pixelSize), (int)Math.Round(resizedFont.Height / resizedFont.Width * pixelSize), true, true);
+			}
+			page.Font = resizedFont;
 			
 			var renderSize = page.Canvas.Size * page.Font.Size;
-			page.Palette[7] = SystemColors.ControlText;
+			if (Document.AdjustPaletteForDarkMode)
+				page.Palette[7] = SystemColors.ControlText;
 
 			//Console.WriteLine("{0}, {1}, {2}", Size, rectScreen, rectGenerate);
 			var drawRectangle = new Rectangle(renderSize);
-			var generator = new TransparentBackgroundRegionGenerator();
 			using var bmp = new Bitmap(renderSize.Width, renderSize.Height, PixelFormat.Format32bppRgba);
-			page.GenerateRegion(bmp, drawRectangle, page.Font.Size, null, null, Document.ICEColours, false, null, generator);
+			page.GenerateRegion(bmp, drawRectangle, page.Font.Size, null, null, Document.ICEColours, false, null, TransparentBackgroundRegionGenerator.Instance);
 
 			page.Font = oldFont;
 

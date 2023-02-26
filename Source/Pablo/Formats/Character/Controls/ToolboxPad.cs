@@ -33,14 +33,27 @@ namespace Pablo.Formats.Character.Controls
 			for (int i = 0; i < tools.Count; i++)
 			{
 				var tool = tools[i];
-				var button = new ImageButton
+
+				CustomButton button;
+				if (tool.DocumentImage != null)
 				{
-					Image = tool.Image,
-					Persistent = true,
-					Tag = tool,
-					Size = new Size(20, 20),
-					Pressed = handler.SelectedTool == tool
-				};
+					button = new AnsiButton
+					{
+						Document = tool.DocumentImage
+					};
+				}
+				else
+				{
+					button = new ImageButton
+					{
+						Image = tool.Image
+					};
+				}
+				button.Persistent = true;
+				button.Tag = tool;
+				button.Size = new Size(20, 20);
+				button.Pressed = handler.SelectedTool == tool;
+				
 				if (tool.Accelerator != Keys.None)
 					button.ToolTip = string.Format("{0} ({1})", tool.Description, tool.Accelerator.ToShortcutString());
 				else
@@ -108,8 +121,8 @@ namespace Pablo.Formats.Character.Controls
 		void HandleToolChanged(object sender, EventArgs e)
 		{
 			var tool = Handler.SelectedTool;
-			var toolbutton = tool != null ? tool.Tag as ImageButton : null;
-			foreach (var control in Children.OfType<ImageButton>().Where(r => r.Pressed && r.Tag is CharacterTool && r != toolbutton))
+			var toolbutton = tool != null ? tool.Tag as CustomButton : null;
+			foreach (var control in Children.OfType<CustomButton>().Where(r => r.Pressed && r.Tag is CharacterTool && r != toolbutton))
 			{
 				control.Pressed = false;
 			}

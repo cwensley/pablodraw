@@ -22,6 +22,8 @@ namespace Pablo.Formats.Character
 		public event EventHandler<EventArgs> Use9xChanged;
 		public event EventHandler<EventArgs> DosAspectChanged;
 
+		public bool AdjustPaletteForDarkMode { get; set; } = true;
+
 		public bool Use9x
 		{
 			get { return use9x ?? Info.Use9x; }
