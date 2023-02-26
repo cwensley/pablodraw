@@ -664,6 +664,7 @@ namespace Pablo.Interface
 				{
 					olddoc.Saved -= Document_Saved;
 					olddoc.Loaded -= Document_Loaded;
+					olddoc.FileNameChanged -= Document_FileNameChanged;
 					olddoc.Dispose();
 				}
 				padpanel.Content = new Panel { BackgroundColor = Colors.Black };
@@ -679,13 +680,12 @@ namespace Pablo.Interface
 			// new document
 			if (document != null)
 			{
-				var docName = string.IsNullOrEmpty(document.FileName) ? "<New Document>" : Path.GetFileName(document.FileName);
-				Title = string.Format("{0} - {1}", TITLE, docName);
 
 				if (olddoc != document)
 				{
 					document.Saved += Document_Saved;
 					document.Loaded += Document_Loaded;
+					document.FileNameChanged += Document_FileNameChanged;
 				}
 
 				handler = document.CreateHandler();
@@ -713,9 +713,9 @@ namespace Pablo.Interface
 			}
 			else
 			{
-				Title = TITLE;
 				GenerateActions();
 			}
+			SetTitle();
 
 			if (postLoad)
 				PostLoad();
@@ -836,6 +836,11 @@ namespace Pablo.Interface
 		{
 			GenerateActions();
 		}
+		
+		void Document_FileNameChanged(object sender, EventArgs e)
+		{
+			SetTitle();
+		}
 
 		void Document_Loaded(object sender, EventArgs e)
 		{
@@ -856,7 +861,20 @@ namespace Pablo.Interface
 			if (document != null)
 			{
 				fileList.Initialize(document.FileName, true);
-				Title = string.Format("{0} - {1}", TITLE, Path.GetFileName(document.FileName));
+				SetTitle();
+			}
+		}
+
+		void SetTitle()
+		{
+			if (Document == null)
+			{
+				Title = TITLE;
+			}
+			else
+			{
+				var docName = string.IsNullOrEmpty(Document.FileName) ? "<New Document>" : Path.GetFileName(Document.FileName);
+				Title = $"{TITLE} - {docName}";
 			}
 		}
 
