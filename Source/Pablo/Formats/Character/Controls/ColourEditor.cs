@@ -2,6 +2,7 @@ using System;
 using Eto.Forms;
 using Eto.Drawing;
 using Pablo.Controls;
+using Pablo.Drawing;
 
 namespace Pablo.Formats.Character.Controls
 {
@@ -16,7 +17,7 @@ namespace Pablo.Formats.Character.Controls
 
 		int SelectedIndex { get; set; }
 
-		class SelectColourBox : ColourPad.ColourBox
+		class SelectColourBox : ColourBox
 		{
 			public int Index { get; set; }
 
