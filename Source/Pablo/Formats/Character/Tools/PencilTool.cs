@@ -98,14 +98,12 @@ namespace Pablo.Formats.Character.Tools
 
 		Control InvertButton()
 		{
-			var control = new ImageButton
+			var control = new AnsiButton
 			{
-				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.Erase.png"),
+				Document = ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.Erase.ans", false),
 				Toggle = true,
 				Pressed = Inverted,
-#if DESKTOP
 				ToolTip = "Erase mode (shift)"
-#endif
 			};
 			
 			control.Click += delegate
@@ -117,14 +115,12 @@ namespace Pablo.Formats.Character.Tools
 
 		Control ColourButton()
 		{
-			var control = new ImageButton
+			var control = new AnsiButton
 			{
-				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.ApplyColour.png"),
+				Document = ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.ApplyColour.ans", false),
 				Toggle = true,
 				Pressed = ApplyColour,
-#if DESKTOP
 				ToolTip = "Draw with color (alt)"
-#endif
 			};
 			
 			control.Click += delegate

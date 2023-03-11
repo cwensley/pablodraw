@@ -140,9 +140,9 @@ namespace Pablo.Formats.Character.Tools
 
 		Control ApplyColourButton()
 		{
-			var control = new ImageButton
+			var control = new AnsiButton
 			{
-				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.ApplyColour.png"),
+				Document = ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.ApplyColour.ans", false),
 				Toggle = true,
 				Pressed = ApplyColour,
 				ToolTip = "Draw with color"

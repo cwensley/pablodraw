@@ -87,9 +87,9 @@ namespace Pablo.Formats.Character.Tools
 
 		Control InvertButton()
 		{
-			var control = new ImageButton
+			var control = new AnsiButton
 			{
-				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.Erase.png"),
+				Document = ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.Erase.ans", false),
 				Toggle = true,
 				Pressed = Inverted,
 				ToolTip = "Erase mode (shift)"
@@ -104,9 +104,9 @@ namespace Pablo.Formats.Character.Tools
 
 		Control ColourButton()
 		{
-			var control = new ImageButton
+			var control = new AnsiButton
 			{
-				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.ApplyColour.png"),
+				Document = ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.ApplyColour.ans", false),
 				Toggle = true,
 				Pressed = ApplyColour,
 				ToolTip = "Draw with color (alt)"

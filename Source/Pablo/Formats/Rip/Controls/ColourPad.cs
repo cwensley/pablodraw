@@ -4,6 +4,7 @@ using Eto.Drawing;
 using Eto;
 using System.Collections.Generic;
 using Pablo.Controls;
+using Pablo.Drawing;
 
 namespace Pablo.Formats.Rip.Controls
 {
@@ -22,20 +23,6 @@ namespace Pablo.Formats.Rip.Controls
 		}
 		
 		#region ColourBox
-		
-		public abstract class ColourBox : Drawable
-		{
-			public abstract Color Color { get; set; }
-
-			protected override void OnPaint (PaintEventArgs pe)
-			{
-				base.OnPaint (pe);
-				var rect = new Rectangle (Point.Empty, this.Size);
-				pe.Graphics.DrawInsetRectangle (Colors.Gray, Colors.White, rect);
-				rect.Inflate (-1, -1);
-				pe.Graphics.FillRectangle (Color, rect);
-			}
-		}
 		
 		class FBColourBox : ColourBox
 		{

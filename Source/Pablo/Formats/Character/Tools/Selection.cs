@@ -21,33 +21,15 @@ namespace Pablo.Formats.Character.Tools
 		Rectangle? selectedRegion;
 		Canvas pasteCanvas;
 
-		public override Eto.Drawing.Image Image
-		{
-			get { return ImageCache.BitmapFromResource("Pablo.Formats.Rip.Icons.Copy.png"); }
-		}
+		public override CharacterDocument DocumentImage => ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.Selection.ans");
 
-		public override string Description
-		{
-			get { return "Selection - Select text and position the cursor with the mouse"; }
-		}
+		public override string Description => "Selection - Select text and position the cursor with the mouse";
 
-		public override Keys Accelerator
-		{
-			get
-			{
-				return Keys.E | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
-			}
-		}
+		public override Keys Accelerator => Keys.E | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
 
-		public override Cursor MouseCursor
-		{
-			get { return new Cursor(CursorType.IBeam); }
-		}
+		public override Cursor MouseCursor => new Cursor(CursorType.IBeam);
 
-		public override bool AllowKeyboard
-		{
-			get { return drawMode == DrawMode.Normal; }
-		}
+		public override bool AllowKeyboard => drawMode == DrawMode.Normal;
 
 		public override void Unselected()
 		{

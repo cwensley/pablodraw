@@ -26,28 +26,13 @@ namespace Pablo.Formats.Character.Tools
 			}
 		}
 
-		public override Cursor MouseCursor
-		{
-			get { return new Cursor(CursorType.Crosshair); }
-		}
+		public override Cursor MouseCursor => new Cursor(CursorType.Crosshair);
 
-		public override Eto.Drawing.Image Image
-		{
-			get { return ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.ColourBrush.png"); }
-		}
+		public override CharacterDocument DocumentImage => ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.ColourBrush.ans", false);
 
-		public override string Description
-		{
-			get { return "Color Brush - paint only foreground and/or background colour"; }
-		}
+		public override string Description => "Color Brush - paint only foreground and/or background colour";
 
-		public override Keys Accelerator
-		{
-			get
-			{
-				return Keys.B | Keys.Shift | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
-			}
-		}
+		public override Keys Accelerator => Keys.B | Keys.Shift | (Handler.Generator.IsMac ? Keys.Control : Keys.Alt);
 
 
 		public ColourBrush()
@@ -86,14 +71,12 @@ namespace Pablo.Formats.Character.Tools
 
 		Control FGButton()
 		{
-			var control = new ImageButton
+			var control = new AnsiButton
 			{
-				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.DrawForeground.png"),
+				Document = ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.DrawForeground.ans"),
 				Toggle = true,
 				Pressed = PaintForeground,
-#if DESKTOP
 				ToolTip = "Paint foreground (shift)"
-#endif
 			};
 
 			control.Click += delegate
@@ -105,14 +88,12 @@ namespace Pablo.Formats.Character.Tools
 
 		Control BGButton()
 		{
-			var control = new ImageButton
+			var control = new AnsiButton
 			{
-				Image = ImageCache.BitmapFromResource("Pablo.Formats.Character.Icons.DrawBackground.png"),
+				Document = ImageCache.CharacterFromResource("Pablo.Formats.Character.Icons.DrawBackground.ans"),
 				Toggle = true,
 				Pressed = PaintBackground,
-#if DESKTOP
 				ToolTip = "Paint background (alt)"
-#endif
 			};
 
 			control.Click += delegate
