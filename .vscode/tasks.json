@@ -92,12 +92,13 @@
         {
             "label": "build-windows-installer",
             "type": "shell",
-            "command": "${input:msbuild}",
+            "command": "dotnet",
             "args": [
-                "/t:Build",
+                "build",
                 "${workspaceFolder}/Source/PabloDraw.WindowsInstaller/PabloDraw.WindowsInstaller.wixproj",
                 "/p:Configuration=${config:var.BuildConfiguration}",
                 "/p:GenerateFullPaths=true",
+                // "/p:BuildBranch=refs/tags/3.0.13-beta4",
                 "/v:Minimal",
                 "/consoleloggerparameters:NoSummary"
             ],

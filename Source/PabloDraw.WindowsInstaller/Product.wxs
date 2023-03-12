@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- The name of the product -->
+﻿<!-- The name of the product -->
 <?define Name = "PabloDraw" ?>
 <!-- The Description of the product -->
 <?define Description = "An ANSI/ASCII/RIP/Text editor." ?>
@@ -11,14 +10,16 @@
 <!-- The name of the Cabinet -->
 <?define CabName = "PabloDraw.cab" ?>
 
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*"
-           Language="1033"
-           Name="$(var.Name)"
-           Manufacturer="$(var.Manufacturer)"
-           UpgradeCode="$(var.UpgradeCode)"
-           Version="$(var.Version)">
-    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="x64" Manufacturer="$(var.Manufacturer)" />
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package 
+    Language="1033"
+    Name="$(var.Name)" 
+    Manufacturer="$(var.Manufacturer)" 
+    UpgradeCode="$(var.UpgradeCode)" 
+    Version="$(var.Version)"
+    InstallerVersion="200" 
+    ProductCode="*">
+    <SummaryInformation Manufacturer="$(var.Manufacturer)" />
 
     <!--Application logo-->
     <Icon Id="PabloDraw.ico" SourceFile="$(var.PabloDraw.ProjectDir)\PabloDraw.ico" />
@@ -39,33 +40,32 @@
       <!--Main application executable component-->
       <ComponentGroupRef Id="ProductComponents" />
       <!--Main application shortcut for Program Menu-->
-      <ComponentRef Id="ApplicationShortcut" />
+      <!-- <ComponentRef Id="ApplicationShortcut" /> -->
     </Feature>
-  </Product>
+  </Package>
 
   <Fragment>
-    <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="ProgramFiles64Folder">
+      <StandardDirectory Id="ProgramFiles6432Folder">
         <Directory Id="INSTALLFOLDER" Name="PabloDraw" />
-      </Directory>
+      </StandardDirectory>
       <!--Create application folder in Program Menu-->
-      <Directory Id="ProgramMenuFolder">
+      <!--
+      <StandardDirectory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="PabloDraw" />
-      </Directory>
-    </Directory>
-
-  </Fragment>
+      </StandardDirectory>
+      -->
+    </Fragment>
 
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-      <Component Id="PabloDraw.Console.exe" Win64="yes" Guid="50602e08-d852-48d8-98bc-c5feaf0e4ad4">
-        <File Id="PabloDraw.Console.exe" Source="$(var.PublishDir)PabloDraw.Console.exe" ProcessorArchitecture="x64" />
+      <Component Id="PabloDraw.Console.exe" Guid="50602e08-d852-48d8-98bc-c5feaf0e4ad4">
+        <File Id="PabloDraw.Console.exe" Source="$(var.PublishDir)PabloDraw.Console.exe" />
       </Component>
       <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-      <Component Id="PabloDraw.exe" Win64="yes" Guid="55b621c9-5f4f-47f9-a951-a8a2b816b572">
-        <File Id="PabloDraw.exe" Source="$(var.PublishDir)PabloDraw.exe" ProcessorArchitecture="x64" KeyPath="yes" />
+      <Component Id="PabloDraw.exe" Guid="55b621c9-5f4f-47f9-a951-a8a2b816b572">
+        <File Id="PabloDraw.exe" Source="$(var.PublishDir)PabloDraw.exe" KeyPath="yes" />
 
-        <Shortcut Id="startmenuShortcut" Directory="ProgramMenuFolder" Name="PabloDraw" Icon="PabloDraw.ico" IconIndex="0" WorkingDirectory="APPLICATIONFOLDER" Advertise="yes" />
+        <Shortcut Id="startmenuShortcut" Directory="ProgramMenuFolder" Name="PabloDraw" Icon="PabloDraw.ico" IconIndex="0" WorkingDirectory="INSTALLFOLDER" Advertise="yes" />
 
         <!-- Capabilities keys for Vista/7 "Set Program Access and Defaults" -->
         <RegistryValue Root="HKLM" Key="SOFTWARE\PabloDraw\Capabilities" Name="ApplicationDescription" Value="$(var.Description)" Type="string" />
@@ -128,23 +128,23 @@
   </Fragment>
 
   <Fragment>
-    <Component Id="PabloDraw.Document.Ansi" Directory="INSTALLFOLDER" Guid="F5BC3888-EF40-4DFD-80D6-55089CFAA0AF" Win64="yes">
+    <Component Id="PabloDraw.Document.Ansi" Directory="INSTALLFOLDER" Guid="F5BC3888-EF40-4DFD-80D6-55089CFAA0AF" Condition="DEFAULTVIEWER=1" Bitness="always64">
       <ProgId Id="PabloDraw.Document.Ansi" Description="ANSI Document">
         <Extension Id="ans" ContentType="text/x-ansi">
           <Verb Id="open" Command="Open" TargetFile="PabloDraw.exe" Argument="%1" />
         </Extension>
       </ProgId>
 
-      <Condition><![CDATA[DEFAULTVIEWER=1]]></Condition>
+      
     </Component>
-    <Component Id="PabloDraw.Document.Rip" Directory="INSTALLFOLDER" Guid="1FD33D38-3C3C-470D-AC11-56436CC1C595" Win64="yes">
+    <Component Id="PabloDraw.Document.Rip" Directory="INSTALLFOLDER" Guid="1FD33D38-3C3C-470D-AC11-56436CC1C595" Condition="DEFAULTVIEWER=1" Bitness="always64">
       <ProgId Id="PabloDraw.Document.Rip" Description="RIP Document">
         <Extension Id="rip" ContentType="text/x-rip">
           <Verb Id="open" Command="Open" TargetFile="PabloDraw.exe" Argument="%1" />
         </Extension>
       </ProgId>
 
-      <Condition><![CDATA[DEFAULTVIEWER=1]]></Condition>
+      
     </Component>
 
   </Fragment>
@@ -152,8 +152,8 @@
   <Fragment>
     <DirectoryRef Id="ApplicationProgramsFolder">
       <!--Create application shortcut in Program Menu-->
-      <Component Id="ApplicationShortcut" Guid="*">
-        <Shortcut Id="ApplicationStartMenuShortcut" Name="$(var.Name)" Description="$(var.Description)" Icon="PabloDraw.ico" Target="[#PabloDraw.exe]" WorkingDirectory="INSTALLFOLDER" />
+      <Component Id="ApplicationShortcut">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="$(var.Name)" Description="$(var.Description)" Icon="PabloDraw.ico" Target="[!PabloDraw.exe]" WorkingDirectory="INSTALLFOLDER" />
         <!--Remove application shortcut from Program Menu on uninstall-->
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
         <!--Create application registry entry-->

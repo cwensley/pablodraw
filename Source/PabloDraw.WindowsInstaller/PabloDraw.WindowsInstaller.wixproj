@@ -1,28 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" InitialTargets="EnsureWixToolsetInstalled"
-  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\Directory.Build.props" />
+﻿<Project Sdk="WixToolset.Sdk/4.0.0-rc.3">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>3.10</ProductVersion>
-    <ProjectGuid>38a42f6d-a417-45b0-8ec8-a700f31cbe26</ProjectGuid>
-    <SchemaVersion>2.0</SchemaVersion>
     <OutputName>PabloDraw-Windows-x64</OutputName>
-    <OutputType>Package</OutputType>
-    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
-    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <DefineConstants>PublishDir=$(PublishDir)</DefineConstants>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <OutputPath>$(ArtifactsDir)installer\$(Configuration)\$(BuildTarget)\</OutputPath>
     <PublishReferences Condition="$(PublishReferences) == ''">True</PublishReferences>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DefineConstants>$(DefineConstants);Debug</DefineConstants>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Product.wxs" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PabloDraw\PabloDraw.csproj">
       <Name>PabloDraw</Name>
@@ -39,21 +22,16 @@
       <IsDotnetSDKProject>True</IsDotnetSDKProject>
     </ProjectReference>
   </ItemGroup>
-  
-  <Import Project="$(WixTargetsPath)" />
-  <Import Project="..\Directory.Build.targets" />
-  <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
-    <Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
-  </Target>
-
   <Target Name="SetAssemblyVersion" BeforeTargets="BeforeBuild">
-    <Message Importance="high" Text="Building Version: $(AssemblyVersion)" />
     <PropertyGroup>
-      <DefineConstants>$(DefineConstants);Version=$(AssemblyVersion)</DefineConstants>
+      <ProductVersion Condition="$(ProductVersion) == ''">$(AssemblyVersion)</ProductVersion>
+      <ProductVersion Condition="$(ProductVersion) == ''">$(Version)</ProductVersion>
+      <ProductVersion Condition="$(ProductVersion.IndexOf('-')) > 0">$(ProductVersion.Substring(0, $(ProductVersion.IndexOf('-'))))</ProductVersion>
+      <DefineConstants>$(DefineConstants);Version=$(ProductVersion)</DefineConstants>
     </PropertyGroup>
+    <Message Importance="high" Text="Building Version: $(ProductVersion)" />
   </Target>
-
-  <Target Name="BeforeBuild" Condition="$(PublishReferences) == 'True'">
+  <Target Name="PublishPabloDraw" BeforeTargets="BeforeBuild" Condition="$(PublishReferences) == 'True'">
     <Exec WorkingDirectory="%(ProjectReference.RootDir)%(ProjectReference.Directory)" Command="dotnet publish -c $(Configuration)" Condition="'%(ProjectReference.IsDotnetSDKProject)' == 'True'" />
     <!-- <ItemGroup>
       <LinkerBindInputPaths Include="%(ProjectReference.PublishDir)" />
