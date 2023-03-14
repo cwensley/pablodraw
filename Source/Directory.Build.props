@@ -8,8 +8,17 @@
 
   <PropertyGroup>
     <Company>Picoe Software Solutions</Company>
-    <Copyright>(c) 2006-2022 by Curtis Wensley aka Eto</Copyright>
-    <Version Condition="$(Version) == ''">3.3.11-dev</Version>
+    <Copyright>(c) 2006-2023 by Curtis Wensley aka Eto</Copyright>
+    
+    <DevVersion>3.3.12</DevVersion>
+    
+    <!-- set version from tag -->
+    <Version Condition="$(Version) == '' AND $(BuildBranch.StartsWith('refs/tags/'))">$(BuildBranch.Substring(10))</Version>
+    <!-- set version for CI build -->
+    <Version Condition="$(Version) == '' AND $(BuildVersion) != ''">$(DevVersion)-ci-$([System.DateTime]::Now.ToString('yyyyMMdd')).$(BuildVersion)</Version>
+    <!-- set version for development -->
+    <Version Condition="$(Version) == ''">$(DevVersion)-dev</Version>
+    
     
     <BasePath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))</BasePath>
     <ArtifactsDir>$(BasePath)artifacts\</ArtifactsDir>

@@ -1,0 +1,108 @@
+﻿<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  
+  <UsingTask TaskName="UpdatePListEntries" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <TargetFile ParameterType="System.String" Required="true" />
+      <Entries ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <IconFile ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="netstandard" />
+      <Code Type="Class" Language="cs"><![CDATA[
+    using System;
+    using System.IO;
+    using System.Xml;
+    using System.Text;
+    using Microsoft.Build.Framework;
+    using Microsoft.Build.Utilities;
+
+    public class UpdatePListEntries : Task
+    {
+      [Required]
+      public string TargetFile { get; set; }
+      [Required]
+      public Microsoft.Build.Framework.ITaskItem[] Entries { get; set; }
+      [Output]
+      public string IconFile { get; set; }
+
+      XmlDocument xml;
+      XmlNode dict;
+
+      class NullSubsetXmlTextWriter : XmlTextWriter
+      {
+        XmlWriterSettings _settings;
+        public NullSubsetXmlTextWriter(string inputFileName, Encoding encoding)
+          : base(inputFileName, encoding)
+        {
+          Formatting = Formatting.Indented;
+          IndentChar = ' ';
+          Indentation = 2;
+          _settings = new XmlWriterSettings();
+          _settings.Encoding = Encoding.UTF8;
+          _settings.Indent = true;
+          _settings.IndentChars = "  ";
+          _settings.NewLineChars = "\n";
+          _settings.NewLineHandling = NewLineHandling.Entitize;
+        }
+
+        public override XmlWriterSettings Settings { get { return _settings; } }
+
+        public override void WriteDocType(string name, string pubid, string sysid, string subset)
+        {
+          // fix issue writing doctype
+          if (subset == string.Empty)
+            subset = null;
+          base.WriteDocType(name, pubid, sysid, subset);
+        }
+      }
+
+      string GetStringProperty(string name)
+      {
+        var location = dict.SelectSingleNode("key[.='" + name + "']/following-sibling::string[1]");
+        return location.InnerText;
+      }
+
+      void AddStringProperty(string name, string value, bool force = false)
+      {
+        XmlNode node;
+      
+        var exists = dict.SelectSingleNode("key[text()='" + name + "']") != null;
+        if (exists && !force)
+          return;
+      
+        dict.AppendChild(node = xml.CreateNode(XmlNodeType.Element, "key", null));
+        node.InnerText = name;
+        dict.AppendChild(node = xml.CreateNode(XmlNodeType.Element, "string", null));
+        node.InnerText = value;
+      }
+      
+      public override bool Execute()
+      {
+        xml = new XmlDocument();
+        xml.Load(TargetFile);
+
+        dict = xml.SelectSingleNode("plist/dict") as XmlElement;
+
+        foreach (var entry in Entries)
+        {
+          if (!bool.TryParse(entry.GetMetadata("Force"), out var force))
+            force = false;
+            
+          AddStringProperty(entry.ItemSpec, entry.GetMetadata("Value"), force);
+        }
+        
+        IconFile = GetStringProperty("CFBundleIconFile");
+
+        using (var sw = new NullSubsetXmlTextWriter(TargetFile, Encoding.UTF8))
+          xml.Save(sw);
+          
+        return true;
+      }
+    }
+]]></Code>
+    </Task>
+  </UsingTask>
+  
+
+</Project>

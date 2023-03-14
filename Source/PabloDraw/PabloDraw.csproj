@@ -108,5 +108,14 @@
     <!-- Should go into Eto 2.7.2 -->
     <MakeDir Directories="$(DmgOutputPath)" />
   </Target>
+  
+  <Target Name="_UpdateMacVersion" Condition="$(BuildTarget) == 'Mac'" BeforeTargets="MacFinishBundle">
+    <ItemGroup>
+      <PListEntry Include="CFBundleShortVersionString" Value="$(AssemblyVersion)" />
+      <PListEntry Include="CFBundleVersion" Value="$(AssemblyVersion)" />
+    </ItemGroup>
+  
+    <UpdatePListEntries TargetFile="$(OutputPListFile)" Entries="@(PListEntry)" />
+  </Target>
 
 </Project>
