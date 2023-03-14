@@ -23,8 +23,6 @@ jobs:
         with:
           dotnet-version: ${{ env.DotNetVersion }}
 
-      - uses: microsoft/setup-msbuild@v1.1
-
       - name: Build PabloDraw
         run: dotnet publish Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-windows.binlog
 
@@ -32,7 +30,7 @@ jobs:
         run: dotnet publish Source/PabloDraw.Console/PabloDraw.Console.cxproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw.console-windows.binlog
         
       - name: Build msi
-        run: msbuild ${{ env.BuildParameters }} Source/PabloDraw.WindowsInstaller/PabloDraw.WindowsInstaller.wixproj
+        run: dotnet build ${{ env.BuildParameters }} Source/PabloDraw.WindowsInstaller/PabloDraw.WindowsInstaller.wixproj
 
       - uses: actions/upload-artifact@v2
         with:
