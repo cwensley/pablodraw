@@ -82,12 +82,12 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(EtoBasePath) == ''">
-    <PackageReference Include="Eto.Forms" Version="2.7.1" />
-    <PackageReference Include="Eto.Platform.Gtk" Version="2.7.1" Condition="$(BuildTarget) == 'Linux'" />
-    <PackageReference Include="Eto.Platform.Mac64" Version="2.7.1" Condition="$(BuildTarget) == 'Mac'" />
-    <PackageReference Include="Eto.Platform.Windows" Version="2.7.1" Condition="$(BuildTarget) == 'Windows'" />
-    <!-- <PackageReference Include="Eto.Platform.Gtk2" Version="2.7.1" Condition="$(BuildTarget) == 'Linux'" /> -->
-    <!-- <PackageReference Include="Eto.Platform.Wpf" Version="2.7.1" Condition="$(BuildTarget) == 'Windows'" /> -->
+    <PackageReference Include="Eto.Forms" Version="2.7.4" />
+    <PackageReference Include="Eto.Platform.Gtk" Version="2.7.4" Condition="$(BuildTarget) == 'Linux'" />
+    <PackageReference Include="Eto.Platform.Mac64" Version="2.7.4" Condition="$(BuildTarget) == 'Mac'" />
+    <PackageReference Include="Eto.Platform.Windows" Version="2.7.4" Condition="$(BuildTarget) == 'Windows'" />
+    <!-- <PackageReference Include="Eto.Platform.Gtk2" Version="2.7.4" Condition="$(BuildTarget) == 'Linux'" /> -->
+    <!-- <PackageReference Include="Eto.Platform.Wpf" Version="2.7.4" Condition="$(BuildTarget) == 'Windows'" /> -->
   </ItemGroup>
 
   <ItemGroup>

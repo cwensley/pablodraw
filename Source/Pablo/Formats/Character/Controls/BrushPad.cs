@@ -95,10 +95,12 @@ namespace Pablo.Formats.Character.Controls
 				ReadOnly = true,
 				Bordered = true
 			};
-			control.MouseDown += (sender, e) =>
+			control.MouseDown += (sender, e) => e.Handled = true;
+			control.MouseUp += (sender, e) =>
 			{
-				EditBrushes();
 				e.Handled = true;
+				if (new Rectangle(control.Size).Contains((Point)e.Location))
+					EditBrushes();
 			};
 			return control;
 		}
