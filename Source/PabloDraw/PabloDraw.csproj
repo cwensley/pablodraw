@@ -29,7 +29,7 @@
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <DefineConstants>LINUX</DefineConstants>
     <TrimMode>Link</TrimMode>
-    <PublishTrimmed>True</PublishTrimmed>
+    <!-- <PublishTrimmed>True</PublishTrimmed> -->
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Mac'">
