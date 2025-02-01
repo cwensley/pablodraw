@@ -196,8 +196,10 @@ namespace PabloDraw
 						Platform.Initialize(new Eto.Mac.Platform());
 #elif LINUX
 						Platform.Initialize(new Eto.GtkSharp.Platform());
-#elif WINDOWS
+#elif WINFORMS
 						Platform.Initialize(new Eto.WinForms.Platform());
+#elif WPF
+						Platform.Initialize(new Eto.Wpf.Platform());
 #else
 						Platform.Initialize(Platform.Detect);
 #endif
@@ -212,8 +214,10 @@ namespace PabloDraw
 				Platform.Initialize(new Eto.Mac.Platform());
 #elif LINUX
 				Platform.Initialize(new Eto.GtkSharp.Platform());
-#elif WINDOWS
+#elif WINFORMS
 				Platform.Initialize(new Eto.WinForms.Platform());
+#elif WPF
+				Platform.Initialize(new Eto.Wpf.Platform());
 #else
 				Platform.Initialize(Platform.Detect);
 #endif

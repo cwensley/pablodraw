@@ -9,85 +9,91 @@ on:
     branches: [main]
 
 env:
-  DotNetVersion: "7.0.x"
+  DotNetVersion: "9.0.x"
   BuildConfiguration: "Release"
   BuildParameters: "/clp:NoSummary /p:Configuration=Release /p:BuildVersion=${{ github.run_id }} /p:BuildBranch=${{ github.ref }}"
 
 jobs:
   build-windows:
+    strategy:
+      matrix:
+        arch: [win-x64, win-arm64]
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DotNetVersion }}
 
       - name: Build PabloDraw
-        run: dotnet publish Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-windows.binlog
+        run: dotnet publish -r:${{ matrix.arch }} Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-${{ matrix.arch }}.binlog
 
       - name: Build PabloDraw.Console
-        run: dotnet publish Source/PabloDraw.Console/PabloDraw.Console.cxproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw.console-windows.binlog
+        run: dotnet publish -r:${{ matrix.arch }} Source/PabloDraw.Console/PabloDraw.Console.cxproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw.console-${{ matrix.arch }}.binlog
         
       - name: Build msi
-        run: dotnet build ${{ env.BuildParameters }} Source/PabloDraw.WindowsInstaller/PabloDraw.WindowsInstaller.wixproj
+        run: dotnet build -r:${{ matrix.arch }} ${{ env.BuildParameters }} /p:PublishReferences=False Source/PabloDraw.WindowsInstaller/PabloDraw.WindowsInstaller.wixproj
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
-          name: pablodraw-windows-binaries-x64
-          path: artifacts/publish/${{ env.BuildConfiguration }}/Windows/*
+          name: pablodraw-binaries-${{ matrix.arch }}
+          path: artifacts/publish/${{ env.BuildConfiguration }}/${{ matrix.arch }}/*
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
-          name: pablodraw-windows-installer-x64
-          path: artifacts/installer/${{ env.BuildConfiguration }}/Windows/*.msi
+          name: pablodraw-installer-${{ matrix.arch }}
+          path: artifacts/installer/${{ env.BuildConfiguration }}/${{ matrix.arch }}/*.msi
 
       - name: Upload log files
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: log
+          name: log-${{ matrix.arch }}
           path: artifacts/log/**/*
 
   build-linux:
+    strategy:
+      matrix:
+        arch: [linux-x64, linux-arm64]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DotNetVersion }}
 
       - name: Build PabloDraw
-        run: dotnet publish Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-linux.binlog
+        run: dotnet publish -r:${{ matrix.arch }} Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-${{ matrix.arch }}.binlog
         
       - name: Create gzip
-        run: tar -czvf pablodraw-linux-x64.tar.gz -C artifacts/publish/${{ env.BuildConfiguration }}/Linux .
+        run: tar -czvf pablodraw-${{ matrix.arch }}.tar.gz -C artifacts/publish/${{ env.BuildConfiguration }}/${{ matrix.arch }} .
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
-          name: pablodraw-linux-binaries-x64
-          path: pablodraw-linux-x64.tar.gz
+          name: pablodraw-binaries-${{ matrix.arch }}
+          path: pablodraw-${{ matrix.arch }}.tar.gz
 
       - name: Upload log files
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: log
+          name: log-${{ matrix.arch }}
           path: artifacts/log/**/*
 
   build-mac:
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DotNetVersion }}
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: 13.1
+          xcode-version: latest-stable
 
       - name: Import code signing certificate
         if: github.event_name != 'pull_request'
@@ -109,16 +115,16 @@ jobs:
       - name: Build PabloDraw
         run: sudo dotnet build Source/PabloDraw/PabloDraw.csproj ${{ env.BuildParameters }} /bl:artifacts/log/pablodraw-mac.binlog
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: pablodraw-mac
           path: artifacts/publish/${{ env.BuildConfiguration }}/Mac/*.dmg
 
       - name: Upload log files
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: log
+          name: log-mac
           path: artifacts/log/**/*
 
   update-release:
@@ -129,16 +135,10 @@ jobs:
       - id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
 
-      - id: get_release
-        uses: bruceadams/get-release@v1.2.3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
 
-      - uses: actions/download-artifact@v2
-
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
           files: |
             **/*.msi
             **/*.dmg

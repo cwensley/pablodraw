@@ -229,16 +229,16 @@ namespace Pablo.Interface
 				if (doc != null && value != doc.EditMode)
 				{
 					var stream = loadingStream;
-					if (stream != null)
+					if (stream != null && stream.CanSeek && stream.CanRead)
 					{
 						doc.EditMode = value;
 
 						var fileName = doc.FileName;
+						loadingStream = null;
 						SetDocument(null);
 						stream.Seek(0, SeekOrigin.Begin);
 						LoadFile(fileName, stream, doc.LoadedFormat, value, false, doc.HasSavePermission);
 						stream.Dispose();
-						loadingStream = null;
 					}
 					else
 						doc.EditMode = value;

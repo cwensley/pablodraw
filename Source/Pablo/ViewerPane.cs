@@ -56,7 +56,7 @@ namespace Pablo
 			ExpandContentWidth = ExpandContentHeight = false;
 #endif
 
-			BackgroundColor = handler.Document.EditMode ? Color.FromArgb(48, 48, 48) : Colors.Black;
+			BackgroundColor = handler.Document.EditMode ? Color.FromArgb(28, 28, 28) : Colors.Black;
 
 			Border = BorderType.None;
 			layout = new PixelLayout();

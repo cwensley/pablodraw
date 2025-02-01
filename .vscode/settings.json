@@ -3,7 +3,7 @@
         "Source"
     ],
     "var": {
-        "BuildConfiguration": "Debug"
+        "BuildConfiguration": "Debug",
     },
     // "clangd.path": "clangd"
 }

@@ -62,11 +62,19 @@
             "command": "dotnet",
             "args": [
                 "publish",
+                "-c:Release",
+                "/tl:off",
                 "${workspaceFolder}/Source/PabloDraw/PabloDraw.csproj",
-                // "/p:BuildTarget=Linux",
-                "/p:Configuration=Release",
+
+                // "-r:win-arm64",
+                // "/p:BuildTarget=Windows",
+
+                // "-r:linux-arm64",
+                "/p:BuildTarget=Linux",
+                
                 "/p:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/clp:NoSummary",
+                "/bl:artifacts/log/PabloDraw-publish.binlog"
             ],
             "group": "build",
             "presentation": {
@@ -79,13 +87,13 @@
             "type": "shell",
             "dependsOn": [ "publish-pablodraw" ], 
             "osx": {
-                "command": "${workspaceFolder}/artifacts/bin/PabloDraw/Release/net7.0/PabloDraw.app/Contents/MacOS/PabloDraw",
+                "command": "${workspaceFolder}/artifacts/bin/PabloDraw/Release/net9.0/PabloDraw.app/Contents/MacOS/PabloDraw",
             },
             "windows": {
-                "command": "${workspaceFolder}/artifacts/bin/PabloDraw/Release/net7.0-windows/win-x64/publish/PabloDraw.exe",
+                "command": "${workspaceFolder}/artifacts/bin/PabloDraw/Release/net9.0-windows/win-x64/publish/PabloDraw.exe",
             },
             "linux": {
-                "command": "${workspaceFolder}/artifacts/bin/PabloDraw/Release/net7.0/linux-x64/publish/PabloDraw",
+                "command": "${workspaceFolder}/artifacts/bin/PabloDraw/Release/net9.0/linux-x64/publish/PabloDraw",
             },
             "problemMatcher": [ ]
         },
@@ -95,6 +103,7 @@
             "command": "dotnet",
             "args": [
                 "build",
+                "-r:win-x64",
                 "${workspaceFolder}/Source/PabloDraw.WindowsInstaller/PabloDraw.WindowsInstaller.wixproj",
                 "/p:Configuration=${config:var.BuildConfiguration}",
                 "/p:GenerateFullPaths=true",
