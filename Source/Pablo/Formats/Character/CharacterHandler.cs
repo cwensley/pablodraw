@@ -677,7 +677,11 @@ namespace Pablo.Formats.Character
 					args.KeyboardCommands.Add(new DeleteLine(this));
 					args.KeyboardCommands.Add(new NewLine(this));
 					args.KeyboardCommands.Add(new Delete(this));
+					args.KeyboardCommands.Add(new Delete(this) { Shortcut = Keys.Delete | Keys.Shift });
+					args.KeyboardCommands.Add(new Delete(this) { Shortcut = Keys.Delete | Keys.Alt });
 					args.KeyboardCommands.Add(new Backspace(this));
+					args.KeyboardCommands.Add(new Backspace(this) { Shortcut = Keys.Backspace | Keys.Shift });
+					args.KeyboardCommands.Add(new Backspace(this) { Shortcut = Keys.Backspace | Keys.Alt });
 					
 					args.KeyboardCommands.Add(new UseColour(this));
 

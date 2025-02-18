@@ -8,32 +8,44 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Generic'">
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <OutputPath>bin/$(Configuration)/generic</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Windows'">
-    <TargetFramework>net7.0-windows</TargetFramework>
-    <!-- <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers> -->
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <!-- <RuntimeIdentifier>win-x64</RuntimeIdentifier> -->
     <!-- <RuntimeIdentifier>win-arm64</RuntimeIdentifier> -->
     <UseWindowsForms>True</UseWindowsForms>
     <!-- <PublishReadyToRun>True</PublishReadyToRun> -->
-    <DefineConstants>WINDOWS</DefineConstants>
+    <DefineConstants>WINFORMS</DefineConstants>
+    <IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(BuildTarget) == 'WPF'">
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <!-- <RuntimeIdentifier>win-x64</RuntimeIdentifier> -->
+    <!-- <RuntimeIdentifier>win-arm64</RuntimeIdentifier> -->
+    <UseWpf>True</UseWpf>
+    <!-- <PublishReadyToRun>True</PublishReadyToRun> -->
+    <DefineConstants>WPF</DefineConstants>
     <IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Linux'">
-    <TargetFramework>net7.0</TargetFramework>
-    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <TargetFramework>net9.0</TargetFramework>
+    <RuntimeIdentifiers>linux-x64;linux-arm64</RuntimeIdentifiers>
     <DefineConstants>LINUX</DefineConstants>
     <TrimMode>Link</TrimMode>
     <PublishTrimmed>True</PublishTrimmed>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildTarget) == 'Mac'">
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <RuntimeIdentifiers>osx-x64;osx-arm64</RuntimeIdentifiers>
     <DefineConstants>MAC</DefineConstants>
   </PropertyGroup>
@@ -45,6 +57,7 @@
     <DmgName>PabloDraw-Mac</DmgName>
     <DmgVolumeName>PabloDraw</DmgVolumeName>
     <DmgOutputPath>$(PublishDir)</DmgOutputPath> <!-- Eto will use this by default if specified in 2.7.2 -->
+    <MacAutoPublishBundle>True</MacAutoPublishBundle>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -77,17 +90,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mono.Nat" Version="3.0.3" />
+    <PackageReference Include="Mono.Nat" Version="3.0.4" />
     <PackageReference Include="Lidgren.Network" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup Condition="$(EtoBasePath) == ''">
-    <PackageReference Include="Eto.Forms" Version="2.7.4" />
-    <PackageReference Include="Eto.Platform.Gtk" Version="2.7.4" Condition="$(BuildTarget) == 'Linux'" />
-    <PackageReference Include="Eto.Platform.Mac64" Version="2.7.4" Condition="$(BuildTarget) == 'Mac'" />
-    <PackageReference Include="Eto.Platform.Windows" Version="2.7.4" Condition="$(BuildTarget) == 'Windows'" />
-    <!-- <PackageReference Include="Eto.Platform.Gtk2" Version="2.7.4" Condition="$(BuildTarget) == 'Linux'" /> -->
-    <!-- <PackageReference Include="Eto.Platform.Wpf" Version="2.7.4" Condition="$(BuildTarget) == 'Windows'" /> -->
+    <PackageReference Include="Eto.Forms" Version="2.9.0" />
+    <PackageReference Include="Eto.Platform.Gtk" Version="2.9.0" Condition="$(BuildTarget) == 'Linux'" />
+    <PackageReference Include="Eto.Platform.Mac64" Version="2.9.0" Condition="$(BuildTarget) == 'Mac'" />
+    <PackageReference Include="Eto.Platform.Windows" Version="2.9.0" Condition="$(BuildTarget) == 'Windows'" />
+    <PackageReference Include="Eto.Platform.Wpf" Version="2.9.0" Condition="$(BuildTarget) == 'WPF'" />
   </ItemGroup>
 
   <ItemGroup>
@@ -98,6 +110,7 @@
     <ProjectReference Include="$(EtoBasePath)src\Eto\Eto.csproj" />
     <ProjectReference Include="$(EtoBasePath)src\Eto.Gtk\Eto.Gtk.csproj" Condition="$(BuildTarget) == 'Linux'" />
     <ProjectReference Include="$(EtoBasePath)src\Eto.WinForms\Eto.WinForms.csproj" Condition="$(BuildTarget) == 'Windows'" />
+    <ProjectReference Include="$(EtoBasePath)src\Eto.Wpf\Eto.Wpf.csproj" Condition="$(BuildTarget) == 'WPF'" />
     <ProjectReference Include="$(EtoBasePath)src\Eto.Mac\Eto.Mac64.csproj" Condition="$(BuildTarget) == 'Mac'" />
     <ProjectReference Include="$(EtoBasePath)lib\monomac\src\MonoMac.csproj" Condition="$(BuildTarget) == 'Mac'" />
   </ItemGroup>
@@ -106,7 +119,7 @@
 
   <Target Name="_CreateDmgOutputPath" BeforeTargets="MacCreateDmg" Condition="$(DmgOutputPath) != ''">
     <!-- Should go into Eto 2.7.2 -->
-    <MakeDir Directories="$(DmgOutputPath)" />
+    <!-- <MakeDir Directories="$(DmgOutputPath)" /> -->
   </Target>
   
   <Target Name="_UpdateMacVersion" Condition="$(BuildTarget) == 'Mac'" BeforeTargets="MacFinishBundle">

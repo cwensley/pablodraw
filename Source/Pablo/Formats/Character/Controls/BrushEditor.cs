@@ -44,10 +44,10 @@ namespace Pablo.Formats.Character.Controls
 			layout.AddRow(ResetButton(), null, CancelButton(), OkButton());
 
 			Content = layout;
-			Load(CharacterHandler.Info.Brushes);
+			LoadBrushes(CharacterHandler.Info.Brushes);
 		}
 
-		void Save()
+		void SaveBrushes()
 		{
 			for (int i = 0; i < CharacterHandler.Info.Brushes.Length; i++)
 			{
@@ -58,7 +58,7 @@ namespace Pablo.Formats.Character.Controls
 			}
 		}
 		
-		void Load(BrushInfo[] brushes)
+		void LoadBrushes(BrushInfo[] brushes)
 		{
 			for (int i = 0; i < brushCanvases.Count; i++)
 			{
@@ -110,7 +110,7 @@ namespace Pablo.Formats.Character.Controls
 					var c = (RadioButton)sender;
 					SelectedBrush = (int)c.Tag;
 					Result = DialogResult.Ok;
-					Save();
+					SaveBrushes();
 					Close();
 				};
 				radio.CheckedChanged += delegate(object sender, EventArgs e)
@@ -196,7 +196,7 @@ namespace Pablo.Formats.Character.Controls
 			control.Click += delegate
 			{
 				Result = DialogResult.Ok;
-				Save();
+				SaveBrushes();
 				Close();
 			};
 
@@ -214,7 +214,7 @@ namespace Pablo.Formats.Character.Controls
 
 			control.Click += delegate
 			{
-				Load(CharacterDocumentInfo.DefaultBrushes);
+				LoadBrushes(CharacterDocumentInfo.DefaultBrushes);
 			};
 
 			return control;

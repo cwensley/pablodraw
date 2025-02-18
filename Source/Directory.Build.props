@@ -1,6 +1,7 @@
 ﻿<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup Condition="$(BuildTarget) == ''">
+    <!-- <BuildTarget Condition="$([MSBuild]::IsOSPlatform(Windows))">WPF</BuildTarget> -->
     <BuildTarget Condition="$([MSBuild]::IsOSPlatform(Windows))">Windows</BuildTarget>
     <BuildTarget Condition="$([MSBuild]::IsOSPlatform(OSX))">Mac</BuildTarget>
     <BuildTarget Condition="$([MSBuild]::IsOSPlatform(Linux))">Linux</BuildTarget>
@@ -8,9 +9,9 @@
 
   <PropertyGroup>
     <Company>Picoe Software Solutions</Company>
-    <Copyright>(c) 2006-2023 by Curtis Wensley aka Eto</Copyright>
+    <Copyright>(c) 2006-2025 by Curtis Wensley aka Eto</Copyright>
     
-    <DevVersion>3.3.12</DevVersion>
+    <DevVersion>3.3.14</DevVersion>
     
     <!-- set version from tag -->
     <Version Condition="$(Version) == '' AND $(BuildBranch.StartsWith('refs/tags/'))">$(BuildBranch.Substring(10))</Version>
@@ -23,15 +24,18 @@
     <BasePath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))</BasePath>
     <ArtifactsDir>$(BasePath)artifacts\</ArtifactsDir>
 
-    <!-- <DebugType>embedded</DebugType> -->
-    <!-- <DebugType>portable</DebugType> -->
+    <DebugType Condition="$(Configuration) == 'Debug'">embedded</DebugType>
+    <DebugType Condition="$(Configuration) == 'Release'">none</DebugType>
     <NoWarn>NU1701</NoWarn>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <LangVersion Condition="$(TargetFramework) == 'netstandard2.0'">11.0</LangVersion>
     
     <BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == ''">$(ArtifactsDir)obj\$(BuildTarget)\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
     <BaseOutputPath Condition="$(BaseOutputPath) == ''">$(ArtifactsDir)bin\$(MSBuildProjectName)\</BaseOutputPath>
     <PackageOutputPath Condition="$(PackageOutputPath) == ''">$(ArtifactsDir)nuget\$(Configuration)\</PackageOutputPath>
     <RestoreProjectStyle Condition="'$(RestoreProjectStyle)' == ''">PackageReference</RestoreProjectStyle>
-    <PublishDir Condition="$(PublishDir) == ''">$(ArtifactsDir)publish\$(Configuration)\$(BuildTarget)\</PublishDir>
+    <PublishDir Condition="$(PublishDir) == '' and $(RuntimeIdentifier) != ''">$(ArtifactsDir)publish\$(Configuration)\$(RuntimeIdentifier)\</PublishDir>
+    <PublishDir Condition="$(PublishDir) == '' and $(RuntimeIdentifier) == ''">$(ArtifactsDir)publish\$(Configuration)\$(BuildTarget)\</PublishDir>
 
     <!-- Uncomment to use Eto from source -->
     <!-- <EtoBasePath>..\..\..\Eto\</EtoBasePath> -->

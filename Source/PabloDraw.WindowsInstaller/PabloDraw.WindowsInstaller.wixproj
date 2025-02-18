@@ -1,10 +1,14 @@
-﻿<Project Sdk="WixToolset.Sdk/4.0.0-rc.3">
+﻿<Project Sdk="WixToolset.Sdk/5.0.2">
   <PropertyGroup>
-    <OutputName>PabloDraw-Windows-x64</OutputName>
+    <RuntimeIdentifier Condition="$(RuntimeIdentifier) == ''">win-x64</RuntimeIdentifier>
+    <OutputName>PabloDraw-$(RuntimeIdentifier)</OutputName>
     <DefineConstants>PublishDir=$(PublishDir)</DefineConstants>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
-    <OutputPath>$(ArtifactsDir)installer\$(Configuration)\$(BuildTarget)\</OutputPath>
+    <OutputPath>$(ArtifactsDir)installer\$(Configuration)\$(RuntimeIdentifier)\</OutputPath>
     <PublishReferences Condition="$(PublishReferences) == ''">True</PublishReferences>
+    <InstallerPlatform Condition="$(RuntimeIdentifier) == 'win-x64'">x64</InstallerPlatform>
+    <InstallerPlatform Condition="$(RuntimeIdentifier) == 'win-arm64'">arm64</InstallerPlatform>
+    <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\PabloDraw\PabloDraw.csproj">
@@ -32,7 +36,7 @@
     <Message Importance="high" Text="Building Version: $(ProductVersion)" />
   </Target>
   <Target Name="PublishPabloDraw" BeforeTargets="BeforeBuild" Condition="$(PublishReferences) == 'True'">
-    <Exec WorkingDirectory="%(ProjectReference.RootDir)%(ProjectReference.Directory)" Command="dotnet publish -c $(Configuration)" Condition="'%(ProjectReference.IsDotnetSDKProject)' == 'True'" />
+    <Exec WorkingDirectory="%(ProjectReference.RootDir)%(ProjectReference.Directory)" Command="dotnet publish -r:$(RuntimeIdentifier) -c:$(Configuration)" Condition="'%(ProjectReference.IsDotnetSDKProject)' == 'True'" />
     <!-- <ItemGroup>
       <LinkerBindInputPaths Include="%(ProjectReference.PublishDir)" />
     </ItemGroup>

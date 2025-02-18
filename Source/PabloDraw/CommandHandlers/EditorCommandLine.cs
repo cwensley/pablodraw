@@ -37,6 +37,9 @@ namespace PabloDraw.CommandHandlers
 #if MAC
 				MacStyles.Apply();
 #endif
+#if WPF
+				Eto.Style.Add<Eto.Wpf.Forms.Controls.DrawableHandler>(null, h => h.OptimizedInvalidateRect = false);
+#endif
 				var app = new Pablo.Interface.PabloApplication();
 				// app.UnhandledException += (sender, e) => UnhandledExceptionReporter(e.ExceptionObject);
 

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <AssemblyTitle>Pablo.Interface</AssemblyTitle>
     <AssemblyDescription>Main Interface</AssemblyDescription>
   </PropertyGroup>
@@ -15,8 +15,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(EtoBasePath)src\Eto\Eto.csproj" Condition="$(EtoBasePath) != ''" />
-    <PackageReference Include="Eto.Forms" Version="2.7.4" Condition="$(EtoBasePath) == ''" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
+    <PackageReference Include="Eto.Forms" Version="2.9.0" Condition="$(EtoBasePath) == ''" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Pablo\Pablo.csproj" />

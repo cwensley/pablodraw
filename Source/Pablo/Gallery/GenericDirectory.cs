@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Pablo.Gallery
 {
@@ -44,14 +46,13 @@ namespace Pablo.Gallery
 		protected string LoadJsonString()
 		{
 			Console.WriteLine(ApiPath);
-			var req = WebRequest.Create(ApiPath);
-			using (var response = (HttpWebResponse)req.GetResponse())
-			using (var reader = new StreamReader(response.GetResponseStream()))
-			{
-				var s = reader.ReadToEnd();	
-				//Console.WriteLine(s);
-				return s;
-			}
+			using var client = new HttpClient();
+			using var response = Task.Run(async () => await client.GetStreamAsync(ApiPath)).GetAwaiter().GetResult();
+			using var reader = new StreamReader(response);
+			
+			var s = reader.ReadToEnd();	
+			//Console.WriteLine(s);
+			return s;
 		}
 
 		protected abstract IEnumerable<T> GetEntries();

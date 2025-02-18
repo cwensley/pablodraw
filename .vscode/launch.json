@@ -10,13 +10,14 @@
             "request": "launch",
             "preLaunchTask": "build-pablodraw",
             "osx": {
-                "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net7.0/PabloDraw.app/Contents/MacOS/PabloDraw",
+                "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net9.0/PabloDraw.app/Contents/MacOS/PabloDraw",
             },
             "windows": {
-                "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net7.0-windows/win-x64/PabloDraw.dll",
+                "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net9.0-windows/PabloDraw.dll",
+                // "targetArchitecture": "x86_64"
             },
             "linux": {
-                "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net7.0/linux-x64/PabloDraw.dll",
+                "program": "${workspaceFolder}/artifacts/bin/PabloDraw/${config:var.BuildConfiguration}/net9.0/PabloDraw.dll",
             },
             "args": [
                 // "--help"
