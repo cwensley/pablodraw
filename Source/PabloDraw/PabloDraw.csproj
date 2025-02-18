@@ -40,7 +40,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <RuntimeIdentifiers>linux-x64;linux-arm64</RuntimeIdentifiers>
     <DefineConstants>LINUX</DefineConstants>
-    <TrimMode>Link</TrimMode>
+    <TrimMode>partial</TrimMode>
     <PublishTrimmed>True</PublishTrimmed>
   </PropertyGroup>
 
