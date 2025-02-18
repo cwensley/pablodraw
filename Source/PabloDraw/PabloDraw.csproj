@@ -54,7 +54,7 @@
     <TrimMode>partial</TrimMode>
     <PublishTrimmed>True</PublishTrimmed>
     <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
-    <DmgName>PabloDraw-Mac</DmgName>
+    <DmgName>PabloDraw-mac-universal</DmgName>
     <DmgVolumeName>PabloDraw</DmgVolumeName>
     <DmgOutputPath>$(PublishDir)</DmgOutputPath> <!-- Eto will use this by default if specified in 2.7.2 -->
     <MacAutoPublishBundle>True</MacAutoPublishBundle>
