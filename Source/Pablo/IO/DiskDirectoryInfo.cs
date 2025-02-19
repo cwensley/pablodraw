@@ -87,18 +87,20 @@ namespace Eto.IO
 			}
 		}
 
+#if NET
+		// In netstandard/netfx we don't use this as it is not case insensitive
 		public override IEnumerable<EtoFileInfo> GetFiles(IEnumerable<string> patterns)
 		{
 			foreach (string pattern in patterns)
 			{
-				var diskFiles = info.GetFiles (pattern); //.EnumerateFiles(pattern); // enumerate doesn't show readonly!!
+				var diskFiles = info.GetFiles(pattern, new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive });
 				foreach (var diskFile in diskFiles)
 				{
 					yield return new DiskFileInfo(diskFile);
 				}
 			}
 		}
-
+#endif
 
 	}
 }
