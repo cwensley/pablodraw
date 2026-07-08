@@ -464,44 +464,60 @@ namespace Pablo.Formats.Character
 		}
 
 		public override void OnKeyDown(KeyEventArgs e)
-		{
-			base.OnKeyDown(e);
-			if (e.Handled)
-				return;
-			//Console.WriteLine("Pressed {0}", e.KeyData.ToString());
-			if (AllowEditing)
-			{
-				if (!e.Handled && AllowToolSelection)
-				{
-					foreach (var tool in Tools)
-					{
-						if (e.KeyData == tool.Accelerator && tool != SelectedTool)
-						{
-							SelectedTool = tool;
-							e.Handled = true;
-							break;
-						}
-					}
-				}
+{
+base.OnKeyDown(e);
+if (e.Handled)
+return;
+//Console.WriteLine("Pressed {0}", e.KeyData.ToString());
+if (AllowEditing)
+{
+if (!e.Handled && e.KeyData == (Keys.Alt | Keys.B))
+{
+var selection = Tools.OfType<Tools.Selection>().FirstOrDefault();
+if (selection != null)
+{
+SelectedTool = selection;
+selection.DrawMode = global::Pablo.Formats.Character.Tools.DrawMode.Selecting;
+selection.SelectedRegion = new Rectangle(CursorPosition, CursorPosition);
+e.Handled = true;
+return;
+}
+}
 
-				if (!e.Handled && SelectedTool != null)
-				{
-					SelectedTool.OnKeyDown(e);
-				}
+if (!e.Handled && AllowToolSelection)
+{
+foreach (var tool in Tools)
+{
+if (e.KeyData == tool.Accelerator && tool != SelectedTool)
+{
+SelectedTool = tool;
+e.Handled = true;
+break;
+}
+}
+}
 
-				if (!e.Handled && AllowKeyboardEditing && e.IsChar)
-				{
-					byte[] bytes = CurrentPage.Font.Encoding.GetBytes(new char[] { e.KeyChar });
+if (!e.Handled && SelectedTool != null)
+{
+SelectedTool.OnKeyDown(e);
+}
 
-					byte b = bytes[0];
-					if (b < CurrentPage.Font.NumChars)
-					{
-						InsertCharacter(b);
-						e.Handled = true;
-					}
-				}
-			}
-		}
+if (!e.Handled && AllowKeyboardEditing && e.IsChar
+&& !e.KeyData.HasFlag(Keys.Alt)
+&& !e.KeyData.HasFlag(Keys.Control)
+&& !e.KeyData.HasFlag(Keys.Application))
+{
+byte[] bytes = CurrentPage.Font.Encoding.GetBytes(new char[] { e.KeyChar });
+
+byte b = bytes[0];
+if (b < CurrentPage.Font.NumChars)
+{
+InsertCharacter(b);
+e.Handled = true;
+}
+}
+}
+}
 
 		static bool UseInterpolation(float zoom)
 		{

@@ -62,7 +62,7 @@ namespace Pablo.Formats.Character.Tools
 
 		public override string Description => "Brush - Paint with character gradients";
 
-		public override Keys Accelerator => (Handler.Generator.IsMac ? Keys.Control : Keys.Alt) | Keys.B;
+		public override Keys Accelerator => (Handler.Generator.IsMac ? Keys.Control : Keys.Alt) | Keys.R;
 
 		public BrushTool()
 		{
